@@ -194,6 +194,7 @@ class dataSpiderService(object):
         else:
             self.logger.warning("传入参数为None!")
         os.chdir(curDir)
+        return
 
     def storeHisData(self):
         '''
@@ -218,9 +219,11 @@ class databaseService(object):
     '''
 
     def __init__(self):
-        pass
+        self.conn = pymysql.connect(host='localhost', user='mingjliu', password='qwe`1234', port=3306)
+        self.cursor = self.conn.cursor()
 
     def createDB(self):
+
         pass
 
     def createTable(self):
@@ -231,7 +234,8 @@ class databaseService(object):
 
     def writeTable(self):
         pass
-
+    def selectTable(self):
+        pass
 
 class analyzeDataService(object):
     '''
