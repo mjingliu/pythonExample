@@ -222,6 +222,13 @@ class databaseService(object):
         self.conn = pymysql.connect(host='localhost', user='mingjliu', password='qwe`1234', port=3306)
         self.cursor = self.conn.cursor()
 
+    def __close__(self):
+        '''
+        close the DB resource
+        '''
+        self.cursor.close()
+        self.conn.close()
+
     def createDB(self):
 
         pass
