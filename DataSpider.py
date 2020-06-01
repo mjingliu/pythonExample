@@ -177,7 +177,7 @@ class dataSpiderService(object):
 
         :return:
         '''
-        curDir = os.path.abspath(os.getcwd())
+        curDir = os.path.abspath(__file__)
         newDir = curDir + r'\Data'
         if not os.path.exists(newDir):
             os.mkdir(newDir)
@@ -187,7 +187,7 @@ class dataSpiderService(object):
             fileName = newDir + r'\\'+ str(stockCode)+'.'+ dt.datetime.today().strftime('%Y%m%d')
             tmpColumn = data['fields']
             tmpData = data['items']
-            df = pd.DataFrame(data=tmpData, columns=tmpColumn, index=False)
+            df = pd.DataFrame(data=tmpData, columns=tmpColumn)
 
             with open(fileName,'r+') as fp:
                 df.to_csv(fp,index=False)
