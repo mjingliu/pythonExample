@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 from builtins import object, str, int, isinstance, Exception
-
+import os, sys
 import requests as req
 import re
 import pandas as pd
@@ -137,7 +137,7 @@ class dataSpiderService(object):
                     result = json.loads(res.text)
                     if result['code'] == 0: #成功获取数据
                         data = result['data']
-                        self.storeData(data)
+                        self.storeData(data,stockCode)
                         return True
                     else:
                         self.logger.error("获取股票%s历史数据失败,错误码为：%s, 输入参数错误:%s" % stockCode, result['msg'],reqPara)
@@ -170,21 +170,30 @@ class dataSpiderService(object):
         '''
         pass
 
-    def storeData(self, data):
+    def storeData(self, data, stockCode):
         '''
         功能：存储股票数据，把对应的股票数据存储到csv文件中，该文件命名原则为：股票代码+获取日期
-                该文件存放位置为：
+                该文件存放位置为：./Data 目录
 
         :return:
         '''
+        curDir = os.path.abspath(os.getcwd())
+        newDir = curDir + r'\Data'
+        if not os.path.exists(newDir):
+            os.mkdir(newDir)
+        os.chdir(newDir)
 
         if data:
+            fileName = newDir + r'\\'+ str(stockCode)+'.'+ dt.datetime.today().strftime('%Y%m%d')
             tmpColumn = data['fields']
             tmpData = data['items']
             df = pd.DataFrame(data=tmpData, columns=tmpColumn, index=False)
-            df.to_csv()
+
+            with open(fileName,'r+') as fp:
+                df.to_csv(fp,index=False)
         else:
             self.logger.warning("传入参数为None!")
+        os.chdir(curDir)
 
     def storeHisData(self):
         '''

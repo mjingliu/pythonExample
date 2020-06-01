@@ -9,24 +9,14 @@ import json
 import pandas as pd
 import tushare as ts
 import const
-
-print(const.stockCode.get('012937'))
-iloop: bool = 0
-
-
-
-db = pymysql.connect(host='localhost', user='mingjliu', password='qwe`1234', port=3306)
-cursor = db.cursor()
-cursor.execute('SELECT VERSION()')
-data = cursor.fetchone()
-print('DB version :%s', data)
-db.close()
+import sys, os
 
 # df = ts.pro_api("cf8c206c8a3f3919835effcfc672c48a7f3b40315a1867bd15375af5")
 
 url = "http://api.waditu.com"
 timeout = 15
 headers = {'Connection': 'close'}
+proxies = {"http": "http://10.144.1.10:8080"}
 
 req_para = {
     'api_name': 'daily',
@@ -43,19 +33,62 @@ req_para = {
     'fields': ''
 }
 '''
-result = req.post(url=url, json=req_para, timeout=timeout, headers=headers)
+#cwd = os.getcwd(__name__)
+#print(cwd)
+#cwd = sys.getcwd(__name__)
+tmpstr= os.path.abspath(__name__)
+print(tmpstr)
+tmpstr = os.path.abspath(__file__)
+print(tmpstr)
+tmpstr = os.getcwd()
+print(tmpstr)
+tmpstr = os.path.abspath(sys.argv[0])
+print(tmpstr)
+tmpstr = sys.argv[0]
+print(tmpstr)
+
+tmpDir, tmpFile = os.path.split(os.path.abspath(sys.argv[0]))
+print(tmpDir)
+print(tmpFile)
+'''
+try:
+    newDir=os.mkdir(tmpDir+r'\tmpData')
+except Exception as e:
+    print("error:%s" % e)
+else:
+    print(newDir)
+    os.chdir(str(newDir))
+    print(os.getcwd())
+'''
+tmpDataDir = ''.join(r'\tmpData')
+print('\n')
+print(tmpDataDir)
+print('\n')
+tmpDataDir ='257'.join(r'\Data')
+print(tmpDataDir)
+
+tmpDataDir = tmpDir + r'\tmpData'
+if not os.path.exists(tmpDataDir):
+    os.mkdir(tmpDataDir)
+os.chdir(tmpDataDir)
+print(os.getcwd())
+os.chdir(tmpDir)
+print(os.getcwd())
+
+result = req.post(url=url, json=req_para, timeout=timeout, headers=headers, proxies=proxies)
 if result:
     res = json.loads(result.text)
-    print(res)
+    #print(res)
     if res['code'] != 0:
         print("Fail to fetch data: %s" % res['msg'])
     else:
         data = res['data']
         col = data['fields']
         record = data['items']
-        # print(col)
-        # print(record)
+        #print(col)
+        #print(record)
         df = pd.DataFrame(data=record, columns=col)
+        print(df)
         df.to_csv("data.csv", columns=col, index= False)
 else:
     print('\n')
