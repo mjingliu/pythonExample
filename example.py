@@ -33,33 +33,7 @@ req_para = {
     'fields': ''
 }
 '''
-#cwd = os.getcwd(__name__)
-#print(cwd)
-#cwd = sys.getcwd(__name__)
-tmpstr= os.path.abspath(__name__)
-print(tmpstr)
-tmpstr = os.path.abspath(__file__)
-print(tmpstr)
-tmpstr = os.getcwd()
-print(tmpstr)
-tmpstr = os.path.abspath(sys.argv[0])
-print(tmpstr)
-tmpstr = sys.argv[0]
-print(tmpstr)
 
-tmpDir, tmpFile = os.path.split(os.path.abspath(sys.argv[0]))
-print(tmpDir)
-print(tmpFile)
-'''
-try:
-    newDir=os.mkdir(tmpDir+r'\tmpData')
-except Exception as e:
-    print("error:%s" % e)
-else:
-    print(newDir)
-    os.chdir(str(newDir))
-    print(os.getcwd())
-'''
 tmpDataDir = ''.join(r'\tmpData')
 print('\n')
 print(tmpDataDir)
