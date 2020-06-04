@@ -21,7 +21,7 @@ proxies = {"http": "http://10.144.1.10:8080"}
 req_para = {
     'api_name': 'daily',
     'token': 'cf8c206c8a3f3919835effcfc672c48a7f3b40315a1867bd15375af5',
-    'params': {'ts_code': '000005.SZ', 'start_date': '20190707', 'end_date': '20190808'},
+    'params': {'ts_code': '000005.SZ', 'start_date': '19950101', 'end_date': '20190808'},
     'fields': ''
 }
 
@@ -33,7 +33,7 @@ req_para = {
     'fields': ''
 }
 '''
-
+tmpDir=os.getcwd()
 tmpDataDir = ''.join(r'\tmpData')
 print('\n')
 print(tmpDataDir)
@@ -48,6 +48,11 @@ os.chdir(tmpDataDir)
 print(os.getcwd())
 os.chdir(tmpDir)
 print(os.getcwd())
+print("\n sys.argv")
+#print(sys.argv[0])
+tmpDir, tmpFile = os.path.split(sys.argv[0])
+print("tmpDir:%s" % tmpDir)
+print("tmpFile %s" % tmpFile)
 
 result = req.post(url=url, json=req_para, timeout=timeout, headers=headers, proxies=proxies)
 if result:
@@ -62,8 +67,8 @@ if result:
         #print(col)
         #print(record)
         df = pd.DataFrame(data=record, columns=col)
-        print(df)
-        df.to_csv("data.csv", columns=col, index= False)
+        #print(df)
+        #df.to_csv("data.csv", columns=col, index=False, header=False)
 else:
     print('\n')
     print("failed to fetch data this time!\n")
