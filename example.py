@@ -69,14 +69,9 @@ if result:
         #print(col)
         #print(record)
         df = pd.DataFrame(data=record, columns=col)
-<<<<<<< HEAD
         print(df)
         df.to_csv("data1.csv", columns=col, header=False,index= False)
         df.to_csv("data.csv",index=False)
-=======
-        #print(df)
-        #df.to_csv("data.csv", columns=col, index=False, header=False)
->>>>>>> 5fb3b4498d4f6e6409d618980332665a6403a02a
 else:
     print('\n')
     print("failed to fetch data this time!\n")

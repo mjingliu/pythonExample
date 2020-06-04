@@ -4,12 +4,9 @@
 import pymysql
 import os, sys
 
-<<<<<<< HEAD
 #conn = pymysql.connect(host='localhost', user="spider", password='R~!@34qwe-spider', port=3306)
 conn = pymysql.connect(host='localhost', user='root', password='Rewq`1234', port=3306)
-=======
-conn = pymysql.connect(host='localhost', user="mingjliu", password='R~!@34qwe', port=3306)
->>>>>>> 5fb3b4498d4f6e6409d618980332665a6403a02a
+#conn = pymysql.connect(host='localhost', user="mingjliu", password='R~!@34qwe', port=3306)
 cursor = conn.cursor()
 dbName = "db_stock12"
 tblName = "stock_tbl"
@@ -20,22 +17,6 @@ try:
     result = cursor.execute(sql)
     print(result)
     print(cursor.fetchall())
-
-<<<<<<< HEAD
-'''
-sql = 'CREATE DATABASE db_stock12;'
-result = cursor.execute(sql)
-print(result)
-print(cursor.fetchall())
-'''
-sql = 'SHOW DATABASES;'
-result = cursor.execute(sql)
-print("show db:%s" % result)
-print(cursor.fetchmany(size=3))
-sql = ''
-cursor.close()
-conn.close()
-=======
     sql = 'use ' + dbName
     result = cursor.execute(sql)
     print("change db: %s" % result)
@@ -58,4 +39,3 @@ except Exception as e:
 finally:
     cursor.close()
     conn.close()
->>>>>>> 5fb3b4498d4f6e6409d618980332665a6403a02a
