@@ -41,6 +41,7 @@ print('\n')
 tmpDataDir ='257'.join(r'\Data')
 print(tmpDataDir)
 
+tmpDir = os.getcwd()
 tmpDataDir = tmpDir + r'\tmpData'
 if not os.path.exists(tmpDataDir):
     os.mkdir(tmpDataDir)
@@ -49,7 +50,8 @@ print(os.getcwd())
 os.chdir(tmpDir)
 print(os.getcwd())
 
-result = req.post(url=url, json=req_para, timeout=timeout, headers=headers, proxies=proxies)
+#result = req.post(url=url, json=req_para, timeout=timeout, headers=headers, proxies=proxies)
+result = req.post(url=url, json=req_para, timeout=timeout, headers=headers)
 if result:
     res = json.loads(result.text)
     #print(res)
@@ -63,7 +65,8 @@ if result:
         #print(record)
         df = pd.DataFrame(data=record, columns=col)
         print(df)
-        df.to_csv("data.csv", columns=col, index= False)
+        df.to_csv("data1.csv", columns=col, header=False,index= False)
+        df.to_csv("data.csv",index=False)
 else:
     print('\n')
     print("failed to fetch data this time!\n")
