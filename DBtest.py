@@ -5,7 +5,7 @@ import pymysql
 import os, sys
 import numpy as np
 
-conn = pymysql.connect(host='localhost', autocommit=True, user="root", password='R~!@34qwe', port=3306)
+conn = pymysql.connect(host='localhost', user="mingjliu", password='R~!@34qwe', port=3306)
 cursor = conn.cursor()
 dbName = "db_stock12"
 tblName = "stock_tbl"
