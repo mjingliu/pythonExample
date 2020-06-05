@@ -5,7 +5,9 @@ import pymysql
 import os, sys
 import numpy as np
 
-conn = pymysql.connect(host='localhost', user="mingjliu", password='R~!@34qwe', port=3306)
+#conn = pymysql.connect(host='localhost', user="spider", password='R~!@34qwe-spider', port=3306)
+conn = pymysql.connect(host='localhost', user='root', password='Rewq`1234', port=3306)
+#conn = pymysql.connect(host='localhost', user="mingjliu", password='R~!@34qwe', port=3306)
 cursor = conn.cursor()
 dbName = "db_stock12"
 tblName = "stock_tbl"
@@ -16,7 +18,6 @@ try:
     result = cursor.execute(sql)
     print(result)
     print(cursor.fetchall())
-
     sql = 'use ' + dbName
     result = cursor.execute(sql)
     print("change db: %s" % result)
