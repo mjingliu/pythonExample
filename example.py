@@ -21,7 +21,7 @@ proxies = {"http": "http://10.144.1.10:8080"}
 req_para = {
     'api_name': 'daily',
     'token': 'cf8c206c8a3f3919835effcfc672c48a7f3b40315a1867bd15375af5',
-    'params': {'ts_code': '000005.SZ', 'start_date': '19950101', 'end_date': '20190808'},
+    'params': {'ts_code': '600519.SH', 'start_date': '19950101', 'end_date': '20200601'},
     'fields': ''
 }
 
@@ -70,8 +70,8 @@ if result:
         #print(record)
         df = pd.DataFrame(data=record, columns=col)
         print(df)
-        df.to_csv("data1.csv", columns=col, header=False,index= False)
-        df.to_csv("data.csv",index=False)
+        df.to_csv("data.csv", columns=col, header=False,index= False)
+        df.to_csv("data1.csv",index=False)
 else:
     print('\n')
     print("failed to fetch data this time!\n")
