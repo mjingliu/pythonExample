@@ -4,13 +4,8 @@
 import pymysql
 import os,sys
 import numpy as np
-
-import pywt
-
 import matplotlib.pyplot as plt
 
-<<<<<<< HEAD
-=======
 '''
 1. 假设每一个行业都是以一年为周期，也就是说一年为通用周期
 2. 某些行业可能是以季节为周期
@@ -22,10 +17,9 @@ import matplotlib.pyplot as plt
 8. 需要按照行业来划分类别，有可能是每一个行业有属于行业自己的周期
 9. 按照地域划分，看一下地域的影响
 '''
->>>>>>> 8f75acd583fbaabcb5a6f5b6e27058f3cc56025a
 
 #conn = pymysql.connect(host='localhost', user="spider", password='R~!@34qwe-spider', port=3306)
-conn = pymysql.connect(host='localhost', autocommit=True, user='root', password='R~!@34qwe', port=3306)
+conn = pymysql.connect(host='localhost', autocommit=True, user='mingjliu', password='qwe`1234', port=3306)
 #conn = pymysql.connect(host='localhost', user="mingjliu", password='R~!@34qwe', port=3306)
 cursor = conn.cursor()
 dbName = "db_stock12"
@@ -73,6 +67,16 @@ try:
         aListClose.append(tmpList[i][2])
         if i != 0:
             aListDif.append(tmpList[i][0])
+
+    iArr = np.array(aList)
+
+    fftArr = np.fft.fft(iArr, n=256, norm='ortho')
+    print(fftArr)
+    print("fft\n")
+    iFFT = np.fft.ifft(fftArr,n=256)
+    print(iFFT)
+    print("ifft\n")
+
     aList.pop()
     aListDate.pop()
     aListClose.pop()
@@ -90,7 +94,6 @@ try:
     tmpRes = tmpResOpen-tmpResOpenClose
     tmpArrDate = np.array(aListDate, dtype=np.datetime64)
 
-<<<<<<< HEAD
 
     '''
     对斜率(tmpArrDif)进行FFT变化，看一下在频域是啥表现
@@ -101,18 +104,17 @@ try:
     spDiff = np.fft.fftshift(spDiffShift)
     spTmp = sp-spDiff
     print("\nthe coming is spTmp")
-    print(spTmp)
+    #print(spTmp)
     print("spTmp is over\n")
     spMag = np.sqrt(np.real(sp)**2 + np.imag(sp)**2)
     freq = np.fft.fftfreq(256, d=0.1)
     freqShift = np.fft.fftshift(freq)
-    print(freqShift)
+    #print(freqShift)
+
     plt.plot(freqShift,spMag)
-    plt.ylim(0,800)
-=======
-    plt.plot(tmpArrDate,tmpResOpen)
+    #plt.ylim(0,800)
+    #plt.plot(tmpArrDate,tmpResOpen)
     #plt.ylim(4,-4)
->>>>>>> 8f75acd583fbaabcb5a6f5b6e27058f3cc56025a
     #plt.xlim(tmpArrDate[-1], tmpArrDate[0])
     plt.show()
     #print(tmpArr)
