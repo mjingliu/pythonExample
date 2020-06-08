@@ -4,13 +4,11 @@
 import pymysql
 import os,sys
 import numpy as np
-<<<<<<< HEAD
-import matplotlib as mpl
+
 import pywt
-pywt.Wavelet()
-=======
+
 import matplotlib.pyplot as plt
->>>>>>> 02957f2df5c20de49fa8d15a535e4490b0bd8200
+
 
 #conn = pymysql.connect(host='localhost', user="spider", password='R~!@34qwe-spider', port=3306)
 conn = pymysql.connect(host='localhost', autocommit=True, user='root', password='Rewq`1234', port=3306)
