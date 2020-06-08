@@ -6,6 +6,7 @@ import os,sys
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 #conn = pymysql.connect(host='localhost', user="spider", password='R~!@34qwe-spider', port=3306)
 conn = pymysql.connect(host='localhost', autocommit=True, user='root', password='Rewq`1234', port=3306)
 #conn = pymysql.connect(host='localhost', user="mingjliu", password='R~!@34qwe', port=3306)
@@ -33,7 +34,7 @@ try:
     result = cursor.execute(sql)
 
     print("load data: %s" % result)
-    sql = 'SELECT open, trade_date, close FROM ' + tblName + ';'
+    sql = 'SELECT open, trade_date, close FROM ' + tblName + ' WHERE trade_date > 20190101 AND trade_date < 20200101'+';'
     result = cursor.execute(sql)
 
     #np.ndarray(cursor.fetchmany(10),dtype=float)
@@ -72,12 +73,28 @@ try:
     tmpRes = tmpResOpen-tmpResOpenClose
     tmpArrDate = np.array(aListDate, dtype=np.datetime64)
 
-    plt.plot(tmpArrDate,tmpRes)
-    #plt.ylim(4,-4)
-    plt.xlim(tmpArrDate[-1], tmpArrDate[0])
+
+    '''
+    对斜率(tmpArrDif)进行FFT变化，看一下在频域是啥表现
+    '''
+    spShift = np.fft.fft(tmpArr,n=256)
+    sp = np.fft.fftshift(spShift)
+    spDiffShift = np.fft.fft(tmpArrDif,n=256)
+    spDiff = np.fft.fftshift(spDiffShift)
+    spTmp = sp-spDiff
+    print("\nthe coming is spTmp")
+    print(spTmp)
+    print("spTmp is over\n")
+    spMag = np.sqrt(np.real(sp)**2 + np.imag(sp)**2)
+    freq = np.fft.fftfreq(256, d=0.1)
+    freqShift = np.fft.fftshift(freq)
+    print(freqShift)
+    plt.plot(freqShift,spMag)
+    plt.ylim(0,800)
+    #plt.xlim(tmpArrDate[-1], tmpArrDate[0])
     plt.show()
-    print(tmpArr)
-    print(tmpArrDate)
+    #print(tmpArr)
+    #print(tmpArrDate)
     print(type(tmpArr))
     print(len(tmpArrDate))
     '''
