@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt
 '''
 
 #conn = pymysql.connect(host='localhost', user="spider", password='R~!@34qwe-spider', port=3306)
-conn = pymysql.connect(host='localhost', autocommit=True, user='mingjliu', password='qwe`1234', port=3306)
+conn = pymysql.connect(host='localhost', autocommit=True, user='mingjliu', password='R~!@34qwe', port=3306)
 #conn = pymysql.connect(host='localhost', user="mingjliu", password='R~!@34qwe', port=3306)
 cursor = conn.cursor()
 dbName = "db_stock12"
@@ -45,7 +45,7 @@ try:
     result = cursor.execute(sql)
 
     print("load data: %s" % result)
-    sql = 'SELECT open, trade_date, close FROM ' + tblName + ' WHERE trade_date > 20190101 AND trade_date < 20200101'+';'
+    sql = 'SELECT open, trade_date, close FROM ' + tblName + ' WHERE trade_date > 20180101 AND trade_date < 20190101'+';'
     result = cursor.execute(sql)
 
     #np.ndarray(cursor.fetchmany(10),dtype=float)
@@ -69,12 +69,25 @@ try:
             aListDif.append(tmpList[i][0])
 
     iArr = np.array(aList)
-
-    fftArr = np.fft.fft(iArr, n=256, norm='ortho')
+    np.set_printoptions(suppress=True, precision=4)
+    fftArr = np.fft.fft(iArr, n=256)
+    fftArrSQRT = np.sqrt(np.real(fftArr)**2 + np.imag(fftArr)**2)
+    fftArrSQRT = np.fft.fftshift(fftArrSQRT)
+    fftSQRTIndex = np.argwhere(fftArrSQRT)
     print(fftArr)
+    print(fftArrSQRT)
+    freq = np.fft.fftfreq(256, d=0.1)
+    freqShift = np.fft.fftshift(freq)
+    print(freqShift)
     print("fft\n")
     iFFT = np.fft.ifft(fftArr,n=256)
-    print(iFFT)
+    iFFT = np.real(iFFT)
+    #np.argwhere()
+
+
+    iFFT = iFFT[iFFT>0.1]
+    #iFFT = iFFT - iArr
+    #print(iFFT)
     print("ifft\n")
 
     aList.pop()
@@ -107,8 +120,7 @@ try:
     #print(spTmp)
     print("spTmp is over\n")
     spMag = np.sqrt(np.real(sp)**2 + np.imag(sp)**2)
-    freq = np.fft.fftfreq(256, d=0.1)
-    freqShift = np.fft.fftshift(freq)
+
     #print(freqShift)
 
     plt.plot(freqShift,spMag)
