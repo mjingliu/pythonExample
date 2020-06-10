@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt
 '''
 
 #conn = pymysql.connect(host='localhost', user="spider", password='R~!@34qwe-spider', port=3306)
-conn = pymysql.connect(host='localhost', autocommit=True, user='mingjliu', password='R~!@34qwe', port=3306)
+conn = pymysql.connect(host='localhost', autocommit=True, user='mingjliu', password='qwe`1234', port=3306)
 #conn = pymysql.connect(host='localhost', user="mingjliu", password='R~!@34qwe', port=3306)
 cursor = conn.cursor()
 dbName = "db_stock12"
@@ -45,7 +45,7 @@ try:
     result = cursor.execute(sql)
 
     print("load data: %s" % result)
-    sql = 'SELECT open, trade_date, close FROM ' + tblName + ' WHERE trade_date > 20180101 AND trade_date < 20190101'+';'
+    sql = 'SELECT open, trade_date, close FROM ' + tblName + ' WHERE trade_date > 20190101 AND trade_date < 20200101'+';'
     result = cursor.execute(sql)
 
     #np.ndarray(cursor.fetchmany(10),dtype=float)
@@ -69,16 +69,16 @@ try:
             aListDif.append(tmpList[i][0])
 
     iArr = np.array(aList)
-    np.set_printoptions(suppress=True, precision=4)
+    np.set_printoptions(suppress=True, precision=2)
     fftArr = np.fft.fft(iArr, n=256)
     fftArrSQRT = np.sqrt(np.real(fftArr)**2 + np.imag(fftArr)**2)
     fftArrSQRT = np.fft.fftshift(fftArrSQRT)
     fftSQRTIndex = np.argwhere(fftArrSQRT)
-    print(fftArr)
-    print(fftArrSQRT)
+    #print(fftArr)
+    #print(fftArrSQRT)
     freq = np.fft.fftfreq(256, d=0.1)
     freqShift = np.fft.fftshift(freq)
-    print(freqShift)
+    # print(freqShift),同一个N对应的freq是相同的，也就是说，对应的正交空间是一样的。
     print("fft\n")
     iFFT = np.fft.ifft(fftArr,n=256)
     iFFT = np.real(iFFT)
@@ -89,8 +89,21 @@ try:
     #iFFT = iFFT - iArr
     #print(iFFT)
     print("ifft\n")
-
+    tmpArr = np.array(aList, dtype=np.float)
+    tmpArrFFT1 = np.fft.fft(tmpArr,n=256)
+    print("\n this is origin data of FFT")
+    print(tmpArrFFT1)
+    print("end of origin data of FFT")
     aList.pop()
+    tmpArr = np.array(aList,dtype=np.float)
+    tmpArrFFT2 = np.fft.fft(tmpArr,n=256)
+    print("\n this is reduced data of FFT")
+    print(tmpArrFFT2)
+    print("end of reduced data of FFT")
+    tmpArrFFTDif = tmpArrFFT1-tmpArrFFT2
+    tmpArrFFTDif = np.fft.fftshift(tmpArrFFTDif)
+    print(tmpArrFFTDif)
+    print("\n")
     aListDate.pop()
     aListClose.pop()
 
@@ -111,18 +124,19 @@ try:
     '''
     对斜率(tmpArrDif)进行FFT变化，看一下在频域是啥表现
     '''
-    spShift = np.fft.fft(tmpArr,n=256)
+    spShift = np.fft.fft(tmpResOpen,n=256)
     sp = np.fft.fftshift(spShift)
     spDiffShift = np.fft.fft(tmpArrDif,n=256)
     spDiff = np.fft.fftshift(spDiffShift)
     spTmp = sp-spDiff
-    print("\nthe coming is spTmp")
+    print("\nthe coming is sp")
     #print(spTmp)
-    print("spTmp is over\n")
+    print(tmpResOpen)
+    print(spShift)
+    print("sp is over\n")
     spMag = np.sqrt(np.real(sp)**2 + np.imag(sp)**2)
 
-    #print(freqShift)
-
+    print(spMag)
     plt.plot(freqShift,spMag)
     #plt.ylim(0,800)
     #plt.plot(tmpArrDate,tmpResOpen)
