@@ -70,83 +70,11 @@ try:
 
     iArr = np.array(aList)
     np.set_printoptions(suppress=True, precision=2)
-    fftArr = np.fft.fft(iArr, n=256)
-    fftArrSQRT = np.sqrt(np.real(fftArr)**2 + np.imag(fftArr)**2)
-    fftArrSQRT = np.fft.fftshift(fftArrSQRT)
-    fftSQRTIndex = np.argwhere(fftArrSQRT)
-    #print(fftArr)
-    #print(fftArrSQRT)
-    freq = np.fft.fftfreq(256, d=0.1)
-    freqShift = np.fft.fftshift(freq)
-    # print(freqShift),同一个N对应的freq是相同的，也就是说，对应的正交空间是一样的。
-    print("fft\n")
-    iFFT = np.fft.ifft(fftArr,n=256)
-    iFFT = np.real(iFFT)
-    #np.argwhere()
 
+    plt.plot(iArr)
 
-    iFFT = iFFT[iFFT>0.1]
-    #iFFT = iFFT - iArr
-    #print(iFFT)
-    print("ifft\n")
-    tmpArr = np.array(aList, dtype=np.float)
-    tmpArrFFT1 = np.fft.fft(tmpArr,n=256)
-    print("\n this is origin data of FFT")
-    print(tmpArrFFT1)
-    print("end of origin data of FFT")
-    aList.pop()
-    tmpArr = np.array(aList,dtype=np.float)
-    tmpArrFFT2 = np.fft.fft(tmpArr,n=256)
-    print("\n this is reduced data of FFT")
-    print(tmpArrFFT2)
-    print("end of reduced data of FFT")
-    tmpArrFFTDif = tmpArrFFT1-tmpArrFFT2
-    tmpArrFFTDif = np.fft.fftshift(tmpArrFFTDif)
-    print(tmpArrFFTDif)
-    print("\n")
-    aListDate.pop()
-    aListClose.pop()
-
-    print(aList)
-    print("len of aList:%d" % len(aList))
-    print("len of aListDif:%d" % len(aListDif))
-    #tmpArr = np.ndarray([2.73, 2.75, 2.78, 2.82, 2.85, 2.9, 2.95, 2.95, 2.97, 2.98], dtype='f')
-    tmpArr = np.array(aList, dtype=np.float)
-    tmpArrDif = np.array(aListDif, dtype=np.float)
-    tmpArrClose = np.array(aListClose, dtype=np.float)
-
-    tmpResOpen = tmpArrDif-tmpArr
-    tmpResOpenClose = tmpArrDif-tmpArrClose
-    tmpRes = tmpResOpen-tmpResOpenClose
-    tmpArrDate = np.array(aListDate, dtype=np.datetime64)
-
-
-    '''
-    对斜率(tmpArrDif)进行FFT变化，看一下在频域是啥表现
-    '''
-    spShift = np.fft.fft(tmpResOpen,n=256)
-    sp = np.fft.fftshift(spShift)
-    spDiffShift = np.fft.fft(tmpArrDif,n=256)
-    spDiff = np.fft.fftshift(spDiffShift)
-    spTmp = sp-spDiff
-    print("\nthe coming is sp")
-    #print(spTmp)
-    print(tmpResOpen)
-    print(spShift)
-    print("sp is over\n")
-    spMag = np.sqrt(np.real(sp)**2 + np.imag(sp)**2)
-
-    print(spMag)
-    plt.plot(freqShift,spMag)
-    #plt.ylim(0,800)
-    #plt.plot(tmpArrDate,tmpResOpen)
-    #plt.ylim(4,-4)
-    #plt.xlim(tmpArrDate[-1], tmpArrDate[0])
     plt.show()
-    #print(tmpArr)
-    #print(tmpArrDate)
-    print(type(tmpArr))
-    print(len(tmpArrDate))
+
     '''
     sql = 'DELETE FROM ' + tblName + ';'
     result = cursor.execute(sql)
