@@ -27,7 +27,7 @@ import pywt as wvlt
 '''
 
 #conn = pymysql.connect(host='localhost', user="spider", password='R~!@34qwe-spider', port=3306)
-conn = pymysql.connect(host='localhost', autocommit=True, user='mingjliu', password='R~!@34qwe', port=3306)
+conn = pymysql.connect(host='localhost', autocommit=True, user='mingjliu', password='qwe`1234', port=3306)
 #conn = pymysql.connect(host='localhost', user="mingjliu", password='R~!@34qwe', port=3306)
 cursor = conn.cursor()
 dbName = "db_stock12"
@@ -53,7 +53,9 @@ try:
     result = cursor.execute(sql)
 
     print("load data: %s" % result)
-    sql = 'SELECT open, trade_date, close FROM ' + tblName + ' WHERE trade_date > 20010101 AND trade_date < 20200101'+';'
+
+    sql = 'SELECT open, trade_date, close FROM ' + tblName + ' WHERE trade_date > 20190101 AND trade_date < 20200101'+';'
+
     result = cursor.execute(sql)
 
     #np.ndarray(cursor.fetchmany(10),dtype=float)
@@ -81,7 +83,6 @@ try:
     #plt.plot(iArrDate,iArr)
     plt.plot(cD)
     plt.show()
-
 
     '''
     sql = 'DELETE FROM ' + tblName + ';'

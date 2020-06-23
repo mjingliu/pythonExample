@@ -21,7 +21,7 @@ proxies = {"http": "http://10.144.1.10:8080"}
 req_para = {
     'api_name': 'daily',
     'token': 'cf8c206c8a3f3919835effcfc672c48a7f3b40315a1867bd15375af5',
-    'params': {'ts_code': '600776.SH', 'start_date': '19950101', 'end_date': '20200601'},
+    'params': {'ts_code': '002415.SZ', 'start_date': '19950101', 'end_date': '20200601'},
     'fields': ''
 }
 #海康：002415.SZ
