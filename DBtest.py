@@ -5,6 +5,7 @@ import pymysql
 import os,sys
 import numpy as np
 import matplotlib.pyplot as plt
+import pywt as wvlt
 
 '''
 1. 假设每一个行业都是以一年为周期，也就是说一年为通用周期
@@ -16,6 +17,13 @@ import matplotlib.pyplot as plt
 7，如果去除低频数据，
 8. 需要按照行业来划分类别，有可能是每一个行业有属于行业自己的周期
 9. 按照地域划分，看一下地域的影响
+'''
+
+'''
+1. 把到目前为止所有的fft/ifft变化的代码内容都清理掉
+2. 把小波变化的内容增加进来，看一下小波域中的数据是什么样子的，看看能有什么发现
+3. 小波逆变换能否恢复完整恢复数据？
+4. 正确调整小波参数，用以模拟stock line
 '''
 
 #conn = pymysql.connect(host='localhost', user="spider", password='R~!@34qwe-spider', port=3306)
@@ -45,7 +53,7 @@ try:
     result = cursor.execute(sql)
 
     print("load data: %s" % result)
-    sql = 'SELECT open, trade_date, close FROM ' + tblName + ' WHERE trade_date > 20180101 AND trade_date < 20190101'+';'
+    sql = 'SELECT open, trade_date, close FROM ' + tblName + ' WHERE trade_date > 20010101 AND trade_date < 20200101'+';'
     result = cursor.execute(sql)
 
     #np.ndarray(cursor.fetchmany(10),dtype=float)
@@ -56,11 +64,7 @@ try:
     aListDif = []
     aListClose = []
     aListDate = []
-    '''
-    for each in tmpList:
-        aList = each[0]
-        print(aList)
-    '''
+
     for i in range(len(tmpList)):
         aList.append(tmpList[i][0])
         aListDate.append(tmpList[i][1])
@@ -69,70 +73,16 @@ try:
             aListDif.append(tmpList[i][0])
 
     iArr = np.array(aList)
+    iArrDate = np.array(aListDate)
+    wavelet = wvlt.Wavelet('haar')
+    cA,cD = wvlt.dwt(iArr, wavelet)
+    print(wavelet)
     np.set_printoptions(suppress=True, precision=4)
-    fftArr = np.fft.fft(iArr, n=256)
-    fftArrSQRT = np.sqrt(np.real(fftArr)**2 + np.imag(fftArr)**2)
-    fftArrSQRT = np.fft.fftshift(fftArrSQRT)
-    fftSQRTIndex = np.argwhere(fftArrSQRT)
-    print(fftArr)
-    print(fftArrSQRT)
-    freq = np.fft.fftfreq(256, d=0.1)
-    freqShift = np.fft.fftshift(freq)
-    print(freqShift)
-    print("fft\n")
-    iFFT = np.fft.ifft(fftArr,n=256)
-    iFFT = np.real(iFFT)
-    #np.argwhere()
-
-
-    iFFT = iFFT[iFFT>0.1]
-    #iFFT = iFFT - iArr
-    #print(iFFT)
-    print("ifft\n")
-
-    aList.pop()
-    aListDate.pop()
-    aListClose.pop()
-
-    print(aList)
-    print("len of aList:%d" % len(aList))
-    print("len of aListDif:%d" % len(aListDif))
-    #tmpArr = np.ndarray([2.73, 2.75, 2.78, 2.82, 2.85, 2.9, 2.95, 2.95, 2.97, 2.98], dtype='f')
-    tmpArr = np.array(aList, dtype=np.float)
-    tmpArrDif = np.array(aListDif, dtype=np.float)
-    tmpArrClose = np.array(aListClose, dtype=np.float)
-
-    tmpResOpen = tmpArrDif-tmpArr
-    tmpResOpenClose = tmpArrDif-tmpArrClose
-    tmpRes = tmpResOpen-tmpResOpenClose
-    tmpArrDate = np.array(aListDate, dtype=np.datetime64)
-
-
-    '''
-    对斜率(tmpArrDif)进行FFT变化，看一下在频域是啥表现
-    '''
-    spShift = np.fft.fft(tmpArr,n=256)
-    sp = np.fft.fftshift(spShift)
-    spDiffShift = np.fft.fft(tmpArrDif,n=256)
-    spDiff = np.fft.fftshift(spDiffShift)
-    spTmp = sp-spDiff
-    print("\nthe coming is spTmp")
-    #print(spTmp)
-    print("spTmp is over\n")
-    spMag = np.sqrt(np.real(sp)**2 + np.imag(sp)**2)
-
-    #print(freqShift)
-
-    plt.plot(freqShift,spMag)
-    #plt.ylim(0,800)
-    #plt.plot(tmpArrDate,tmpResOpen)
-    #plt.ylim(4,-4)
-    #plt.xlim(tmpArrDate[-1], tmpArrDate[0])
+    #plt.plot(iArrDate,iArr)
+    plt.plot(cD)
     plt.show()
-    #print(tmpArr)
-    #print(tmpArrDate)
-    print(type(tmpArr))
-    print(len(tmpArrDate))
+
+
     '''
     sql = 'DELETE FROM ' + tblName + ';'
     result = cursor.execute(sql)
