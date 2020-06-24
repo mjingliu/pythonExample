@@ -40,9 +40,6 @@ tmpDir=os.getcwd()
 tmpDataDir = ''.join(r'\tmpData')
 print('\n')
 print(tmpDataDir)
-print('\n')
-tmpDataDir ='257'.join(r'\Data')
-print(tmpDataDir)
 
 tmpDir = os.getcwd()
 tmpDataDir = tmpDir + r'\tmpData'
