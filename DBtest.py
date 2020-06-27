@@ -6,6 +6,7 @@ import pymysql
 import os,sys
 import numpy as np
 import matplotlib.pyplot as plt
+import fractal
 #import pywt as wvlt
 
 '''
@@ -103,7 +104,7 @@ try:
 
     iArr = np.array(aListClose[aListCloseIndex[0]:aListCloseIndex[1]])
     iArrDate = np.array(aListDate[aListCloseIndex[0]:aListCloseIndex[1]])
-
+    fractal.Hust(iArr, 5)
     #wavelet = wvlt.Wavelet('haar')
     #cA,cD = wvlt.dwt(iArr, wavelet)
     #print(wavelet)
