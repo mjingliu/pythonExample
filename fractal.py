@@ -1,6 +1,7 @@
 #!/usr/bin/env python 
 # -*- coding:utf-8 -*-
 import numpy as np
+import math
 
 def Hust (iArr, sample):
     '''
@@ -19,4 +20,26 @@ def Hust (iArr, sample):
     采用最小二乘法获取到对应的参数，
     若输入的参数len(iArr) < (sample *2),则说明传入的参数个数太少，不做任何处理，只反馈输入参数个数太少的告警
     '''
-    pass
+    if len(iArr) < (int(sample)*2):
+        return False
+    iArr = np.array(iArr)
+    blockLen = iArr.size / sample
+    iArrR = []
+    iArrS = []
+    iArrRSValue = []
+    for each in range(int(blockLen)):
+        tmpArr = np.array(iArr[each * sample: (each+1)*sample])
+        tmpMean = tmpArr.mean() # mean
+        tmpError = np.array(tmpArr-tmpMean) # error
+        for i in range(len(tmpError)):
+            if i != 0:
+                tmpError[i] += tmpError[i-1]
+        tmpMax = tmpError.max()
+        tmpMin = tmpError.min()
+        tmpR = tmpMax-tmpMin # R
+        iArrR.append(tmpR)
+        tmpS = tmpArr.std() # S
+        iArrS.append(tmpS)
+        iArrRSValue.append(math.log10(tmpR/tmpS))
+
+    return iArrRSValue

@@ -7,6 +7,7 @@ import os,sys
 import numpy as np
 import matplotlib.pyplot as plt
 import fractal
+import math
 #import pywt as wvlt
 
 '''
@@ -44,7 +45,7 @@ f. 计算n个采样序列的S值，S = sqrt((detX0 * detX0 + detX1*detX1 + detX2
 
 '''
 
-coeffiency: float = 0.8
+coeffiency: float = 0.85
 #conn = pymysql.connect(host='localhost', user="spider", password='R~!@34qwe-spider', port=3306)
 conn = pymysql.connect(host='localhost', autocommit=True, user='mingjliu', password='qwe`1234', port=3306)
 #conn = pymysql.connect(host='localhost', user="mingjliu", password='R~!@34qwe', port=3306)
@@ -103,16 +104,19 @@ try:
     print(aListCloseIndex)
 
     iArr = np.array(aListClose[aListCloseIndex[0]:aListCloseIndex[1]])
-    iArrDate = np.array(aListDate[aListCloseIndex[0]:aListCloseIndex[1]])
-    fractal.Hust(iArr, 5)
+    #iArrDate = np.array(aListDate[aListCloseIndex[2]:aListCloseIndex[3]])
+    sample = 17
+    iHArrX = math.log10(sample)
+    iHArr = np.array(fractal.Hust(iArr, sample))
+    iHArr = iHArr/iHArrX
     #wavelet = wvlt.Wavelet('haar')
     #cA,cD = wvlt.dwt(iArr, wavelet)
     #print(wavelet)
     np.set_printoptions(suppress=True, precision=4)
-    plt.plot(iArrDate,iArr)
-    #plt.plot(cD)
+    #plt.plot(iArrDate,iArr)
+    plt.plot(iHArr)
     plt.rcParams['font.sans-serif'] = ['SimHei'] #设置中文字体
-    plt.title("海康：002415.SZ")
+    plt.title("海康：002415.SZ, 采样：{}".format(sample))
     plt.show()
 
     '''
