@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
+from typing import Any
 
 import pymysql
 import os,sys
 import numpy as np
 import matplotlib.pyplot as plt
-import pywt as wvlt
+#import pywt as wvlt
 
 '''
 1. 假设每一个行业都是以一年为周期，也就是说一年为通用周期
@@ -25,7 +26,24 @@ import pywt as wvlt
 3. 小波逆变换能否恢复完整恢复数据？
 4. 正确调整小波参数，用以模拟stock line
 '''
+'''
+使用分形对数据进行分析
+具体步骤如下：
+1. 使用R/S方法，找到该股票对应的Hust指数是多少
+    此处的n可以选用很多个数值，使用不同的n可能有不同的Hust，看看是否有对应关系
+2. 使用R/S方法，是否对股票的不同阶段，有不同的Hust指数
+3. 根据Hust指数，使用公式lg(R/S)n = lgC + H*lgn，测试一下当n增加“1”时，对应的Xn+1的值是多少？
+具体计算步骤如下：
+a. 在需要分析的采样样本(S)中，把采样划分为M个包含n个采样的数据块，也就是说 S = M*n
+b. 对每一个n个采样序列Xi计算对应的均值，X = (X1 + X2 + ...+Xn)/n
+c. 对每一个n个采样序列Xi计算对应的误差，detXi = Xi-X
+d. 对每一个n个采样序列Xi，计算每一个Xi对应的累计误差，Xierror = detX0 + detX1 +...+detXi
+e. 计算n个采样序列的R值，R = max(Xierror) - min(Xierror), i = 0,1,2...n-1
+f. 计算n个采样序列的S值，S = sqrt((detX0 * detX0 + detX1*detX1 + detX2*detX2+...+detXn-1*detXn-1)/(n*n))
 
+'''
+
+coeffiency: float = 0.8
 #conn = pymysql.connect(host='localhost', user="spider", password='R~!@34qwe-spider', port=3306)
 conn = pymysql.connect(host='localhost', autocommit=True, user='mingjliu', password='qwe`1234', port=3306)
 #conn = pymysql.connect(host='localhost', user="mingjliu", password='R~!@34qwe', port=3306)
@@ -54,7 +72,7 @@ try:
 
     print("load data: %s" % result)
 
-    sql = 'SELECT open, trade_date, close FROM ' + tblName + ' WHERE trade_date > 20190101 AND trade_date < 20200101'+';'
+    sql = 'SELECT open, trade_date, close FROM ' + tblName + ' WHERE trade_date > 20090101 AND trade_date < 20200101'+';'
 
     result = cursor.execute(sql)
 
@@ -63,25 +81,36 @@ try:
     tmpList = list(cursor.fetchall())
     print("all the Select data is :%d " % len(tmpList))
     aList = []
-    aListDif = []
     aListClose = []
     aListDate = []
+    aListCloseIndex = []
 
     for i in range(len(tmpList)):
         aList.append(tmpList[i][0])
         aListDate.append(tmpList[i][1])
         aListClose.append(tmpList[i][2])
-        if i != 0:
-            aListDif.append(tmpList[i][0])
 
-    iArr = np.array(aList)
+    aList.reverse()
+    aListDate.reverse()
+    aListClose.reverse()
+    # 找到对应数据的跳跃点位置索引，用以区分对应的区段来获取H值
+    # 例如：002415股票：从上市到2020年6月20号，一共有5次阶跃跳变，分别为：第211天，第487天，第745天，第1398天，第1639天
+    # 每一次价格的阶跃跳变都是以大于10%的价格跳变，是股票增发价格分摊导致，故应该在每一个对应区间内来分析数据
+    for i in range(len(aListClose)):
+        if i > 0 and aListClose[i] < coeffiency * aListClose[i-1]:
+            aListCloseIndex.append(i)
+    print(aListCloseIndex)
+
+    iArr = np.array(aListClose)
     iArrDate = np.array(aListDate)
-    wavelet = wvlt.Wavelet('haar')
-    cA,cD = wvlt.dwt(iArr, wavelet)
-    print(wavelet)
+    #wavelet = wvlt.Wavelet('haar')
+    #cA,cD = wvlt.dwt(iArr, wavelet)
+    #print(wavelet)
     np.set_printoptions(suppress=True, precision=4)
-    #plt.plot(iArrDate,iArr)
-    plt.plot(cD)
+    plt.plot(iArrDate,iArr)
+    #plt.plot(cD)
+    plt.rcParams['font.sans-serif'] = ['SimHei'] #设置中文字体
+    plt.title("海康：002415.SZ")
     plt.show()
 
     '''
