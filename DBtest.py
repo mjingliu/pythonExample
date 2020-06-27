@@ -101,8 +101,9 @@ try:
             aListCloseIndex.append(i)
     print(aListCloseIndex)
 
-    iArr = np.array(aListClose)
-    iArrDate = np.array(aListDate)
+    iArr = np.array(aListClose[aListCloseIndex[0]:aListCloseIndex[1]])
+    iArrDate = np.array(aListDate[aListCloseIndex[0]:aListCloseIndex[1]])
+
     #wavelet = wvlt.Wavelet('haar')
     #cA,cD = wvlt.dwt(iArr, wavelet)
     #print(wavelet)
