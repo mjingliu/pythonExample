@@ -47,7 +47,7 @@ f. 计算n个采样序列的S值，S = sqrt((detX0 * detX0 + detX1*detX1 + detX2
 
 coeffiency: float = 0.85
 #conn = pymysql.connect(host='localhost', user="spider", password='R~!@34qwe-spider', port=3306)
-conn = pymysql.connect(host='localhost', autocommit=True, user='mingjliu', password='qwe`1234', port=3306)
+conn = pymysql.connect(host='localhost', autocommit=True, user='mingjliu', password='R~!@34qwe', port=3306)
 #conn = pymysql.connect(host='localhost', user="mingjliu", password='R~!@34qwe', port=3306)
 cursor = conn.cursor()
 dbName = "db_stock12"
@@ -74,7 +74,7 @@ try:
 
     print("load data: %s" % result)
 
-    sql = 'SELECT open, trade_date, close FROM ' + tblName + ' WHERE trade_date > 20090101 AND trade_date < 20200101'+';'
+    sql = 'SELECT open, trade_date, close FROM ' + tblName + ' WHERE trade_date > 19950101 AND trade_date < 20200101'+';'
 
     result = cursor.execute(sql)
 
@@ -103,20 +103,40 @@ try:
             aListCloseIndex.append(i)
     print(aListCloseIndex)
 
-    iArr = np.array(aListClose[aListCloseIndex[0]:aListCloseIndex[1]])
+    aListLen = len(aListCloseIndex)
+
+    if aListLen > 1:
+        iArr = np.array(aListClose[aListCloseIndex[0]:aListCloseIndex[1]])
+    elif aListLen == 1:
+        iArr = np.array(aListClose[:aListCloseIndex[0]])
+    else:
+        iArr = np.array(aListClose)
     #iArrDate = np.array(aListDate[aListCloseIndex[2]:aListCloseIndex[3]])
-    sample = 17
-    iHArrX = math.log10(sample)
-    iHArr = np.array(fractal.Hust(iArr, sample))
-    iHArr = iHArr/iHArrX
+    sample = [3,5,7,9,11,13,15,17,19]
+    #iHArrX = math.log10(sample)
+    initCtr = True
+    for itmp in sample:
+        iHArrX = math.sqrt(itmp)
+        iHArr = np.array(fractal.Hust(iArr, itmp))
+        iHArrtmp = iHArr / iHArrX
+
+        if True == initCtr:
+            iHArrFinal = np.array(iHArrtmp)
+            iHXFinal = np.linspace(iHArrX, iHArrX, num=len(iHArr))
+            initCtr = False
+        else:
+            iHArrFinal = np.append(iHArrFinal,iHArrtmp)
+            iHXFinal = np.append(iHXFinal,np.linspace(iHArrX,iHArrX,num=len(iHArr)))
+
     #wavelet = wvlt.Wavelet('haar')
     #cA,cD = wvlt.dwt(iArr, wavelet)
     #print(wavelet)
     np.set_printoptions(suppress=True, precision=4)
     #plt.plot(iArrDate,iArr)
-    plt.plot(iHArr)
+    #plt.plot(iHArr)
+    plt.scatter(iHXFinal, iHArrFinal)
     plt.rcParams['font.sans-serif'] = ['SimHei'] #设置中文字体
-    plt.title("海康：002415.SZ, 采样：{}".format(sample))
+    plt.title("采样：{}".format("8"))
     plt.show()
 
     '''

@@ -31,9 +31,6 @@ headers = {'Connection': 'close'}
 # proxies = {"http": "http://10.144.1.10:8080"}
 
 td = datetime.date.today().strftime("%Y%m%d")
-# tdStr = datetime.datetime.strptime(td, "%Y%m%d")
-# td = datetime.datetime.today().strftime("%Y%m%d")
-
 cNum = 0
 
 for eachCode in const.stockCode:

@@ -27,6 +27,8 @@ def Hust (iArr, sample):
     iArrR = []
     iArrS = []
     iArrRSValue = []
+    iArrVnValue = []
+
     for each in range(int(blockLen)):
         tmpArr = np.array(iArr[each * sample: (each+1)*sample])
         tmpMean = tmpArr.mean() # mean
@@ -40,6 +42,12 @@ def Hust (iArr, sample):
         iArrR.append(tmpR)
         tmpS = tmpArr.std() # S
         iArrS.append(tmpS)
-        iArrRSValue.append(math.log10(tmpR/tmpS))
+        if tmpS == 0.0:
+            print("\n this is tmpS==0.0")
+            print(tmpArr)
+            print("tmpR = %f" % tmpR)
+            continue
+        iArrRSValue.append(math.log10(tmpR / tmpS))
+        iArrVnValue.append(tmpR/tmpS)
 
-    return iArrRSValue
+    return iArrVnValue
