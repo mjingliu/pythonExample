@@ -47,7 +47,7 @@ f. 计算n个采样序列的S值，S = sqrt((detX0 * detX0 + detX1*detX1 + detX2
 
 coeffiency: float = 0.85
 #conn = pymysql.connect(host='localhost', user="spider", password='R~!@34qwe-spider', port=3306)
-conn = pymysql.connect(host='localhost', autocommit=True, user='mingjliu', password='R~!@34qwe', port=3306)
+conn = pymysql.connect(host='localhost', autocommit=True, user='mingjliu', password='qwe`1234', port=3306)
 #conn = pymysql.connect(host='localhost', user="mingjliu", password='R~!@34qwe', port=3306)
 cursor = conn.cursor()
 dbName = "db_stock12"
@@ -106,17 +106,18 @@ try:
     aListLen = len(aListCloseIndex)
 
     if aListLen > 1:
-        iArr = np.array(aListClose[aListCloseIndex[0]:aListCloseIndex[1]])
+        iArr = np.array(aListClose[aListCloseIndex[3]:aListCloseIndex[4]])
     elif aListLen == 1:
         iArr = np.array(aListClose[:aListCloseIndex[0]])
     else:
         iArr = np.array(aListClose)
     #iArrDate = np.array(aListDate[aListCloseIndex[2]:aListCloseIndex[3]])
-    sample = [3,5,7,9,11,13,15,17,19]
+    sample = [3,4,5,6,7,8,9,10,11,12,13,15,17,19,21,23,28,36,50,70,90]
     #iHArrX = math.log10(sample)
     initCtr = True
     for itmp in sample:
-        iHArrX = math.sqrt(itmp)
+        #iHArrX = math.sqrt(itmp)
+        iHArrX = math.log10(itmp)
         iHArr = np.array(fractal.Hust(iArr, itmp))
         iHArrtmp = iHArr / iHArrX
 

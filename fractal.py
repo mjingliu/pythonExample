@@ -50,4 +50,4 @@ def Hust (iArr, sample):
         iArrRSValue.append(math.log10(tmpR / tmpS))
         iArrVnValue.append(tmpR/tmpS)
 
-    return iArrVnValue
+    return iArrRSValue
