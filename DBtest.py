@@ -106,7 +106,7 @@ try:
     aListLen = len(aListCloseIndex)
 
     if aListLen > 1:
-        iArr = np.array(aListClose[aListCloseIndex[0]:aListCloseIndex[1]])
+        iArr = np.array(aListClose[aListCloseIndex[1]:aListCloseIndex[2]])
     elif aListLen == 1:
         iArr = np.array(aListClose[:aListCloseIndex[0]])
     else:
