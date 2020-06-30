@@ -118,8 +118,8 @@ try:
     initCtr = True
     iAxisLen = 0
     for itmp in sample:
-        #iHArrX = math.sqrt(itmp)
-        iHArrX = math.log10(itmp)
+        iHArrX = math.sqrt(itmp)
+        #iHArrX = math.log10(itmp)
         iHArr = np.array(fractal.Hust(iArr, itmp))
         iHArrtmp = iHArr / iHArrX
 
@@ -142,7 +142,7 @@ try:
     #plt.plot(iHArr)
     print(len(iHArrFinal))
     print(len(iHXFinal))
-    plt.scatter(iHXFinal, iHArrFinal)
+    plt.plot(iHXFinal, iHArrFinal)
     plt.rcParams['font.sans-serif'] = ['SimHei'] #设置中文字体
     plt.title("采样：{}".format("8"))
     plt.show()
