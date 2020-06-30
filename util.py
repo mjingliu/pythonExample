@@ -18,3 +18,19 @@ def extendAxis(origin, length):
         targetX.append(origin[pos])
 
     return targetX
+def LSMethod(xArray, yArray):
+    '''
+    xArray: this is the X array to be calculated
+    yArray: this is the Y array to be calculated
+    :return: parameter of least sqare method(最小二乘法估计参数)
+    '''
+    if type(xArray) is not np.ndarray or type(yArray) is not np.ndarray:
+        print("please input the right parameter!")
+        return False
+    xArray = np.array(xArray)
+    yArray = np.array(yArray)
+    if yArray.ndim != 1:
+        print("yArray should be one dimension!")
+        return False
+
+    #xArray = np.insert(xArray,0,1,axis=1)

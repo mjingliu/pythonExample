@@ -6,7 +6,8 @@ import pymysql
 import os,sys
 import numpy as np
 import matplotlib.pyplot as plt
-import fractal, util
+import util
+from fractal import Fractal
 import math
 #import pywt as wvlt
 
@@ -111,38 +112,60 @@ try:
         iArr = np.array(aListClose[:aListCloseIndex[0]])
     else:
         iArr = np.array(aListClose)
-    #iArrDate = np.array(aListDate[aListCloseIndex[2]:aListCloseIndex[3]])
-    #sample = [3,4,5,6,7,8,9,10,11,12,13,15,17,19,21,23,28,36,50,70,90]
-    sample = [3,20]
+
+    iArrOri = np.log10(iArr)
+    iArr1 = iArrOri[:-1]
+    iArr2 = iArrOri[1:]
+    #iArr = iArr2-iArr1
+
+    fra = Fractal(iArr)
+    sample = [3,4,5,6,7,8,9,10,11,12,13,15,17,19,21,23,28,36,50,70,90]
+    #sample = [3,20]
     #iHArrX = math.log10(sample)
     initCtr = True
     iAxisLen = 0
-    for itmp in sample:
-        iHArrX = math.sqrt(itmp)
-        #iHArrX = math.log10(itmp)
-        iHArr = np.array(fractal.Hust(iArr, itmp))
+
+    #dimArrayX = np.array((len(sample),2))
+    #dimArrayY = np.array((len(sample),1))
+    dimArrayX = []
+    dimArrayY = []
+    for itmp in range(len(sample)):
+        #iHArrX = math.sqrt(sample[itmp])
+        iHArrX = math.log10(sample[itmp])
+        dimArrayX.append(iHArrX)
+
+        fra.Sample(sample[itmp])
+        iHArr = np.array(fra.getVnValue())
+        iHArrRS = np.array(fra.getRSValue())
+        dimArrayY.append(iHArrRS.mean())
+        '''
         iHArrtmp = iHArr / iHArrX
 
         if True == initCtr:
             iHArrFinal = np.array(iHArrtmp)
-            #iHXFinal = np.linspace(iHArrX, iHArrX, num=len(iHArr))
+            iHXFinal = np.linspace(iHArrX, iHArrX, num=len(iHArr))
             iAxisLen = len(iHArrFinal)
-            iHXFinal = np.linspace(1, iAxisLen, num=iAxisLen)
+            #iHXFinal = np.linspace(1, iAxisLen, num=iAxisLen)
             #print(iHXFinal)
             iHXtmp = iHXFinal
             initCtr = False
         else:
 
             iHArrFinal = np.append(iHArrFinal,iHArrtmp)
-            iHXExtend = util.extendAxis(iHXtmp,len(iHArrtmp))
+            #iHXExtend = util.extendAxis(iHXtmp,len(iHArrtmp))
+            iHXExtend = np.linspace(iHArrX, iHArrX, num=len(iHArr))
             iHXFinal = np.append(iHXFinal,np.array(iHXExtend))
-
+        '''
     np.set_printoptions(suppress=True, precision=4)
     #plt.plot(iArrDate,iArr)
     #plt.plot(iHArr)
-    print(len(iHArrFinal))
-    print(len(iHXFinal))
-    plt.plot(iHXFinal, iHArrFinal)
+    #print(len(iHArrFinal))
+    #print(len(iHXFinal))
+    #iHXFinal = np.transpose(dimArrayX)
+    #iHArrFinal = np.transpose(dimArrayY)
+
+    plt.scatter(dimArrayX, dimArrayY)
+
     plt.rcParams['font.sans-serif'] = ['SimHei'] #设置中文字体
     plt.title("采样：{}".format("8"))
     plt.show()
