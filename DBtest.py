@@ -48,8 +48,8 @@ f. 计算n个采样序列的S值，S = sqrt((detX0 * detX0 + detX1*detX1 + detX2
 
 coeffiency: float = 0.85
 #conn = pymysql.connect(host='localhost', user="spider", password='R~!@34qwe-spider', port=3306)
-#conn = pymysql.connect(host='localhost', autocommit=True, user='mingjliu', password='qwe`1234', port=3306)
-conn = pymysql.connect(host='localhost', autocommit=True ,user="mingjliu", password='R~!@34qwe', port=3306)
+conn = pymysql.connect(host='localhost', autocommit=True, user='mingjliu', password='qwe`1234', port=3306)
+#conn = pymysql.connect(host='localhost', autocommit=True ,user="mingjliu", password='R~!@34qwe', port=3306)
 cursor = conn.cursor()
 dbName = "db_stock12"
 tblName = "stock_tbl"
@@ -107,7 +107,7 @@ try:
     aListLen = len(aListCloseIndex)
 
     if aListLen > 1:
-        iArr = np.array(aListClose[aListCloseIndex[1]:aListCloseIndex[2]])
+        iArr = np.array(aListClose[aListCloseIndex[0]:aListCloseIndex[1]])
     elif aListLen == 1:
         iArr = np.array(aListClose[:aListCloseIndex[0]])
     else:
@@ -116,10 +116,11 @@ try:
     iArrOri = np.log10(iArr)
     iArr1 = iArrOri[:-1]
     iArr2 = iArrOri[1:]
-    #iArr = iArr2-iArr1
-
+    iArr = iArr2-iArr1
+    iArr = iArr[-14:]
     fra = Fractal(iArr)
-    sample = [3,4,5,6,7,8,9,10,11,12,13,15,17,19,21,23,28,36,50,70,90]
+    print(len(iArr))
+    sample = [3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
     #sample = [3,20]
     #iHArrX = math.log10(sample)
     initCtr = True
