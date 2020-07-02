@@ -116,7 +116,7 @@ try:
     iArrOri = np.log10(iArr)
     iArr1 = iArrOri[:-1]
     iArr2 = iArrOri[1:]
-    #iArr = iArr2-iArr1
+    iArr = iArr2-iArr1
 
     fra = Fractal(iArr)
     sample = [3,4,5,6,7,8,9,10,11,12,13,15,17,19,21,23,28,36,50,70,90]
@@ -163,9 +163,13 @@ try:
     #print(len(iHXFinal))
     #iHXFinal = np.transpose(dimArrayX)
     #iHArrFinal = np.transpose(dimArrayY)
+    dimArrayXtmp = np.array(dimArrayX)
+    dimArrayYtmp = np.array(dimArrayY)
 
+    para = util.LSMethod(dimArrayXtmp, dimArrayYtmp)
+    print(para)
     plt.scatter(dimArrayX, dimArrayY)
-
+    #plt.plot(aListDate,aListClose)
     plt.rcParams['font.sans-serif'] = ['SimHei'] #设置中文字体
     plt.title("采样：{}".format("8"))
     plt.show()
