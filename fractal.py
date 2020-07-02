@@ -10,6 +10,9 @@ class Fractal(object):
         self.iArrVnValue = []
         self.iRList = []
         self.iSList = []
+        self.iPeriodPos = []
+        self.iPeriodWindow = []
+        self.iPeriodValueofWin = []
         self.iArr = iArr
 
     def __Hust__ (self, iArr, sample):
@@ -29,7 +32,7 @@ class Fractal(object):
         采用最小二乘法获取到对应的参数，
         若输入的参数len(iArr) < (sample *2),则说明传入的参数个数太少，不做任何处理，只反馈输入参数个数太少的告警
         '''
-        if len(iArr) < (int(sample)*2):
+        if len(iArr) < int(sample):
             return False
         iArr = np.array(iArr)
         blockLen = iArr.size / sample
@@ -70,9 +73,26 @@ class Fractal(object):
 
     def getVnValue(self):
         return self.iArrVnValue
+
     def getRSValue(self):
         return self.iArrRSValue
+
     def getRList(self):
         return self.iRList
+
     def getSList(self):
         return self.iSList
+
+    def getFraPeriod(self):
+        sample = [3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22]
+        for itmp in range(len(sample)):
+            iArr = self.iArr[:sample[itmp]]
+            self.__Hust__(iArr, sample[itmp])
+            self.iPeriodValueofWin.append(self.iArrVnValue)
+            self.iPeriodWindow.append(math.sqrt(sample[itmp]))
+
+    def getFraPeriodWindow(self):
+        return self.iPeriodWindow
+
+    def getFraPeriodValueofWin(self):
+        return self.iPeriodValueofWin

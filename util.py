@@ -37,7 +37,6 @@ def LSMethod(xArray, yArray):
         print("please make sure of the column of X is equal to row of Y")
         return False
 
-    #oneList = np.ones(xDim[0],order='F')
     row = xArray.size
     xArray = np.reshape(xArray,(row, 1))
     xArray = np.insert(xArray, 0, 1, axis=1)

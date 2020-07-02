@@ -118,9 +118,11 @@ try:
     iArr2 = iArrOri[1:]
     iArr = iArr2-iArr1
 
+
     fra = Fractal(iArr)
     print(len(iArr))
-    sample = [3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
+    #sample = [3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
+    sample = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 17, 19, 21, 23, 28, 36, 50, 70, 90]
     #sample = [3,20]
     #iHArrX = math.log10(sample)
     initCtr = True
@@ -133,6 +135,9 @@ try:
     for itmp in range(len(sample)):
         #iHArrX = math.sqrt(sample[itmp])
         iHArrX = math.log10(sample[itmp])
+        if len(iArr) < sample[itmp]:
+            print("len of iArr:%s, sample: %s" % len(iArr), sample[itmp])
+            continue
         dimArrayX.append(iHArrX)
 
         fra.Sample(sample[itmp])
@@ -158,18 +163,20 @@ try:
             iHXFinal = np.append(iHXFinal,np.array(iHXExtend))
         '''
     np.set_printoptions(suppress=True, precision=4)
-    #plt.plot(iArrDate,iArr)
-    #plt.plot(iHArr)
-    #print(len(iHArrFinal))
-    #print(len(iHXFinal))
-    #iHXFinal = np.transpose(dimArrayX)
-    #iHArrFinal = np.transpose(dimArrayY)
+
     dimArrayXtmp = np.array(dimArrayX)
     dimArrayYtmp = np.array(dimArrayY)
 
     para = util.LSMethod(dimArrayXtmp, dimArrayYtmp)
     print(para)
+    '''
+    fra.getFraPeriod()
+    ArrayX = fra.getFraPeriodWindow()
+    ArrayY = fra.getFraPeriodValueofWin()
+    '''
     plt.scatter(dimArrayX, dimArrayY)
+    dimArrayYtmp = para[0] + np.float(para[1]) * dimArrayXtmp
+    plt.plot(dimArrayXtmp, dimArrayYtmp)
     #plt.plot(aListDate,aListClose)
     plt.rcParams['font.sans-serif'] = ['SimHei'] #设置中文字体
     plt.title("采样：{}".format("8"))
