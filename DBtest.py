@@ -169,6 +169,8 @@ try:
     para = util.LSMethod(dimArrayXtmp, dimArrayYtmp)
     print(para)
     plt.scatter(dimArrayX, dimArrayY)
+    dimArrayYtmp = para[0] + np.float(para[1]) * dimArrayXtmp
+    plt.plot(dimArrayXtmp,dimArrayYtmp)
     #plt.plot(aListDate,aListClose)
     plt.rcParams['font.sans-serif'] = ['SimHei'] #设置中文字体
     plt.title("采样：{}".format("8"))
