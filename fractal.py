@@ -35,7 +35,13 @@ class Fractal(object):
         if len(iArr) < int(sample):
             return False
         iArr = np.array(iArr)
+
+        samModular = iArr.size % sample
+        iArr = iArr[samModular:]
+
         blockLen = iArr.size / sample
+
+        #print("sample: %s, samModular: %s, blockLen:%s" % sample,samModular,blockLen)
 
         iArrR = []
         iArrS = []
