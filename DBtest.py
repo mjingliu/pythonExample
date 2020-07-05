@@ -119,10 +119,10 @@ try:
     iArr = iArr2-iArr1
 
 
-    fra = Fractal(iArr)
+    fra = Fractal(iArr[-20:])
     print(len(iArr))
-    #sample = [3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
-    sample = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 17, 19, 21, 23, 28, 36, 50, 70, 90]
+    sample = [3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
+    #sample = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 17, 19, 21, 23, 28, 36, 50, 70, 90]
     #sample = [3,20]
     #iHArrX = math.log10(sample)
     initCtr = True
@@ -132,11 +132,14 @@ try:
     #dimArrayY = np.array((len(sample),1))
     dimArrayX = []
     dimArrayY = []
+    fraArrSize = fra.getArrSize()
+
     for itmp in range(len(sample)):
         #iHArrX = math.sqrt(sample[itmp])
         iHArrX = math.log10(sample[itmp])
-        if len(iArr) < sample[itmp]:
-            print("len of iArr:%s, sample: %s" % len(iArr), sample[itmp])
+        if fraArrSize < sample[itmp]:
+            print("len of iArr:%s" % len(iArr))
+            print("sample: %s" % sample[itmp])
             continue
         dimArrayX.append(iHArrX)
 

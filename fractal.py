@@ -77,6 +77,9 @@ class Fractal(object):
     def Sample(self,sample):
         self.__Hust__(self.iArr,sample)
 
+    def getArrSize(self):
+        return len(self.iArr)
+
     def getVnValue(self):
         return self.iArrVnValue
 
