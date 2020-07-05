@@ -7,8 +7,10 @@ class stockDB(object):
     '''
     class stockDB: use this class to implement the specific DB access using pymysql lib
     '''
-    def __init__(self):
-        pass
+    def __init__(self, user, password):
+        conn = psql.connect(host='localhost', autocommit=True, user=user, password=password, port=3306)
+        self.cursor = conn.cursor()
+
     def login(self):
         pass
     def useDB(self):
