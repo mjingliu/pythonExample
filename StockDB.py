@@ -3,6 +3,7 @@
 
 import pymysql as psql
 import const
+import os, sys
 
 class stockDB(object):
     '''
@@ -13,7 +14,7 @@ class stockDB(object):
         self.cursor = self.conn.cursor()
         # get the filePath to be stored into Database
         dirPath, filename = os.path.split(sys.argv[0])
-        self.filePath = dirPath + r'/'
+        self.filePath = dirPath + r'/' + 'tmpData/'
 
     def login(self):
         pass
@@ -48,7 +49,16 @@ class stockDB(object):
         self.conn.close()
 
 if __name__ == '__main__':
-    myDB = stockDB()
+    myDB = stockDB(user="mingjliu", password="qwe`1234")
+    myDB.createDB("db_stock12")
+    myDB.createTbl(const.tblName,const.dbName)
     for each in const.stockCode:
-        filename = '20200623' + '_' + ''.join(each) + '.csv'
-    pass
+        print(each)
+        filename = '20200623' + '_' + ''.join(const.stockCode[each])
+        try:
+            myDB.storeData(const.tblName, filename)
+        except Exception as e:
+            print("stock code:%s" % const.stockCode[each])
+        
+
+

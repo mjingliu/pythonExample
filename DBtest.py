@@ -10,6 +10,7 @@ import util
 from fractal import Fractal
 import math
 import StockDB as db
+import const
 #import pywt as wvlt
 
 '''
@@ -50,9 +51,8 @@ f. 计算n个采样序列的S值，S = sqrt((detX0 * detX0 + detX1*detX1 + detX2
 coeffiency: float = 0.85
 
 myDB = db.stockDB(user="mingjliu", password="R~!@34qwe")
-
-dbName = "db_stock12"
-tblName = "stock_tbl"
+tblName = const.tblName
+dbName = const.dbName
 stockCode = "aaaa"
 
 try:
