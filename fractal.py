@@ -35,7 +35,13 @@ class Fractal(object):
         if len(iArr) < int(sample):
             return False
         iArr = np.array(iArr)
+
+        samModular = iArr.size % sample
+        iArr = iArr[samModular:]
+
         blockLen = iArr.size / sample
+
+        #print("sample: %s, samModular: %s, blockLen:%s" % sample,samModular,blockLen)
 
         iArrR = []
         iArrS = []
@@ -70,6 +76,9 @@ class Fractal(object):
 
     def Sample(self,sample):
         self.__Hust__(self.iArr,sample)
+
+    def getArrSize(self):
+        return len(self.iArr)
 
     def getVnValue(self):
         return self.iArrVnValue
