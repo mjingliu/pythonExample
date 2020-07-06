@@ -48,8 +48,8 @@ f. 计算n个采样序列的S值，S = sqrt((detX0 * detX0 + detX1*detX1 + detX2
 
 coeffiency: float = 0.85
 #conn = pymysql.connect(host='localhost', user="spider", password='R~!@34qwe-spider', port=3306)
-conn = pymysql.connect(host='localhost', autocommit=True, user='mingjliu', password='qwe`1234', port=3306)
-#conn = pymysql.connect(host='localhost', autocommit=True ,user="mingjliu", password='R~!@34qwe', port=3306)
+#conn = pymysql.connect(host='localhost', autocommit=True, user='mingjliu', password='qwe`1234', port=3306)
+conn = pymysql.connect(host='localhost', autocommit=True ,user="mingjliu", password='R~!@34qwe', port=3306)
 cursor = conn.cursor()
 dbName = "db_stock12"
 tblName = "stock_tbl"
@@ -106,10 +106,8 @@ try:
 
     aListLen = len(aListCloseIndex)
 
-    if aListLen > 1:
-        iArr = np.array(aListClose[aListCloseIndex[0]:aListCloseIndex[1]])
-    elif aListLen == 1:
-        iArr = np.array(aListClose[:aListCloseIndex[0]])
+    if aListLen > 0:
+        iArr = np.array(aListClose[aListCloseIndex[aListLen-1]:])
     else:
         iArr = np.array(aListClose)
 
@@ -118,11 +116,12 @@ try:
     iArr2 = iArrOri[1:]
     iArr = iArr2-iArr1
 
-
-    fra = Fractal(iArr)
+    fra = Fractal(iArr[-21:])
     print(len(iArr))
     #sample = [3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
-    sample = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 17, 19, 21, 23, 28, 36, 50, 70, 90]
+    #sample = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+    sample = [3, 4, 5]
+    #sample = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 17, 19, 21, 23, 28, 36, 50, 70, 90]
     #sample = [3,20]
     #iHArrX = math.log10(sample)
     initCtr = True
@@ -173,10 +172,14 @@ try:
     fra.getFraPeriod()
     ArrayX = fra.getFraPeriodWindow()
     ArrayY = fra.getFraPeriodValueofWin()
+    plt.scatter(ArrayX, ArrayY)
+    plt.plot(ArrayX, ArrayY)
     '''
+    #plt.scatter(iHXFinal, iHArrFinal)
     plt.scatter(dimArrayX, dimArrayY)
     dimArrayYtmp = para[0] + np.float(para[1]) * dimArrayXtmp
     plt.plot(dimArrayXtmp,dimArrayYtmp)
+
     #plt.plot(aListDate,aListClose)
     plt.rcParams['font.sans-serif'] = ['SimHei'] #设置中文字体
     plt.title("采样：{}".format("8"))
