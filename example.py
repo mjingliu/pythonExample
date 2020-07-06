@@ -28,7 +28,7 @@ url = "http://api.waditu.com"
 timeout = 15
 headers = {'Connection': 'close'}
 # 当适用公司网络的时候，需要适用如下proxies，在家里的网络不需要适用proxies
-# proxies = {"http": "http://10.144.1.10:8080"}
+proxies = {"http": "http://10.144.1.10:8080"}
 
 td = datetime.date.today().strftime("%Y%m%d")
 cNum = 0
@@ -63,7 +63,7 @@ for eachCode in const.stockCode:
     '''
     # result = req.post(url=url, json=req_para, timeout=timeout, headers=headers, proxies=proxies)
     try :
-        result = req.post(url=url, json=req_para, timeout=timeout, headers=headers)
+        result = req.post(url=url, json=req_para, timeout=timeout, headers=headers, proxies=proxies)
     except Exception as e :
         print("exception take place: code:%s" % stckCode)
         print("exception is :%s" % e)

@@ -5,7 +5,6 @@ import os, sys
 import requests as req
 import re
 import pandas as pd
-import pymysql
 import tushare as ts
 import json
 import logging
@@ -208,42 +207,6 @@ class dataSpiderService(object):
         '''
         pass
 
-
-class databaseService(object):
-    '''
-    该类用于数据库管理相关内容操作
-    启动数据库，
-    创建数据表，
-    写数据，
-    读数据
-    '''
-
-    def __init__(self):
-        self.conn = pymysql.connect(host='localhost', user='mingjliu', password='qwe`1234', port=3306)
-        self.cursor = self.conn.cursor()
-
-    def __close__(self):
-        '''
-        close the DB resource
-        '''
-        self.cursor.close()
-        self.conn.close()
-
-    def createDB(self):
-
-        pass
-
-    def createTable(self):
-        pass
-
-    def readTable(self):
-        pass
-
-    def writeTable(self):
-        pass
-    def selectTable(self):
-        pass
-
 class analyzeDataService(object):
     '''
     该类用于对获取到的数据进行分析，
@@ -254,23 +217,3 @@ class analyzeDataService(object):
 
     def __init__(self):
         pass
-
-
-class schedService(object):
-    '''
-    该类主要用于协调各个模块之间的协同工作
-    获取数据模块
-    数据库模块
-    数据分析模块
-    日志输出模块
-    '''
-
-    def __init__(self):
-        pass
-
-    def runningService(self):
-        pass
-
-
-if __name__ == '__main__':
-    pass

@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import util
 from fractal import Fractal
 import math
+import StockDB as db
 #import pywt as wvlt
 
 '''
@@ -47,41 +48,15 @@ f. 计算n个采样序列的S值，S = sqrt((detX0 * detX0 + detX1*detX1 + detX2
 '''
 
 coeffiency: float = 0.85
-#conn = pymysql.connect(host='localhost', user="spider", password='R~!@34qwe-spider', port=3306)
-conn = pymysql.connect(host='localhost', autocommit=True, user='mingjliu', password='qwe`1234', port=3306)
-#conn = pymysql.connect(host='localhost', autocommit=True ,user="mingjliu", password='R~!@34qwe', port=3306)
-cursor = conn.cursor()
+
+myDB = db.stockDB(user="mingjliu", password="R~!@34qwe")
+
 dbName = "db_stock12"
 tblName = "stock_tbl"
-dirPath, filename = os.path.split(sys.argv[0])
-filePath = dirPath + r'/' + 'data.csv'
+stockCode = "aaaa"
+
 try:
-    sql = 'CREATE DATABASE IF NOT EXISTS ' + dbName +';'
-    result = cursor.execute(sql)
-    print(result)
-    print(cursor.fetchall())
-    sql = 'use ' + dbName
-    result = cursor.execute(sql)
-    print("change db: %s" % result)
-    #sql = 'CREATE TABLE stock_tbl (stCode VARCHAR(15), tradeDate DATE, open FLOAT, high FLOAT, low FLOAT, close FLOAT, pre_close FLOAT, chang FLOAT, pct_chg FLOAT, vol FLOAT, amount FLOAT);'
-    sql = 'CREATE TABLE IF NOT EXISTS ' + tblName + ' (stCode VARCHAR(15), tradeDate DATE, open FLOAT, high FLOAT, low FLOAT, close FLOAT, pre_close FLOAT, chang FLOAT, pct_chg FLOAT, vol FLOAT, amount FLOAT)' + ';'
-    result = cursor.execute(sql)
-    print("create table: %s" % result)
-
-    #sql = 'LOAD DATA INFILE C:/5CG7093DK2-Data/Mingjingliu/ForMyself/github/pythonExample/data.csv INTO TABLE stock_tbl FIELDS TERMINATED BY "," LINES TERMINATED BY "\\r\\n";'
-    sql = 'LOAD DATA INFILE "{}" INTO TABLE '.format(filePath) + tblName + ' FIELDS TERMINATED BY ","' + r' LINES TERMINATED BY "\r\n"' + ';'
-    print("sql:%s" % sql)
-    result = cursor.execute(sql)
-
-    print("load data: %s" % result)
-
-    sql = 'SELECT open, trade_date, close FROM ' + tblName + ' WHERE trade_date > 19950101 AND trade_date < 20200101'+';'
-
-    result = cursor.execute(sql)
-
-    #np.ndarray(cursor.fetchmany(10),dtype=float)
-
-    tmpList = list(cursor.fetchall())
+    tmpList = list(myDB.selectData(tblName, dbName, stockCode))
     print("all the Select data is :%d " % len(tmpList))
     aList = []
     aListClose = []
@@ -106,10 +81,8 @@ try:
 
     aListLen = len(aListCloseIndex)
 
-    if aListLen > 1:
-        iArr = np.array(aListClose[aListCloseIndex[0]:aListCloseIndex[1]])
-    elif aListLen == 1:
-        iArr = np.array(aListClose[:aListCloseIndex[0]])
+    if aListLen > 0:
+        iArr = np.array(aListClose[aListCloseIndex[aListLen-1]:])
     else:
         iArr = np.array(aListClose)
 
@@ -118,10 +91,12 @@ try:
     iArr2 = iArrOri[1:]
     iArr = iArr2-iArr1
 
-
-    fra = Fractal(iArr[-20:])
+    fra = Fractal(iArr[-15:])
     print(len(iArr))
-    sample = [3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
+    #sample = [3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
+    #sample = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+    sample = [3, 4, 5]
+
     #sample = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 17, 19, 21, 23, 28, 36, 50, 70, 90]
     #sample = [3,20]
     #iHArrX = math.log10(sample)
@@ -176,10 +151,14 @@ try:
     fra.getFraPeriod()
     ArrayX = fra.getFraPeriodWindow()
     ArrayY = fra.getFraPeriodValueofWin()
+    plt.scatter(ArrayX, ArrayY)
+    plt.plot(ArrayX, ArrayY)
     '''
+    #plt.scatter(iHXFinal, iHArrFinal)
     plt.scatter(dimArrayX, dimArrayY)
     dimArrayYtmp = para[0] + np.float(para[1]) * dimArrayXtmp
-    plt.plot(dimArrayXtmp, dimArrayYtmp)
+    plt.plot(dimArrayXtmp,dimArrayYtmp)
+
     #plt.plot(aListDate,aListClose)
     plt.rcParams['font.sans-serif'] = ['SimHei'] #设置中文字体
     plt.title("采样：{}".format("8"))
@@ -188,8 +167,4 @@ try:
 except Exception as e:
     print("Exception: %s" % e)
 finally:
-    sql = 'DELETE FROM ' + tblName + ';'
-    result = cursor.execute(sql)
-    print(result)
-    cursor.close()
-    conn.close()
+    myDB.exitDB()
