@@ -45,3 +45,6 @@ class stockDB(object):
     def exitDB(self):
         self.cursor.close()
         self.conn.close()
+
+if __name__ == __main__:
+    pass
