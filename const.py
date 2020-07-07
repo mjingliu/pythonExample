@@ -1,6 +1,9 @@
 #!/usr/bin/env python 
 # -*- coding:utf-8 -*-
 
+dbName = "db_stock12"
+tblName = "stock_tbl_new"
+
 stockCode = {
     '002937': '002937.SZ',
     '601066': '601066.SH',

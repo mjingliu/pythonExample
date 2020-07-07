@@ -144,7 +144,7 @@ class dataSpiderService(object):
                 else:
                     self.logger.error("获取股票：%s 历史数据失败，HTTP连接层错误，输入参数错误:%s" % stockCode, reqPara)
                     return False
-                break
+            break
 
 
     def fetchAllHisData(self):

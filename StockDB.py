@@ -2,6 +2,16 @@
 # -*- coding:utf-8 -*-
 
 import pymysql as psql
+import const
+import os, sys
+
+def getCurPath():
+    dirPath, filename = os.path.split(sys.argv[0])
+
+    return dirPath + r'/' + 'tmpData/'
+
+def getAllFilename():
+    return os.listdir(getCurPath())
 
 class stockDB(object):
     '''
@@ -11,8 +21,7 @@ class stockDB(object):
         self.conn = psql.connect(host='localhost', autocommit=True, user=user, password=password, port=3306)
         self.cursor = self.conn.cursor()
         # get the filePath to be stored into Database
-        dirPath, filename = os.path.split(sys.argv[0])
-        self.filePath = dirPath + r'/'
+        self.filePath = getCurPath()
 
     def login(self):
         pass
@@ -38,13 +47,37 @@ class stockDB(object):
         return self.cursor.fetchall()
 
     def storeData(self, tblName, stockCode):
-        filePath = self.filePath + ''.join(stockCode) + '.csv'
+        filePath = self.filePath + ''.join(stockCode)
         sql = 'LOAD DATA INFILE "{}" INTO TABLE '.format(filePath) + tblName + ' FIELDS TERMINATED BY ","' + r' LINES TERMINATED BY "\r\n"' + ';'
+        self.cursor.execute(sql)
+    def deleteData(self, tblName,dbName):
+        self.useDB(dbName)
+        sql = 'DELETE FROM "{}" '.format(tblName)
         self.cursor.execute(sql)
 
     def exitDB(self):
         self.cursor.close()
         self.conn.close()
 
-if __name__ == __main__:
-    pass
+if __name__ == '__main__':
+    myDB = stockDB(user="mingjliu", password="qwe`1234")
+    myDB.createDB("db_stock12")
+    myDB.createTbl(const.tblName,const.dbName)
+
+    allFileName = getAllFilename()
+    findFlag = False
+
+    for each in const.stockCode:
+        print(each)
+        filename = '20200623' + '_' + ''.join(const.stockCode[each]) + '.csv'
+        findFlag = False
+        for i in range(len(allFileName)):
+            if filename == allFileName[i]:
+                myDB.storeData(const.tblName, filename)
+                findFlag = True
+                break
+        if findFlag == False:
+            print("do not find the matched file in current dir, filename is %s" % filename)
+
+    myDB.exitDB() #release the resource
+
