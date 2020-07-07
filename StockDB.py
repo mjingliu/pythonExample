@@ -7,12 +7,10 @@ import os, sys
 
 def getCurPath():
     dirPath, filename = os.path.split(sys.argv[0])
-
     return dirPath + r'/' + 'tmpData/'
 
 def getAllFilename():
     return os.listdir(getCurPath())
-print(getAllFilename())
 
 class stockDB(object):
     '''
