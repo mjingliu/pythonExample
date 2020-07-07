@@ -41,7 +41,7 @@ class stockDB(object):
 
     def selectData(self, tblName, dbName, stockCode):
         self.useDB(dbName)
-        sql = 'SELECT open, trade_date, close FROM ' + tblName + ' WHERE trade_date > 19950101 AND trade_date < 20200101' + ';'
+        sql = 'SELECT open, tradeDate, close FROM ' + tblName + ' WHERE stCode = "{}" '.format(stockCode) + ';'
         self.cursor.execute(sql)
         return self.cursor.fetchall()
 
@@ -58,17 +58,18 @@ class stockDB(object):
         self.cursor.close()
         self.conn.close()
 
+'''
 if __name__ == '__main__':
-    myDB = stockDB(user="mingjliu", password="qwe`1234")
+    myDB = stockDB(user="mingjliu", password="R~!@34qwe")
     myDB.createDB("db_stock12")
-    myDB.createTbl(const.tblName,const.dbName)
+    myDB.createTbl(const.tblName, const.dbName)
 
     allFileName = getAllFilename()
     findFlag = False
 
     for each in const.stockCode:
         print(each)
-        filename = '20200623' + '_' + ''.join(const.stockCode[each]) + '.csv'
+        filename = '20200706' + '_' + ''.join(const.stockCode[each]) + '.csv'
         findFlag = False
         for i in range(len(allFileName)):
             if filename == allFileName[i]:
@@ -79,6 +80,4 @@ if __name__ == '__main__':
             print("do not find the matched file in current dir, filename is %s" % filename)
 
     myDB.exitDB() #release the resource
-
-
-
+'''

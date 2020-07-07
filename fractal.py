@@ -76,6 +76,14 @@ class Fractal(object):
 
     def Sample(self,sample):
         self.__Hust__(self.iArr,sample)
+    def SampleSinglePoint(self, sample):
+
+        if type(self.iArr) is not np.ndarray:
+            print("please confirm the inpur is ndArray type!")
+
+        #iArrtmp = self.iArr[::-1]
+        iArrtmp = self.iArr
+        self.__Hust__(iArrtmp[:int(sample)], sample)
 
     def getArrSize(self):
         return len(self.iArr)
