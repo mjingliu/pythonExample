@@ -53,7 +53,7 @@ coeffiency: float = 0.85
 myDB = db.stockDB(user="mingjliu", password="R~!@34qwe")
 tblName = const.tblName
 dbName = const.dbName
-stockCode = "aaaa"
+stockCode = "601155.SH"
 
 try:
     tmpList = list(myDB.selectData(tblName, dbName, stockCode))
@@ -91,11 +91,11 @@ try:
     iArr2 = iArrOri[1:]
     iArr = iArr2-iArr1
 
-    fra = Fractal(iArr[-15:])
+    fra = Fractal(iArr[-20:])
     print(len(iArr))
-    #sample = [3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
+    sample = [3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
     #sample = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
-    sample = [3, 4, 5]
+    #sample = [3, 4, 5]
 
     #sample = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 17, 19, 21, 23, 28, 36, 50, 70, 90]
     #sample = [3,20]
@@ -118,7 +118,8 @@ try:
             continue
         dimArrayX.append(iHArrX)
 
-        fra.Sample(sample[itmp])
+        #fra.Sample(sample[itmp])
+        fra.SampleSinglePoint(sample[itmp])
         iHArr = np.array(fra.getVnValue())
         iHArrRS = np.array(fra.getRSValue())
         dimArrayY.append(iHArrRS.mean())
