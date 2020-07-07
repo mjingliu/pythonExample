@@ -50,7 +50,7 @@ f. 计算n个采样序列的S值，S = sqrt((detX0 * detX0 + detX1*detX1 + detX2
 
 coeffiency: float = 0.85
 
-myDB = db.stockDB(user="mingjliu", password="R~!@34qwe")
+myDB = db.stockDB(user="mingjliu", password="qwe`1234")
 tblName = const.tblName
 dbName = const.dbName
 stockCode = "601155.SH"
@@ -110,8 +110,8 @@ try:
     fraArrSize = fra.getArrSize()
 
     for itmp in range(len(sample)):
-        #iHArrX = math.sqrt(sample[itmp])
-        iHArrX = math.log10(sample[itmp])
+        iHArrX = math.sqrt(sample[itmp])
+        #iHArrX = math.log10(sample[itmp])
         if fraArrSize < sample[itmp]:
             print("len of iArr:%s" % len(iArr))
             print("sample: %s" % sample[itmp])
@@ -119,10 +119,11 @@ try:
         dimArrayX.append(iHArrX)
 
         #fra.Sample(sample[itmp])
-        fra.SampleSinglePoint(sample[itmp])
+        fra.SampleSinglePoint(sample[itmp], const.FORWORD)
         iHArr = np.array(fra.getVnValue())
         iHArrRS = np.array(fra.getRSValue())
-        dimArrayY.append(iHArrRS.mean())
+        #dimArrayY.append(iHArrRS.mean())
+        dimArrayY.append(iHArr)
         '''
         iHArrtmp = iHArr / iHArrX
 

@@ -2,6 +2,7 @@
 # -*- coding:utf-8 -*-
 import numpy as np
 import math
+import const
 
 class Fractal(object):
 
@@ -73,16 +74,21 @@ class Fractal(object):
         self.iSList = iArrS
         self.iArrRSValue = iArrRSValue
         self.iArrVnValue = iArrVnValue
+        #print("log10RS:%s" % iArrRSValue)
+        print("VnValue:%s" % iArrVnValue)
 
     def Sample(self,sample):
         self.__Hust__(self.iArr,sample)
-    def SampleSinglePoint(self, sample):
+
+    def SampleSinglePoint(self, sample, direction):
 
         if type(self.iArr) is not np.ndarray:
             print("please confirm the inpur is ndArray type!")
 
-        #iArrtmp = self.iArr[::-1]
-        iArrtmp = self.iArr
+        if direction == const.BACKWORD:
+            iArrtmp = self.iArr[::-1]
+        else:
+            iArrtmp = self.iArr
         self.__Hust__(iArrtmp[:int(sample)], sample)
 
     def getArrSize(self):
