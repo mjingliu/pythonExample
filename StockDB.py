@@ -49,6 +49,7 @@ class stockDB(object):
         filePath = self.filePath + ''.join(stockCode)
         sql = 'LOAD DATA INFILE "{}" INTO TABLE '.format(filePath) + tblName + ' FIELDS TERMINATED BY ","' + r' LINES TERMINATED BY "\r\n"' + ';'
         self.cursor.execute(sql)
+
     def deleteData(self, tblName,dbName):
         self.useDB(dbName)
         sql = 'DELETE FROM "{}" '.format(tblName)
