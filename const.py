@@ -5,6 +5,10 @@ dbName = "db_stock12"
 tblName = "stock_tbl_new"
 FORWORD = 1
 BACKWORD = 2
+
+coeffiency: float = 0.85
+
+
 stockCode = {
     '002937': '002937.SZ',
     '601066': '601066.SH',

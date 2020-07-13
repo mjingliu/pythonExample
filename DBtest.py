@@ -11,6 +11,7 @@ from fractal import Fractal
 import math
 import StockDB as db
 import const
+import dataProcess as dp
 #import pywt as wvlt
 
 '''
@@ -48,11 +49,11 @@ f. 计算n个采样序列的S值，S = sqrt((detX0 * detX0 + detX1*detX1 + detX2
 
 '''
 
-coeffiency: float = 0.85
-
-myDB = db.stockDB(user="mingjliu", password="qwe`1234")
+myDB = db.stockDB(user="mingjliu", password="R~!@34qwe")
 tblName = const.tblName
 dbName = const.dbName
+coeffiency = const.coeffiency
+
 stockCode = "601155.SH"
 
 try:
@@ -74,12 +75,13 @@ try:
     # 找到对应数据的跳跃点位置索引，用以区分对应的区段来获取H值
     # 例如：002415股票：从上市到2020年6月20号，一共有5次阶跃跳变，分别为：第211天，第487天，第745天，第1398天，第1639天
     # 每一次价格的阶跃跳变都是以大于10%的价格跳变，是股票增发价格分摊导致，故应该在每一个对应区间内来分析数据
-    for i in range(len(aListClose)):
-        if i > 0 and aListClose[i] < coeffiency * aListClose[i-1]:
-            aListCloseIndex.append(i)
-    print(aListCloseIndex)
+    dataProc = dp.StockAnalysis(aListClose, aListDate)
+    aDividendTimes = dataProc.calDividendTimes()
+    aDividentDates = dataProc.getDividendDate()
+    print(aDividentDates)
+    print(aDividendTimes)
 
-    aListLen = len(aListCloseIndex)
+    aListLen = len(aDividendTimes)
 
     if aListLen > 0:
         iArr = np.array(aListClose[aListCloseIndex[aListLen-1]:])
