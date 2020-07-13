@@ -13,7 +13,7 @@ design:
     a. fetching data, b. DB, c. data process, need to draw one chart to descript the whole process
 '''
 
-class schedService(threading.Thread):
+class schedService():
     '''
     该类主要用于协调各个模块之间的协同工作
     获取数据模块
@@ -22,7 +22,6 @@ class schedService(threading.Thread):
     日志输出模块
     '''
     def __init__(self):
-        threading.Thread.__init__(self)
         self.myDB = db.stockDB("mingjliu", "qwe`1234")
         self.spider = spider.dataSpiderService()
 
@@ -30,6 +29,9 @@ class schedService(threading.Thread):
         pass
 
 if __name__ == '__main__':
+    pass
+    '''
     start = schedService()
     start.run()
+    '''
 
