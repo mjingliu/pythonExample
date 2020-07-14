@@ -81,17 +81,8 @@ try:
     print(aDividentDates)
     print(aDividendTimes)
 
-    aListLen = len(aDividendTimes)
+    iArr = dataProc.getLgYieldsArr()
 
-    if aListLen > 0:
-        iArr = np.array(aListClose[aListCloseIndex[aListLen-1]:])
-    else:
-        iArr = np.array(aListClose)
-
-    iArrOri = np.log10(iArr)
-    iArr1 = iArrOri[:-1]
-    iArr2 = iArrOri[1:]
-    iArr = iArr2-iArr1
 
     fra = Fractal(iArr[-20:])
     print(len(iArr))

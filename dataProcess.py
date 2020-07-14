@@ -31,3 +31,24 @@ class StockAnalysis(object):
             aDates.append(self.aDate[i])
 
         return aDates
+    def getEffectiveData(self):
+        '''
+        basic logic: when the dividend take place, use the latest data to take analysis
+        1. get the data those are to be analyzed
+        '''
+        aTimes = self.calDividendTimes()
+
+        if len(aTimes) > 0:
+            return self.aArrData[aTimes[len(aTimes) - 1]:]
+        else:
+            return self.aArrData
+
+    def getLgYieldsArr(self):
+
+        aArrData = self.getEffectiveData()
+
+        aArr = np.array(aArrData)
+        aArrTmp = np.log(aArr)
+        aArrLog = aArrTmp[1:] - aArrTmp[:-1]
+        return aArrLog
+
