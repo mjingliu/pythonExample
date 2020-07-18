@@ -72,9 +72,7 @@ try:
     aList.reverse()
     aListDate.reverse()
     aListClose.reverse()
-    # 找到对应数据的跳跃点位置索引，用以区分对应的区段来获取H值
-    # 例如：002415股票：从上市到2020年6月20号，一共有5次阶跃跳变，分别为：第211天，第487天，第745天，第1398天，第1639天
-    # 每一次价格的阶跃跳变都是以大于10%的价格跳变，是股票增发价格分摊导致，故应该在每一个对应区间内来分析数据
+   
     dataProc = dp.StockAnalysis(aListClose, aListDate)
     aDividendTimes = dataProc.calDividendTimes()
     aDividentDates = dataProc.getDividendDate()
