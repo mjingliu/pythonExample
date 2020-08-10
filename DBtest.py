@@ -49,12 +49,12 @@ f. 计算n个采样序列的S值，S = sqrt((detX0 * detX0 + detX1*detX1 + detX2
 
 '''
 
-myDB = db.stockDB(user="mingjliu", password="R~!@34qwe")
+myDB = db.stockDB(user="mingjliu", password="qwe`1234")
 tblName = const.tblName
 dbName = const.dbName
 coeffiency = const.coeffiency
 
-stockCode = "601155.SH"
+stockCode = "002415.SZ"
 
 try:
     tmpList = list(myDB.selectData(tblName, dbName, stockCode))
@@ -82,7 +82,8 @@ try:
     iArr = dataProc.getLgYieldsArr()
 
 
-    fra = Fractal(iArr[-20:])
+    #fra = Fractal(iArr[-20:])
+    fra = Fractal(iArr)
     print(len(iArr))
     sample = [3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
     #sample = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
@@ -99,6 +100,7 @@ try:
     dimArrayX = []
     dimArrayY = []
     fraArrSize = fra.getArrSize()
+    print("fraArrSize: %s" % fraArrSize)
 
     for itmp in range(len(sample)):
         iHArrX = math.sqrt(sample[itmp])
@@ -109,12 +111,15 @@ try:
             continue
         dimArrayX.append(iHArrX)
 
-        #fra.Sample(sample[itmp])
-        fra.SampleSinglePoint(sample[itmp], const.FORWORD)
+        fra.Sample(sample[itmp])
+        #fra.SampleSinglePoint(sample[itmp], const.FORWORD)
         iHArr = np.array(fra.getVnValue())
+        #print("itmp: {},sample[itmp]: {}".format(itmp, sample[itmp]))
         iHArrRS = np.array(fra.getRSValue())
+
         #dimArrayY.append(iHArrRS.mean())
         dimArrayY.append(iHArr)
+        #print("itmp: {},sample[itmp]: {}".format(itmp, sample[itmp]))
         '''
         iHArrtmp = iHArr / iHArrX
 
@@ -134,7 +139,6 @@ try:
             iHXFinal = np.append(iHXFinal,np.array(iHXExtend))
         '''
     np.set_printoptions(suppress=True, precision=4)
-
     dimArrayXtmp = np.array(dimArrayX)
     dimArrayYtmp = np.array(dimArrayY)
 
