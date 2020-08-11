@@ -82,7 +82,13 @@ try:
     print(aDividendTimes)
 
     iArr = dataProc.getLgYieldsArr()
-
+    print("type(iArr):%s" % type(iArr))
+    statObj = util.StatFunction(iArr)
+    iArrMean = statObj.getMean()
+    iArrVar = statObj.getVar()
+    iArrSkewness = statObj.getSkewness()
+    iArrKurt = statObj.getKurt()
+    print("mean: {} Var: {} Skewness: {} Kurt: {}".format(iArrMean,iArrVar,iArrSkewness,iArrKurt))
 
     fra = Fractal(iArr[-20:])
     print(len(iArr))
@@ -150,9 +156,10 @@ try:
     plt.plot(ArrayX, ArrayY)
     '''
     #plt.scatter(iHXFinal, iHArrFinal)
-    plt.scatter(dimArrayX, dimArrayY)
+    #plt.scatter(dimArrayX, dimArrayY)
     dimArrayYtmp = para[0] + np.float(para[1]) * dimArrayXtmp
-    plt.plot(dimArrayXtmp,dimArrayYtmp)
+    #plt.plot(dimArrayXtmp,dimArrayYtmp)
+    plt.plot(iArr)
 
     #plt.plot(aListDate,aListClose)
     plt.rcParams['font.sans-serif'] = ['SimHei'] #设置中文字体

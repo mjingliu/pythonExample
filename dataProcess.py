@@ -47,7 +47,10 @@ class StockAnalysis(object):
             return self.aArrData
 
     def getLgYieldsArr(self):
-
+        '''
+        1. get the ln ratio
+        2. formula is :log[Pt/P(t-1)]
+        '''
         aArrData = self.getEffectiveData()
 
         aArr = np.array(aArrData)
