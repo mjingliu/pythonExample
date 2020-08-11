@@ -4,9 +4,12 @@
 import numpy as np
 import math
 import const
-from fractal import Fractal
+from fractal import Fractal as frc
 
 class StockAnalysis(object):
+    '''
+    this class is mainly for time domain analysis of stock data
+    '''
     def __init__(self, data, date):
         '''
         1. pass the para "data" which is the real stock price,
@@ -29,8 +32,8 @@ class StockAnalysis(object):
         aTimes = self.calDividendTimes()
         for i in aTimes:
             aDates.append(self.aDate[i])
-
         return aDates
+
     def getEffectiveData(self):
         '''
         basic logic: when the dividend take place, use the latest data to take analysis
@@ -44,7 +47,10 @@ class StockAnalysis(object):
             return self.aArrData
 
     def getLgYieldsArr(self):
-
+        '''
+        1. get the ln ratio
+        2. formula is :log[Pt/P(t-1)]
+        '''
         aArrData = self.getEffectiveData()
 
         aArr = np.array(aArrData)
@@ -52,3 +58,14 @@ class StockAnalysis(object):
         aArrLog = aArrTmp[1:] - aArrTmp[:-1]
         return aArrLog
 
+class StockAnalysisFractal(object):
+    '''
+    this class is mainly for fractal domain stock data analysis
+    '''
+    def __init__(self, iArr):
+        if isinstance(iArr,list):
+            self.ifrac = frc(iArr)
+        else:
+            print("please make sure of the input data is list type")
+    def inputWindows(self, win):
+        self.sample = win

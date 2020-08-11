@@ -47,3 +47,31 @@ def LSMethod(xArray, yArray):
     paraList = xArrayTmpInv.dot(xArrayTranspose).dot(yArray)
 
     return paraList
+
+class StatFunction(object):
+    def __init__(self, data):
+        if not isinstance(data, np.ndarray):
+            print("please make sure of the type of input is numpy datatype")
+            return
+        self.data = data
+        self.mean = np.mean(self.data)
+        self.var = np.var(self.data)
+
+    def getMean(self):
+        return self.mean
+
+    def getVar(self):
+        return self.var
+
+    def getSkewness(self):
+        iMean = self.mean
+        iVar = self.var
+        self.skewness = np.mean((self.data - iMean)**3)/(iVar ** 1.5)
+        return self.skewness
+
+    def getKurt(self):
+        iMean = self.mean
+        iVar = self.var
+        self.kurt = np.mean((self.data - iMean)**4)/(iVar**2)
+        return self.kurt
+
