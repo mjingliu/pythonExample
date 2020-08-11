@@ -42,7 +42,7 @@ class Fractal(object):
 
         blockLen = iArr.size / sample
 
-        print("sample: {}, samModular: {}, blockLen:{}".format(sample, samModular,blockLen))
+        #print("sample: {}, samModular: {}, blockLen:{}".format(sample, samModular,blockLen))
 
         iArrR = []
         iArrS = []

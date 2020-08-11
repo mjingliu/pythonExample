@@ -54,7 +54,7 @@ tblName = const.tblName
 dbName = const.dbName
 coeffiency = const.coeffiency
 
-stockCode = "002415.SZ"
+stockCode = "601155.SH"
 
 try:
     tmpList = list(myDB.selectData(tblName, dbName, stockCode))
@@ -80,12 +80,13 @@ try:
     print(aDividendTimes)
 
     iArr = dataProc.getLgYieldsArr()
-    print("type(iArr):%s" % type(iArr))
+
     statObj = util.StatFunction(iArr)
     iArrMean = statObj.getMean()
     iArrVar = statObj.getVar()
     iArrSkewness = statObj.getSkewness()
     iArrKurt = statObj.getKurt()
+
     print("mean: {} Var: {} Skewness: {} Kurt: {}".format(iArrMean,iArrVar,iArrSkewness,iArrKurt))
 
     #fra = Fractal(iArr[-20:])
@@ -147,8 +148,9 @@ try:
     np.set_printoptions(suppress=True, precision=4)
     dimArrayXtmp = np.array(dimArrayX)
     dimArrayYtmp = np.array(dimArrayY)
-
+    print("come here???")
     para = util.LSMethod(dimArrayXtmp, dimArrayYtmp)
+    print("stop???")
     print(para)
     '''
     fra.getFraPeriod()
