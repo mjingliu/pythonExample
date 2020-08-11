@@ -54,7 +54,7 @@ tblName = const.tblName
 dbName = const.dbName
 coeffiency = const.coeffiency
 
-stockCode = "601155.SH"
+stockCode = "002415.SZ"
 
 try:
     tmpList = list(myDB.selectData(tblName, dbName, stockCode))
@@ -124,8 +124,8 @@ try:
         #print("itmp: {},sample[itmp]: {}".format(itmp, sample[itmp]))
         iHArrRS = np.array(fra.getRSValue())
 
-        #dimArrayY.append(iHArrRS.mean())
-        dimArrayY.append(iHArr)
+        dimArrayY.append(iHArrRS.mean())
+        #dimArrayY.append(iHArr)
         #print("itmp: {},sample[itmp]: {}".format(itmp, sample[itmp]))
         '''
         iHArrtmp = iHArr / iHArrX
@@ -160,10 +160,10 @@ try:
     plt.plot(ArrayX, ArrayY)
     '''
     #plt.scatter(iHXFinal, iHArrFinal)
-    #plt.scatter(dimArrayX, dimArrayY)
+    plt.scatter(dimArrayX, dimArrayY)
     dimArrayYtmp = para[0] + np.float(para[1]) * dimArrayXtmp
-    #plt.plot(dimArrayXtmp,dimArrayYtmp)
-    plt.plot(iArr)
+    plt.plot(dimArrayXtmp,dimArrayYtmp)
+    #plt.plot(iArr)
 
     #plt.plot(aListDate,aListClose)
     plt.rcParams['font.sans-serif'] = ['SimHei'] #设置中文字体
