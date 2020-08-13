@@ -82,7 +82,7 @@ try:
     print(aDividendTimes)
 
     iArr = dataProc.getLgYieldsArr()
-    print("type(iArr):%s" % type(iArr))
+
     statObj = util.StatFunction(iArr)
     iArrMean = statObj.getMean()
     iArrVar = statObj.getVar()
