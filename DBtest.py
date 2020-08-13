@@ -49,12 +49,12 @@ f. 计算n个采样序列的S值，S = sqrt((detX0 * detX0 + detX1*detX1 + detX2
 
 '''
 
-myDB = db.stockDB(user="mingjliu", password="R~!@34qwe")
+myDB = db.stockDB(user="mingjliu", password="qwe`1234")
 tblName = const.tblName
 dbName = const.dbName
 coeffiency = const.coeffiency
 
-stockCode = "601155.SH"
+stockCode = "002415.SZ"
 
 try:
     tmpList = list(myDB.selectData(tblName, dbName, stockCode))
@@ -72,9 +72,7 @@ try:
     aList.reverse()
     aListDate.reverse()
     aListClose.reverse()
-    # 找到对应数据的跳跃点位置索引，用以区分对应的区段来获取H值
-    # 例如：002415股票：从上市到2020年6月20号，一共有5次阶跃跳变，分别为：第211天，第487天，第745天，第1398天，第1639天
-    # 每一次价格的阶跃跳变都是以大于10%的价格跳变，是股票增发价格分摊导致，故应该在每一个对应区间内来分析数据
+   
     dataProc = dp.StockAnalysis(aListClose, aListDate)
     aDividendTimes = dataProc.calDividendTimes()
     aDividentDates = dataProc.getDividendDate()
@@ -88,9 +86,11 @@ try:
     iArrVar = statObj.getVar()
     iArrSkewness = statObj.getSkewness()
     iArrKurt = statObj.getKurt()
+
     print("mean: {} Var: {} Skewness: {} Kurt: {}".format(iArrMean,iArrVar,iArrSkewness,iArrKurt))
 
-    fra = Fractal(iArr[-20:])
+    #fra = Fractal(iArr[-20:])
+    fra = Fractal(iArr)
     print(len(iArr))
     sample = [3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
     #sample = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
@@ -107,6 +107,7 @@ try:
     dimArrayX = []
     dimArrayY = []
     fraArrSize = fra.getArrSize()
+    print("fraArrSize: %s" % fraArrSize)
 
     for itmp in range(len(sample)):
         iHArrX = math.sqrt(sample[itmp])
@@ -117,12 +118,15 @@ try:
             continue
         dimArrayX.append(iHArrX)
 
-        #fra.Sample(sample[itmp])
-        fra.SampleSinglePoint(sample[itmp], const.FORWORD)
+        fra.Sample(sample[itmp])
+        #fra.SampleSinglePoint(sample[itmp], const.FORWORD)
         iHArr = np.array(fra.getVnValue())
+        #print("itmp: {},sample[itmp]: {}".format(itmp, sample[itmp]))
         iHArrRS = np.array(fra.getRSValue())
-        #dimArrayY.append(iHArrRS.mean())
-        dimArrayY.append(iHArr)
+
+        dimArrayY.append(iHArrRS.mean())
+        #dimArrayY.append(iHArr)
+        #print("itmp: {},sample[itmp]: {}".format(itmp, sample[itmp]))
         '''
         iHArrtmp = iHArr / iHArrX
 
@@ -142,11 +146,11 @@ try:
             iHXFinal = np.append(iHXFinal,np.array(iHXExtend))
         '''
     np.set_printoptions(suppress=True, precision=4)
-
     dimArrayXtmp = np.array(dimArrayX)
     dimArrayYtmp = np.array(dimArrayY)
-
+    print("come here???")
     para = util.LSMethod(dimArrayXtmp, dimArrayYtmp)
+    print("stop???")
     print(para)
     '''
     fra.getFraPeriod()
@@ -156,10 +160,10 @@ try:
     plt.plot(ArrayX, ArrayY)
     '''
     #plt.scatter(iHXFinal, iHArrFinal)
-    #plt.scatter(dimArrayX, dimArrayY)
+    plt.scatter(dimArrayX, dimArrayY)
     dimArrayYtmp = para[0] + np.float(para[1]) * dimArrayXtmp
-    #plt.plot(dimArrayXtmp,dimArrayYtmp)
-    plt.plot(iArr)
+    plt.plot(dimArrayXtmp,dimArrayYtmp)
+    #plt.plot(iArr)
 
     #plt.plot(aListDate,aListClose)
     plt.rcParams['font.sans-serif'] = ['SimHei'] #设置中文字体

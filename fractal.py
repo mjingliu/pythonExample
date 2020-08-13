@@ -42,7 +42,7 @@ class Fractal(object):
 
         blockLen = iArr.size / sample
 
-        #print("sample: %s, samModular: %s, blockLen:%s" % sample,samModular,blockLen)
+        #print("sample: {}, samModular: {}, blockLen:{}".format(sample, samModular,blockLen))
 
         iArrR = []
         iArrS = []
@@ -75,7 +75,7 @@ class Fractal(object):
         self.iArrRSValue = iArrRSValue
         self.iArrVnValue = iArrVnValue
         #print("log10RS:%s" % iArrRSValue)
-        print("VnValue:%s" % iArrVnValue)
+        #print("VnValue:%s" % iArrVnValue)
 
     def Sample(self,sample):
         self.__Hust__(self.iArr,sample)

@@ -29,6 +29,8 @@ def LSMethod(xArray, yArray):
     if type(xArray) is not np.ndarray or type(yArray) is not np.ndarray:
         print("please input the right parameter!")
         return False
+    yArray = np.array(yArray)
+    xArray = np.array(xArray)
 
     xDim = np.shape(xArray)
     yDim = np.shape(yArray)
@@ -39,13 +41,18 @@ def LSMethod(xArray, yArray):
 
     row = xArray.size
     xArray = np.reshape(xArray,(row, 1))
+
     xArray = np.insert(xArray, 0, 1, axis=1)
 
     xArrayTranspose = xArray.transpose()
     xArrayTmp = xArrayTranspose.dot(xArray)
     xArrayTmpInv = np.linalg.inv(xArrayTmp)
-    paraList = xArrayTmpInv.dot(xArrayTranspose).dot(yArray)
-
+    xTmp = np.array(xArrayTmpInv.dot(xArrayTranspose))
+    print("xTmp shape: {}".format(np.shape(xTmp)))
+    print("yArray shape: {}".format(np.shape(yArray)))
+    #paraList = xTmp.dot(yArray)
+    paraList = np.dot(xTmp,yArray)
+    print("paraList shape: {}".format(np.shape(paraList)))
     return paraList
 
 class StatFunction(object):

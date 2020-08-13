@@ -79,6 +79,7 @@ for eachCode in const.stockCode:
                 df = pd.DataFrame(data=record, columns=col)
                 # print(df)
                 df.to_csv("".join(filename), columns=col, header=False, index=False)
+
         else :
             print('\n')
             print("failed to fetch data this time!\n")
