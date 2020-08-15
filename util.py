@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 import numpy as np
+from scipy.linalg import toeplitz
 
 def extendAxis(origin, length):
     '''
@@ -82,32 +83,36 @@ class StatFunction(object):
         iVar = self.var
         self.kurt = np.mean((self.data - iMean)**4)/(iVar**2)
         return self.kurt
+    def __calcRk__(self, data, order):
+        iRk = []
+        iRk.append(np.dot(data[:], data[:]))
+        for i in range(1, order+1):
+            iRk.append(np.dot(data[:-i], data[i:]))
+        return iRk
 
-    def __calACF__(self, data):
+    def __calcACF__(self, data, order, bias=True):
 
         if not isinstance(data, np.ndarray):
             print("please make sure of the input type is numpy.ndarray!")
             return
+        iRk = self.__calcRk__(data, order)
+        
+        dataLen = len(data)
+        iRk = np.array(iRk)
 
-        gamma0 = data**2
-        iACF = []
-        i = 1
-        maxLen = len(data)
+        if bias is not True: # unbias estimation
+            for i in range(0, order+1):
+                iRk[i] = iRk[i]*dataLen/(dataLen-i)
 
-        while(i < (maxLen - 1)):
-            tmpY = data[: maxLen-i]
-            tmpY1 = data[i:]
-            gammai = tmpY*tmpY1
-            iACF.append(gammai.sum()/gamma0.sum())
-            i = i + 1
-        return iACF
+        return iRk[1:]/iRk[0]
 
-    def getACF(self):
-        return self.__calACF__(self.dataRemoveMean)
+    def getACF(self, order, bias=True):
+        return self.__calcACF__(self.dataRemoveMean, order, bias)
 
-    def getAbsACF(self):
-        return self.__calACF__(np.abs(self.dataRemoveMean))
+    def getAbsACF(self, order, bias=True):
+        return self.__calcACF__(np.abs(self.dataRemoveMean), order, bias)
 
-    def getPACF(self,offset):
+    def getPACF(self, order, bias=True):
+
         pass
 

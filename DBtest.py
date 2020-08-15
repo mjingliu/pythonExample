@@ -12,6 +12,9 @@ import math
 import StockDB as db
 import const
 import dataProcess as dp
+from scipy.linalg import toeplitz
+
+
 #import pywt as wvlt
 
 '''
@@ -86,8 +89,8 @@ try:
     iArrVar = statObj.getVar()
     iArrSkewness = statObj.getSkewness()
     iArrKurt = statObj.getKurt()
-    iACF = statObj.getACF()
-    #iAbsACF = statObj.getAbsACF()
+    iACF = statObj.getACF(100,False)
+    iAbsACF = statObj.getAbsACF(100)
 
     print("mean: {} Var: {} Skewness: {} Kurt: {}".format(iArrMean,iArrVar,iArrSkewness,iArrKurt))
     plt.plot(iACF)
