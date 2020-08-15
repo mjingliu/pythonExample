@@ -89,11 +89,13 @@ try:
     iArrVar = statObj.getVar()
     iArrSkewness = statObj.getSkewness()
     iArrKurt = statObj.getKurt()
-    iACF = statObj.getACF(100,False)
-    iAbsACF = statObj.getAbsACF(100)
-
+    iACF = statObj.getACF(20)
+    iAbsACF = statObj.getAbsACF(20)
+    iPACF = statObj.getPACF(80)
+    print("iACF:%s" % iACF)
+    print("iPACF:%s" % iPACF)
     print("mean: {} Var: {} Skewness: {} Kurt: {}".format(iArrMean,iArrVar,iArrSkewness,iArrKurt))
-    plt.plot(iACF)
+    plt.plot(iPACF)
     #plt.plot(iArr)
 
     #plt.plot(aListDate,aListClose)

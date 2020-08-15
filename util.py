@@ -96,12 +96,12 @@ class StatFunction(object):
             print("please make sure of the input type is numpy.ndarray!")
             return
         iRk = self.__calcRk__(data, order)
-        
+
         dataLen = len(data)
         iRk = np.array(iRk)
 
         if bias is not True: # unbias estimation
-            for i in range(0, order+1):
+            for i in range(0, len(iRk)):
                 iRk[i] = iRk[i]*dataLen/(dataLen-i)
 
         return iRk[1:]/iRk[0]
@@ -112,7 +112,23 @@ class StatFunction(object):
     def getAbsACF(self, order, bias=True):
         return self.__calcACF__(np.abs(self.dataRemoveMean), order, bias)
 
-    def getPACF(self, order, bias=True):
+    def __YuleWalker__(self, data, order, bias):
 
-        pass
+        iRk = self.__calcRk__(data, order)
+        dataLen = len(data)
+
+        if bias is not True:
+            for i in range(0,len(iRk)):
+                iRk[i] = iRk[i]*dataLen/(dataLen-i)
+
+        iRArray = toeplitz(iRk[:-1]) # construct the toeplitz array
+
+        return np.linalg.solve(np.array(iRArray), np.array(iRk)[1:])
+
+    def getPACF(self, order, bias=True):
+        iPACF = []
+        for i in range(1, order+1):
+            iArr = self.__YuleWalker__(self.dataRemoveMean, i, bias)
+            iPACF.append(iArr[-1])
+        return iPACF
 
