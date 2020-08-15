@@ -86,8 +86,17 @@ try:
     iArrVar = statObj.getVar()
     iArrSkewness = statObj.getSkewness()
     iArrKurt = statObj.getKurt()
+    iACF = statObj.getACF()
+    #iAbsACF = statObj.getAbsACF()
 
     print("mean: {} Var: {} Skewness: {} Kurt: {}".format(iArrMean,iArrVar,iArrSkewness,iArrKurt))
+    plt.plot(iACF)
+    #plt.plot(iArr)
+
+    #plt.plot(aListDate,aListClose)
+    plt.rcParams['font.sans-serif'] = ['SimHei'] #设置中文字体
+    plt.title("采样：{}".format("8"))
+    plt.show()
 
     #fra = Fractal(iArr[-20:])
     fra = Fractal(iArr)
@@ -159,6 +168,7 @@ try:
     plt.scatter(ArrayX, ArrayY)
     plt.plot(ArrayX, ArrayY)
     '''
+    '''
     #plt.scatter(iHXFinal, iHArrFinal)
     plt.scatter(dimArrayX, dimArrayY)
     dimArrayYtmp = para[0] + np.float(para[1]) * dimArrayXtmp
@@ -169,7 +179,7 @@ try:
     plt.rcParams['font.sans-serif'] = ['SimHei'] #设置中文字体
     plt.title("采样：{}".format("8"))
     plt.show()
-
+    '''
 except Exception as e:
     print("Exception: %s" % e)
 finally:

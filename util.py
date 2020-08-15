@@ -63,6 +63,7 @@ class StatFunction(object):
         self.data = data
         self.mean = np.mean(self.data)
         self.var = np.var(self.data)
+        self.dataRemoveMean = self.data - self.mean
 
     def getMean(self):
         return self.mean
@@ -81,4 +82,32 @@ class StatFunction(object):
         iVar = self.var
         self.kurt = np.mean((self.data - iMean)**4)/(iVar**2)
         return self.kurt
+
+    def __calACF__(self, data):
+
+        if not isinstance(data, np.ndarray):
+            print("please make sure of the input type is numpy.ndarray!")
+            return
+
+        gamma0 = data**2
+        iACF = []
+        i = 1
+        maxLen = len(data)
+
+        while(i < (maxLen - 1)):
+            tmpY = data[: maxLen-i]
+            tmpY1 = data[i:]
+            gammai = tmpY*tmpY1
+            iACF.append(gammai.sum()/gamma0.sum())
+            i = i + 1
+        return iACF
+
+    def getACF(self):
+        return self.__calACF__(self.dataRemoveMean)
+
+    def getAbsACF(self):
+        return self.__calACF__(np.abs(self.dataRemoveMean))
+
+    def getPACF(self,offset):
+        pass
 
