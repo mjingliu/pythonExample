@@ -114,11 +114,15 @@ class StatFunction(object):
 
         return iRk[1:]/iRk[0]
 
-    def getACF(self, order, bias=True):
-        return self.__calcACF__(self.dataRemoveMean, order, bias)
+    def getACF(self, order, bias=True, dataType = 0):
+        if dataType == 0:
+            dataArr = np.array(self.dataRemoveMean)
+        elif dataType == 1:
+            dataArr = np.array(np.abs(self.dataRemoveMean))
+        else:
+            dataArr = np.array(self.dataRemoveMean*self.dataRemoveMean)
 
-    def getAbsACF(self, order, bias=True):
-        return self.__calcACF__(np.abs(self.dataRemoveMean), order, bias)
+        return self.__calcACF__(dataArr, order, bias)
 
     def __YuleWalker__(self, data, order, bias):
 
@@ -133,10 +137,15 @@ class StatFunction(object):
 
         return np.linalg.solve(np.array(iRArray), np.array(iRk)[1:])
 
-    def getPACF(self, order, bias=True):
+    def getPACF(self, order, bias=True, dataType = 0):
         iPACF = []
+        if dataType ==0:
+            dataArr = np.array(self.dataRemoveMean)
+        else:
+            dataArr = np.array(self.dataRemoveMean*self.dataRemoveMean)
+
         for i in range(1, order+1):
-            iArr = self.__YuleWalker__(self.dataRemoveMean, i, bias)
+            iArr = self.__YuleWalker__(dataArr, i, bias)
             iPACF.append(iArr[-1])
         return iPACF
 
@@ -155,11 +164,11 @@ class StatFunction(object):
             print("please make sure of the array type is numpy.ndarray!")
 
         tmpT = np.sqrt(len(self.data))
-        iDiagnostic = np.abs(diagArr*tmpT)
+        iDiagnostic = diagArr*tmpT
 
         return iDiagnostic
 
-    def getDiagnosticLjungBox(self, order, confidence=0.05, fitPara = 0):
+    def getDiagnosticLjungBox(self, order, confidence=0.05, fitPara = 0, dataType=0):
         '''
         condition:
         if the model is ARMA(p,q), then the "N" of X2 should be m-(p+q)
@@ -183,7 +192,11 @@ class StatFunction(object):
             return
 
         dataLen = len(self.dataRemoveMean)
-        iRk = self.__calcRk__(self.dataRemoveMean, order+1)
+        if dataType == 0:
+            dataArr = np.array(self.dataRemoveMean)
+        else:
+            dataArr = np.array(self.dataRemoveMean*self.dataRemoveMean)
+        iRk = self.__calcRk__(dataArr, order + 1)
 
         iRouk = np.array(iRk[1:]/iRk[0])
         iRoukAdj = []

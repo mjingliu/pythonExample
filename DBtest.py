@@ -91,14 +91,14 @@ try:
     iArrKurt = statObj.getKurt()
     iACF = statObj.getACF(80)
     iACFDiag = statObj.getDiagnosticWhiteNoise(iACF)
-    #iAbsACF = statObj.getAbsACF(20)
-    iPACF = statObj.getPACF(80)
-    iBox = statObj.getDiagnosticLjungBox(20)
+    iPACF = statObj.getPACF(80,dataType=1)
+    iBox = statObj.getDiagnosticLjungBox(20,dataType=1)
 
     print("mean: {} Var: {} Skewness: {} Kurt: {}".format(iArrMean,iArrVar,iArrSkewness,iArrKurt))
-
-    plt.axhline(2, c="red")
-    plt.plot(iACFDiag)
+    print(iBox)
+    #plt.axhline(2, c="red")
+    #plt.axhline(-2, c="red")
+    plt.plot(iPACF)
     #plt.plot(iArr)
 
     #plt.plot(aListDate,aListClose)
