@@ -149,6 +149,16 @@ class StatFunction(object):
             iPACF.append(iArr[-1])
         return iPACF
 
+    def getDiagACF(self, confidence=0.95):
+        isqrt = np.sqrt(len(self.dataRemoveMean))
+        coef = 2
+        if confidence == 0.95:
+            coef = 2
+        elif confidence == 0.99:
+            coef = 3
+
+        return coef/isqrt,-coef/isqrt
+
     def getDiagnosticWhiteNoise(self, diagArr):
         '''
         basic assumption:
