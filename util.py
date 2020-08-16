@@ -2,6 +2,7 @@
 # -*- coding:utf-8 -*-
 import numpy as np
 from scipy.linalg import toeplitz
+import const_stat
 
 def extendAxis(origin, length):
     '''
@@ -83,9 +84,16 @@ class StatFunction(object):
         iVar = self.var
         self.kurt = np.mean((self.data - iMean)**4)/(iVar**2)
         return self.kurt
+
     def __calcRk__(self, data, order):
+        if order >= len(data):
+            print("please input the right order!")
+            return
+
         iRk = []
+
         iRk.append(np.dot(data[:], data[:]))
+
         for i in range(1, order+1):
             iRk.append(np.dot(data[:-i], data[i:]))
         return iRk
@@ -131,4 +139,62 @@ class StatFunction(object):
             iArr = self.__YuleWalker__(self.dataRemoveMean, i, bias)
             iPACF.append(iArr[-1])
         return iPACF
+
+    def getDiagnosticWhiteNoise(self, diagArr):
+        '''
+        basic assumption:
+        when {Xt} ~ white noise distribution, ROUk ~norm(0,1/T)
+        H0: white noise
+        H1: refuse white noise
+        1. when abs(ROU1) > 2/sqrt(T), refuse H0
+        2. when many abs(ROUk) > 2/sqrt(T), refuse H0
+        3. t = sqrt(T) * Rouk, when abs(t) > 3, refuse H0
+        '''
+        if not isinstance(diagArr, np.ndarray):
+            diagArr = np.array(diagArr)
+            print("please make sure of the array type is numpy.ndarray!")
+
+        tmpT = np.sqrt(len(self.data))
+        iDiagnostic = np.abs(diagArr*tmpT)
+
+        return iDiagnostic
+
+    def getDiagnosticLjungBox(self, order, confidence=0.05, fitPara = 0):
+        '''
+        condition:
+        if the model is ARMA(p,q), then the "N" of X2 should be m-(p+q)
+        order: the input N
+        confidence: the probability of X2 should be met
+        fitPara: number of p+q
+        general, order = ln(T), T = length of array
+        '''
+        tmpConf = [0.995,0.99,0.975,0.95,0.9,0.75,0.5,0.25,0.1,0.05,0.025,0.01,0.005]
+        iloc = 0
+        iControl = True
+
+        for iconf in range(len(tmpConf)):
+            if confidence == tmpConf[iconf]:
+                iControl = False
+                break
+            else:
+                iloc = iloc +1
+        if iControl is True:
+            print("please make sure of the value of confidenc is valid!")
+            return
+
+        dataLen = len(self.dataRemoveMean)
+        iRk = self.__calcRk__(self.dataRemoveMean, order+1)
+
+        iRouk = np.array(iRk[1:]/iRk[0])
+        iRoukAdj = []
+        N = order - fitPara
+
+        for i in range(N):
+            iRoukAdj.append(iRouk[i]*dataLen*(dataLen+2)/(dataLen - i))
+        iRoukAdj = np.array(iRoukAdj)
+
+        tmpValue = iRoukAdj.dot(iRouk[:N])
+        X2Vale = const_stat.X2Value[iloc][N]
+
+        return tmpValue,X2Vale
 
