@@ -66,12 +66,13 @@ class StatFunction(object):
         self.mean = np.mean(self.data)
         self.var = np.var(self.data)
         self.dataRemoveMean = self.data - self.mean
+        self.std = np.std(self.data)
 
     def getMean(self):
         return self.mean
 
     def getVar(self):
-        return self.var
+        return self.std
 
     def getSkewness(self):
         iMean = self.mean
@@ -119,6 +120,8 @@ class StatFunction(object):
             dataArr = np.array(self.dataRemoveMean)
         elif dataType == 1:
             dataArr = np.array(np.abs(self.dataRemoveMean))
+        elif dataType == 2:
+            dataArr = np.array(self.data)
         else:
             dataArr = np.array(self.dataRemoveMean*self.dataRemoveMean)
 
@@ -141,6 +144,8 @@ class StatFunction(object):
         iPACF = []
         if dataType ==0:
             dataArr = np.array(self.dataRemoveMean)
+        elif dataType ==2:
+            dataArr = np.array(self.data)
         else:
             dataArr = np.array(self.dataRemoveMean*self.dataRemoveMean)
 
@@ -150,6 +155,10 @@ class StatFunction(object):
         return iPACF
 
     def getDiagACF(self, confidence=0.95):
+        '''
+        if the confidence is 0.95, then the coefficiency should be 2, that is 2*sigma,
+        currently, sqrt is the sigma
+        '''
         isqrt = np.sqrt(len(self.dataRemoveMean))
         coef = 2
         if confidence == 0.95:

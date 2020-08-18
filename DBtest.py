@@ -89,8 +89,9 @@ try:
     iArrVar = statObj.getVar()
     iArrSkewness = statObj.getSkewness()
     iArrKurt = statObj.getKurt()
-    iACF = statObj.getACF(80,dataType=1)
+    iACF = statObj.getACF(20,dataType=2)
     iACFDiag = statObj.getDiagnosticWhiteNoise(iACF)
+    iPACF = statObj.getPACF(20,dataType=2)
     iPACFDiag = statObj.getDiagACF()
     iBox = statObj.getDiagnosticLjungBox(20,dataType=1)
 
@@ -98,7 +99,8 @@ try:
     print(iBox)
     plt.axhline(iPACFDiag[0], c="red")
     plt.axhline(iPACFDiag[1], c="red")
-    plt.plot(iACF)
+    y = iPACF
+    plt.scatter(range(len(y)),y)
     #plt.plot(iArr)
 
     #plt.plot(aListDate,aListClose)
