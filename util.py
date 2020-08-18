@@ -71,6 +71,25 @@ class StatFunction(object):
     def getMean(self):
         return self.mean
 
+    def getMeanDiagnostic(self, confidence=0.95):
+        student = [0.25,0.1,0.05,0.025,0.01,0.005]
+
+        dataLen = len(self.data)
+        std = np.std(self.data)
+        alpha = 0.025
+        if dataLen >= len(const_stat.TN):
+            index = len(const_stat.TN)-1
+
+        iTalpha = 0
+
+        for i in range(len(student)):
+            if const_stat.TValue[i][0] == alpha:
+                iTalpha = const_stat.TValue[i][index]
+                break
+        iTvalue = (std/dataLen)**0.5*iTalpha
+
+        return iTvalue
+
     def getVar(self):
         return self.std
 

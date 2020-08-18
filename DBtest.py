@@ -94,11 +94,15 @@ try:
     iPACF = statObj.getPACF(20,dataType=2)
     iPACFDiag = statObj.getDiagACF()
     iBox = statObj.getDiagnosticLjungBox(20,dataType=1)
+    iMeanDiag = statObj.getMeanDiagnostic()
 
     print("mean: {} Var: {} Skewness: {} Kurt: {}".format(iArrMean,iArrVar,iArrSkewness,iArrKurt))
     print(iBox)
     plt.axhline(iPACFDiag[0], c="red")
     plt.axhline(iPACFDiag[1], c="red")
+    plt.axhline(iMeanDiag, c = "blue")
+    plt.axhline(-iMeanDiag, c = "blue")
+    plt.axhline(iArrMean, c = "green")
     y = iPACF
     plt.scatter(range(len(y)),y)
     #plt.plot(iArr)
