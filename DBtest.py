@@ -76,9 +76,7 @@ try:
     aList.reverse()
     aListDate.reverse()
     aListClose.reverse()
-    if len(aListClose) >800:
-        aListDate = aListDate[:800]
-        aListClose = aListClose[:800]
+
    
     dataProc = dp.StockAnalysis(aListClose, aListDate)
     aDividendTimes = dataProc.calDividendTimes()
@@ -87,6 +85,9 @@ try:
     print(aDividendTimes)
 
     iArr = dataProc.getLgYieldsArr()
+    print("length of  iArr:%s" % len(iArr))
+    #if len(iArr) >400:
+     #   iArr = iArr[:400]
 
     statObj = util.StatFunction(iArr)
     iArrMean = statObj.getMean(dataType=3)
