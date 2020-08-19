@@ -85,15 +85,15 @@ try:
     iArr = dataProc.getLgYieldsArr()
 
     statObj = util.StatFunction(iArr)
-    iArrMean = statObj.getMean()
-    iArrVar = statObj.getVar()
-    iArrSkewness = statObj.getSkewness()
-    iArrKurt = statObj.getKurt()
-    iACF = statObj.getACF(20,dataType=2)
+    iArrMean = statObj.getMean(dataType=3)
+    iArrVar = statObj.getVar(dataType=3)
+    iArrSkewness = statObj.getSkewness(dataType=3)
+    iArrKurt = statObj.getKurt(dataType=3)
+    iACF = statObj.getACF(30,dataType=3)
     iACFDiag = statObj.getDiagnosticWhiteNoise(iACF)
-    iPACF = statObj.getPACF(20,dataType=2)
+    iPACF = statObj.getPACF(30,dataType=3)
     iPACFDiag = statObj.getDiagACF()
-    iBox = statObj.getDiagnosticLjungBox(20,dataType=1)
+    iBox = statObj.getDiagnosticLjungBox(20,dataType=3)
     iMeanDiag = statObj.getMeanDiagnostic()
 
     print("mean: {} Var: {} Skewness: {} Kurt: {}".format(iArrMean,iArrVar,iArrSkewness,iArrKurt))
@@ -103,7 +103,7 @@ try:
     plt.axhline(iMeanDiag, c = "blue")
     plt.axhline(-iMeanDiag, c = "blue")
     plt.axhline(iArrMean, c = "green")
-    y = iPACF
+    y = iACF
     plt.scatter(range(len(y)),y)
     #plt.plot(iArr)
 

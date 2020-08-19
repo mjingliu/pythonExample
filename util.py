@@ -68,8 +68,12 @@ class StatFunction(object):
         self.dataRemoveMean = self.data - self.mean
         self.std = np.std(self.data)
 
-    def getMean(self):
-        return self.mean
+    def getMean(self, dataType=0):
+        if dataType == 0:
+            mean = self.mean
+        else:
+            mean = np.mean(self.dataRemoveMean**2)
+        return mean
 
     def getMeanDiagnostic(self, confidence=0.95):
         student = [0.25,0.1,0.05,0.025,0.01,0.005]
@@ -90,20 +94,38 @@ class StatFunction(object):
 
         return iTvalue
 
-    def getVar(self):
-        return self.std
+    def getVar(self,dataType = 0):
+        if dataType ==0:
+            std = self.std
+        else:
+            std = np.std(self.dataRemoveMean**2)
+        return std
 
-    def getSkewness(self):
-        iMean = self.mean
-        iVar = self.var
-        self.skewness = np.mean((self.data - iMean)**3)/(iVar ** 1.5)
-        return self.skewness
+    def getSkewness(self, dataType=0):
+        if dataType==0:
+            iMean = self.mean
+            iVar = self.var
+            idata = self.data
+        else:
+            idata = self.dataRemoveMean ** 2
+            iMean = np.mean(idata)
+            iVar = np.var(idata)
 
-    def getKurt(self):
-        iMean = self.mean
-        iVar = self.var
-        self.kurt = np.mean((self.data - iMean)**4)/(iVar**2)
-        return self.kurt
+        iSkewness = np.mean((idata - iMean) ** 3) / (iVar ** 1.5)
+        return iSkewness
+
+    def getKurt(self,dataType=0):
+        if dataType ==0:
+            iMean = self.mean
+            iVar = self.var
+            iData = self.data
+        else:
+            iData = self.dataRemoveMean**2
+            iMean = np.mean(iData)
+            iVar = np.var(iData)
+
+        iKurt = np.mean((iData - iMean)**4)/(iVar**2)
+        return iKurt
 
     def __calcRk__(self, data, order):
         if order >= len(data):
@@ -138,11 +160,15 @@ class StatFunction(object):
         if dataType == 0:
             dataArr = np.array(self.dataRemoveMean)
         elif dataType == 1:
-            dataArr = np.array(np.abs(self.dataRemoveMean))
+            tmpdata = np.abs(self.dataRemoveMean)
+            dataArr = np.array(tmpdata)
+            dataArr = dataArr - np.mean(tmpdata)
         elif dataType == 2:
             dataArr = np.array(self.data)
         else:
-            dataArr = np.array(self.dataRemoveMean*self.dataRemoveMean)
+            tmpdata = self.dataRemoveMean**2
+            dataArr = np.array(tmpdata)
+            dataArr = dataArr -np.mean(dataArr)
 
         return self.__calcACF__(dataArr, order, bias)
 
@@ -166,7 +192,8 @@ class StatFunction(object):
         elif dataType ==2:
             dataArr = np.array(self.data)
         else:
-            dataArr = np.array(self.dataRemoveMean*self.dataRemoveMean)
+            dataArr = np.array(self.dataRemoveMean**2)
+            dataArr = dataArr -np.mean(dataArr)
 
         for i in range(1, order+1):
             iArr = self.__YuleWalker__(dataArr, i, bias)
@@ -233,7 +260,7 @@ class StatFunction(object):
         if dataType == 0:
             dataArr = np.array(self.dataRemoveMean)
         else:
-            dataArr = np.array(self.dataRemoveMean*self.dataRemoveMean)
+            dataArr = np.array(self.dataRemoveMean**2)
         iRk = self.__calcRk__(dataArr, order + 1)
 
         iRouk = np.array(iRk[1:]/iRk[0])
