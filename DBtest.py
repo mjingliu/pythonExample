@@ -57,7 +57,8 @@ tblName = const.tblName
 dbName = const.dbName
 coeffiency = const.coeffiency
 
-stockCode = "002415.SZ"
+stockCode = "002415.SZ" # this is Hik
+#stockCode = "601398.SH" # this is ICBC
 
 try:
     tmpList = list(myDB.selectData(tblName, dbName, stockCode))
@@ -75,6 +76,9 @@ try:
     aList.reverse()
     aListDate.reverse()
     aListClose.reverse()
+    if len(aListClose) >800:
+        aListDate = aListDate[:800]
+        aListClose = aListClose[:800]
    
     dataProc = dp.StockAnalysis(aListClose, aListDate)
     aDividendTimes = dataProc.calDividendTimes()
@@ -89,7 +93,7 @@ try:
     iArrVar = statObj.getVar(dataType=3)
     iArrSkewness = statObj.getSkewness(dataType=3)
     iArrKurt = statObj.getKurt(dataType=3)
-    iACF = statObj.getACF(30,dataType=3)
+    iACF = statObj.getACF(40,dataType=3)
     iACFDiag = statObj.getDiagnosticWhiteNoise(iACF)
     iPACF = statObj.getPACF(30,dataType=3)
     iPACFDiag = statObj.getDiagACF()

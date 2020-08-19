@@ -162,9 +162,10 @@ class StatFunction(object):
         elif dataType == 1:
             tmpdata = np.abs(self.dataRemoveMean)
             dataArr = np.array(tmpdata)
-            dataArr = dataArr - np.mean(tmpdata)
+            dataArr = dataArr - np.mean(dataArr)
         elif dataType == 2:
             dataArr = np.array(self.data)
+            dataArr = dataArr - np.mean(dataArr)
         else:
             tmpdata = self.dataRemoveMean**2
             dataArr = np.array(tmpdata)
