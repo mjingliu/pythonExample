@@ -57,8 +57,8 @@ tblName = const.tblName
 dbName = const.dbName
 coeffiency = const.coeffiency
 
-stockCode = "002415.SZ" # this is Hik
-#stockCode = "601398.SH" # this is ICBC
+#stockCode = "002415.SZ" # this is Hik
+stockCode = "601398.SH" # this is ICBC
 
 try:
     tmpList = list(myDB.selectData(tblName, dbName, stockCode))
@@ -77,7 +77,9 @@ try:
     aListDate.reverse()
     aListClose.reverse()
 
-   
+    #if len(aListClose) >400:
+     #   aListClose = aListClose[:400]
+
     dataProc = dp.StockAnalysis(aListClose, aListDate)
     aDividendTimes = dataProc.calDividendTimes()
     aDividentDates = dataProc.getDividendDate()
@@ -86,19 +88,19 @@ try:
 
     iArr = dataProc.getLgYieldsArr()
     print("length of  iArr:%s" % len(iArr))
-    #if len(iArr) >400:
-     #   iArr = iArr[:400]
 
     statObj = util.StatFunction(iArr)
-    iArrMean = statObj.getMean(dataType=3)
-    iArrVar = statObj.getVar(dataType=3)
-    iArrSkewness = statObj.getSkewness(dataType=3)
-    iArrKurt = statObj.getKurt(dataType=3)
-    iACF = statObj.getACF(40,dataType=3)
+    dataType = const.DATATYPE['RDMMS']
+    statObj.setDataType(dataType = dataType)
+    iArrMean = statObj.getMean()
+    iArrVar = statObj.getVar()
+    iArrSkewness = statObj.getSkewness()
+    iArrKurt = statObj.getKurt()
+    iACF = statObj.getACF(30)
     iACFDiag = statObj.getDiagnosticWhiteNoise(iACF)
-    iPACF = statObj.getPACF(30,dataType=3)
+    iPACF = statObj.getPACF(30)
     iPACFDiag = statObj.getDiagACF()
-    iBox = statObj.getDiagnosticLjungBox(20,dataType=3)
+    iBox = statObj.getDiagnosticLjungBox(20)
     iMeanDiag = statObj.getMeanDiagnostic()
 
     print("mean: {} Var: {} Skewness: {} Kurt: {}".format(iArrMean,iArrVar,iArrSkewness,iArrKurt))
@@ -108,8 +110,10 @@ try:
     plt.axhline(iMeanDiag, c = "blue")
     plt.axhline(-iMeanDiag, c = "blue")
     plt.axhline(iArrMean, c = "green")
-    y = iACF
-    plt.scatter(range(len(y)),y)
+    y = iPACF
+    plt.scatter(range(len(y)),y, c='red')
+    y1 = iACF
+    plt.scatter(range(len(y1)),y1,c = 'blue')
     #plt.plot(iArr)
 
     #plt.plot(aListDate,aListClose)

@@ -3,6 +3,8 @@
 import numpy as np
 from scipy.linalg import toeplitz
 import const_stat
+import const
+
 
 def extendAxis(origin, length):
     '''
@@ -68,18 +70,38 @@ class StatFunction(object):
         self.dataRemoveMean = self.data - self.mean
         self.std = np.std(self.data)
 
-    def getMean(self, dataType=0):
-        if dataType == 0:
-            mean = self.mean
-        else:
-            mean = np.mean(self.dataRemoveMean**2)
+    def setDataType(self, dataType = 0):
+        if dataType == const.DATATYPE['RD'] :
+            iData = self.data
+        elif dataType == const.DATATYPE['RDA'] :
+            iData = np.abs(self.data)
+        elif dataType == const.DATATYPE['RDS'] :
+            iData = self.data ** 2
+        elif dataType == const.DATATYPE['RDMM'] :
+            iData = self.dataRemoveMean
+        elif dataType == const.DATATYPE['RDMMA'] :
+            iData = np.abs(self.dataRemoveMean)
+        elif dataType == const.DATATYPE['RDMMS'] :
+            iData = self.dataRemoveMean ** 2
+        else :
+            print("please input the right dataType:%s" % dataType)
+            iData = 0
+        self.currData = iData
+        self.currType = dataType
+
+    def getCurData(self):
+        return self.currData
+
+    def getMean(self):
+        iData = self.getCurData()
+        mean = np.mean(iData)
         return mean
 
     def getMeanDiagnostic(self, confidence=0.95):
         student = [0.25,0.1,0.05,0.025,0.01,0.005]
 
-        dataLen = len(self.data)
-        std = np.std(self.data)
+        dataLen = len(self.getCurData())
+        std = np.std(self.getCurData())
         alpha = 0.025
         if dataLen >= len(const_stat.TN):
             index = len(const_stat.TN)-1
@@ -94,35 +116,23 @@ class StatFunction(object):
 
         return iTvalue
 
-    def getVar(self,dataType = 0):
-        if dataType ==0:
-            std = self.std
-        else:
-            std = np.std(self.dataRemoveMean**2)
+    def getVar(self):
+        iData = self.getCurData()
+        std = np.std(iData)
         return std
 
-    def getSkewness(self, dataType=0):
-        if dataType==0:
-            iMean = self.mean
-            iVar = self.var
-            idata = self.data
-        else:
-            idata = self.dataRemoveMean ** 2
-            iMean = np.mean(idata)
-            iVar = np.var(idata)
+    def getSkewness(self):
+        iData = self.getCurData()
+        iMean = np.mean(iData)
+        iVar = np.var(iData)
 
-        iSkewness = np.mean((idata - iMean) ** 3) / (iVar ** 1.5)
+        iSkewness = np.mean((iData - iMean) ** 3) / (iVar ** 1.5)
         return iSkewness
 
-    def getKurt(self,dataType=0):
-        if dataType ==0:
-            iMean = self.mean
-            iVar = self.var
-            iData = self.data
-        else:
-            iData = self.dataRemoveMean**2
-            iMean = np.mean(iData)
-            iVar = np.var(iData)
+    def getKurt(self):
+        iData = self.getCurData()
+        iMean = np.mean(iData)
+        iVar = np.var(iData)
 
         iKurt = np.mean((iData - iMean)**4)/(iVar**2)
         return iKurt
@@ -133,6 +143,7 @@ class StatFunction(object):
             return
 
         iRk = []
+        data = data - np.mean(data)
 
         iRk.append(np.dot(data[:], data[:]))
 
@@ -156,21 +167,8 @@ class StatFunction(object):
 
         return iRk[1:]/iRk[0]
 
-    def getACF(self, order, bias=True, dataType = 0):
-        if dataType == 0:
-            dataArr = np.array(self.dataRemoveMean)
-        elif dataType == 1:
-            tmpdata = np.abs(self.dataRemoveMean)
-            dataArr = np.array(tmpdata)
-            dataArr = dataArr - np.mean(dataArr)
-        elif dataType == 2:
-            dataArr = np.array(self.data)
-            dataArr = dataArr - np.mean(dataArr)
-        else:
-            tmpdata = self.dataRemoveMean**2
-            dataArr = np.array(tmpdata)
-            dataArr = dataArr -np.mean(dataArr)
-
+    def getACF(self, order, bias=True):
+        dataArr = self.getCurData()
         return self.__calcACF__(dataArr, order, bias)
 
     def __YuleWalker__(self, data, order, bias):
@@ -186,16 +184,9 @@ class StatFunction(object):
 
         return np.linalg.solve(np.array(iRArray), np.array(iRk)[1:])
 
-    def getPACF(self, order, bias=True, dataType = 0):
+    def getPACF(self, order, bias=True):
         iPACF = []
-        if dataType ==0:
-            dataArr = np.array(self.dataRemoveMean)
-        elif dataType ==2:
-            dataArr = np.array(self.data)
-        else:
-            dataArr = np.array(self.dataRemoveMean**2)
-            dataArr = dataArr -np.mean(dataArr)
-
+        dataArr = self.getCurData()
         for i in range(1, order+1):
             iArr = self.__YuleWalker__(dataArr, i, bias)
             iPACF.append(iArr[-1])
@@ -206,7 +197,7 @@ class StatFunction(object):
         if the confidence is 0.95, then the coefficiency should be 2, that is 2*sigma,
         currently, sqrt is the sigma
         '''
-        isqrt = np.sqrt(len(self.dataRemoveMean))
+        isqrt = np.sqrt(len(self.getCurData()))
         coef = 2
         if confidence == 0.95:
             coef = 2
@@ -229,12 +220,12 @@ class StatFunction(object):
             diagArr = np.array(diagArr)
             print("please make sure of the array type is numpy.ndarray!")
 
-        tmpT = np.sqrt(len(self.data))
+        tmpT = np.sqrt(len(self.getCurData()))
         iDiagnostic = diagArr*tmpT
 
         return iDiagnostic
 
-    def getDiagnosticLjungBox(self, order, confidence=0.05, fitPara = 0, dataType=0):
+    def getDiagnosticLjungBox(self, order, confidence=0.05, fitPara = 0):
         '''
         condition:
         if the model is ARMA(p,q), then the "N" of X2 should be m-(p+q)
@@ -257,11 +248,8 @@ class StatFunction(object):
             print("please make sure of the value of confidenc is valid!")
             return
 
-        dataLen = len(self.dataRemoveMean)
-        if dataType == 0:
-            dataArr = np.array(self.dataRemoveMean)
-        else:
-            dataArr = np.array(self.dataRemoveMean**2)
+        dataLen = len(self.getCurData())
+        dataArr = self.getCurData()
         iRk = self.__calcRk__(dataArr, order + 1)
 
         iRouk = np.array(iRk[1:]/iRk[0])
