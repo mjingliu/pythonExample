@@ -105,6 +105,8 @@ class StatFunction(object):
         alpha = 0.025
         if dataLen >= len(const_stat.TN):
             index = len(const_stat.TN)-1
+        else:
+            index = dataLen
 
         iTalpha = 0
 
