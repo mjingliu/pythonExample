@@ -46,7 +46,7 @@ class StockAnalysis(object):
         else:
             return self.aArrData
 
-    def getLgYieldsArr(self):
+    def getLgYieldsArr(self, log=True):
         '''
         1. get the ln ratio
         2. formula is :log[Pt/P(t-1)]
@@ -54,9 +54,12 @@ class StockAnalysis(object):
         aArrData = self.getEffectiveData()
 
         aArr = np.array(aArrData)
-        aArrTmp = np.log(aArr)
-        aArrLog = aArrTmp[1:] - aArrTmp[:-1]
-        return aArrLog
+        if log is True:
+            aArrTmp = np.log(aArr)
+            aArrLog = aArrTmp[1:] - aArrTmp[:-1]
+            return aArrLog
+        else:
+            return aArr
 
 class StockAnalysisFractal(object):
     '''
