@@ -12,6 +12,9 @@ import math
 import StockDB as db
 import const
 import dataProcess as dp
+from scipy.linalg import toeplitz
+
+
 #import pywt as wvlt
 import statsmodels.tsa.ar_model as AR
 from arch import arch_model
@@ -57,6 +60,8 @@ dbName = const.dbName
 coeffiency = const.coeffiency
 
 stockCode = "601155.SH"
+#stockCode = "002415.SZ" # this is Hik
+#stockCode = "601398.SH" # this is ICBC
 
 try:
     tmpList = list(myDB.selectData(tblName, dbName, stockCode))
@@ -74,7 +79,10 @@ try:
     aList.reverse()
     aListDate.reverse()
     aListClose.reverse()
-   
+
+    #if len(aListClose) >400:
+     #   aListClose = aListClose[:400]
+
     dataProc = dp.StockAnalysis(aListClose, aListDate)
     aDividendTimes = dataProc.calDividendTimes()
     aDividentDates = dataProc.getDividendDate()
@@ -82,14 +90,39 @@ try:
     print(aDividendTimes)
 
     iArr = dataProc.getLgYieldsArr()
+    print("length of  iArr:%s" % len(iArr))
 
     statObj = util.StatFunction(iArr)
+    dataType = const.DATATYPE['RDMMS']
+    statObj.setDataType(dataType = dataType)
     iArrMean = statObj.getMean()
     iArrVar = statObj.getVar()
     iArrSkewness = statObj.getSkewness()
     iArrKurt = statObj.getKurt()
+    iACF = statObj.getACF(30)
+    iACFDiag = statObj.getDiagnosticWhiteNoise(iACF)
+    iPACF = statObj.getPACF(30)
+    iPACFDiag = statObj.getDiagACF()
+    iBox = statObj.getDiagnosticLjungBox(20)
+    iMeanDiag = statObj.getMeanDiagnostic()
 
     print("mean: {} Var: {} Skewness: {} Kurt: {}".format(iArrMean,iArrVar,iArrSkewness,iArrKurt))
+    print(iBox)
+    plt.axhline(iPACFDiag[0], c="red")
+    plt.axhline(iPACFDiag[1], c="red")
+    plt.axhline(iMeanDiag, c = "blue")
+    plt.axhline(-iMeanDiag, c = "blue")
+    plt.axhline(iArrMean, c = "green")
+    y = iPACF
+    plt.scatter(range(len(y)),y, c='red')
+    y1 = iACF
+    plt.scatter(range(len(y1)),y1,c = 'blue')
+    #plt.plot(iArr)
+
+    #plt.plot(aListDate,aListClose)
+    plt.rcParams['font.sans-serif'] = ['SimHei'] #设置中文字体
+    plt.title("采样：{}".format("8"))
+    plt.show()
 
     #fra = Fractal(iArr[-20:])
     fra = Fractal(iArr)
@@ -161,6 +194,7 @@ try:
     plt.scatter(ArrayX, ArrayY)
     plt.plot(ArrayX, ArrayY)
     '''
+    '''
     #plt.scatter(iHXFinal, iHArrFinal)
     plt.scatter(dimArrayX, dimArrayY)
     dimArrayYtmp = para[0] + np.float(para[1]) * dimArrayXtmp
@@ -171,7 +205,7 @@ try:
     plt.rcParams['font.sans-serif'] = ['SimHei'] #设置中文字体
     plt.title("采样：{}".format("8"))
     plt.show()
-
+    '''
 except Exception as e:
     print("Exception: %s" % e)
 finally:

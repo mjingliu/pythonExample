@@ -8,6 +8,14 @@ BACKWORD = 2
 
 coeffiency: float = 0.85
 
+DATATYPE = {
+    'RD':  0, # rawData
+    'RDA': 1, # rawData_abs
+    'RDS': 2, # rawData_sqare
+    'RDMM': 3, # rawDataMinusMean
+    'RDMMA': 4, # rawDataMinusMean_abs
+    'RDMMS': 5 # rawDataMinusMean_sqare
+}
 
 stockCode = {
     '002937': '002937.SZ',
