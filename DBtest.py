@@ -13,6 +13,8 @@ import StockDB as db
 import const
 import dataProcess as dp
 #import pywt as wvlt
+import statsmodels.tsa.ar_model as AR
+from arch import arch_model
 
 '''
 1. 假设每一个行业都是以一年为周期，也就是说一年为通用周期
@@ -49,12 +51,12 @@ f. 计算n个采样序列的S值，S = sqrt((detX0 * detX0 + detX1*detX1 + detX2
 
 '''
 
-myDB = db.stockDB(user="mingjliu", password="qwe`1234")
+myDB = db.stockDB(user="mingjliu", password="R~!@34qwe")
 tblName = const.tblName
 dbName = const.dbName
 coeffiency = const.coeffiency
 
-stockCode = "002415.SZ"
+stockCode = "601155.SH"
 
 try:
     tmpList = list(myDB.selectData(tblName, dbName, stockCode))
