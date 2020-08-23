@@ -102,7 +102,7 @@ class StatFunction(object):
 
         dataLen = len(self.getCurData())
         std = np.std(self.getCurData())
-        alpha = 0.025
+        alpha = 0.05
         if dataLen >= len(const_stat.TN):
             index = len(const_stat.TN)-1
         else:
@@ -200,6 +200,7 @@ class StatFunction(object):
         currently, sqrt is the sigma
         '''
         isqrt = np.sqrt(len(self.getCurData()))
+        print("length of current data:%s" % len(self.getCurData()))
         coef = 2
         if confidence == 0.95:
             coef = 2

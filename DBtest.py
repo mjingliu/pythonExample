@@ -54,15 +54,18 @@ f. 计算n个采样序列的S值，S = sqrt((detX0 * detX0 + detX1*detX1 + detX2
 
 '''
 
-myDB = db.stockDB(user="mingjliu", password="R~!@34qwe")
+myDB = db.stockDB(user="mingjliu", password="qwe`1234")
 tblName = const.tblName
 dbName = const.dbName
 coeffiency = const.coeffiency
 
 stockCode = "601155.SH"
-#stockCode = "002415.SZ" # this is Hik
-#stockCode = "601398.SH" # this is ICBC
-
+stockCode = "002415.SZ" # this is Hik
+stockCode = "601398.SH" # this is ICBC
+stockCode = "600519.SH" # this is Maotai
+dataType = const.DATATYPE['RD']
+sample = 60
+iPQorder = 20
 try:
     tmpList = list(myDB.selectData(tblName, dbName, stockCode))
     print("all the Select data is :%d " % len(tmpList))
@@ -80,28 +83,28 @@ try:
     aListDate.reverse()
     aListClose.reverse()
 
-    #if len(aListClose) >400:
-     #   aListClose = aListClose[:400]
-
     dataProc = dp.StockAnalysis(aListClose, aListDate)
     aDividendTimes = dataProc.calDividendTimes()
     aDividentDates = dataProc.getDividendDate()
     print(aDividentDates)
     print(aDividendTimes)
 
-    iArr = dataProc.getLgYieldsArr()
+    #if len(aListClose) >sample:
+     #   aListClose = aListClose[:sample]
+
+    iArr = dataProc.getLgYieldsArr(log=True)
     print("length of  iArr:%s" % len(iArr))
 
-    statObj = util.StatFunction(iArr)
-    dataType = const.DATATYPE['RDMMS']
+    statObj = util.StatFunction(iArr[-sample:])
+
     statObj.setDataType(dataType = dataType)
     iArrMean = statObj.getMean()
     iArrVar = statObj.getVar()
     iArrSkewness = statObj.getSkewness()
     iArrKurt = statObj.getKurt()
-    iACF = statObj.getACF(30)
+    iACF = statObj.getACF(iPQorder)
     iACFDiag = statObj.getDiagnosticWhiteNoise(iACF)
-    iPACF = statObj.getPACF(30)
+    iPACF = statObj.getPACF(iPQorder)
     iPACFDiag = statObj.getDiagACF()
     iBox = statObj.getDiagnosticLjungBox(20)
     iMeanDiag = statObj.getMeanDiagnostic()
@@ -121,7 +124,7 @@ try:
 
     #plt.plot(aListDate,aListClose)
     plt.rcParams['font.sans-serif'] = ['SimHei'] #设置中文字体
-    plt.title("采样：{}".format("8"))
+    plt.title("code:{},sample:{},pq:{},{}".format(stockCode,sample,iPQorder,"red:PACF,blue:ACF"))
     plt.show()
 
     #fra = Fractal(iArr[-20:])
