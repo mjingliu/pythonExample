@@ -119,7 +119,7 @@ try:
     y = iPACF
     plt.scatter(range(len(y)),y, c='red')
     y1 = iACF
-    plt.scatter(range(len(y1)),y1,c = 'blue')
+    plt.bar(range(len(y1)),y1)
     #plt.plot(iArr)
 
     #plt.plot(aListDate,aListClose)

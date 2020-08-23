@@ -268,3 +268,20 @@ class StatFunction(object):
 
         return tmpValue,X2Vale
 
+    def getDFTest(self):
+        '''
+        get the DT Test result
+        '''
+        pass
+
+    def getADFTest(self):
+        '''
+        get the result of ADF Test
+        '''
+        pass
+
+    def getPPTest(self):
+        '''
+        get the result of PP Test
+        '''
+        pass
