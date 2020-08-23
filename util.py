@@ -268,19 +268,35 @@ class StatFunction(object):
 
         return tmpValue,X2Vale
 
-    def getDFTest(self):
+    def getDFTest(self, data):
         '''
         get the DT Test result
+        Test the following three model respectively
+        suppose:
+        y = alpha + beta * x + gamma * t+ epsilon, epsilon ~ normal(0,1)
+
+        a) test the following model only
+        y = beta * x + epsilon
+        b) test the model:
+        y = alpha + beta * x + epsilon
+        c) test the model:
+        y = alpha + beta * x + gamma * t + epsilon
         '''
+        if not isinstance(data, np.ndarray):
+            iData = np.array(data)
+            print("please input the numpy data type first!")
+        else:
+            iData = data
+        
         pass
 
-    def getADFTest(self):
+    def getADFTest(self, data):
         '''
         get the result of ADF Test
         '''
         pass
 
-    def getPPTest(self):
+    def getPPTest(self, data):
         '''
         get the result of PP Test
         '''
