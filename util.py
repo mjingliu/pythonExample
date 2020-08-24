@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
+from builtins import isinstance, print
+
 import numpy as np
 from scipy.linalg import toeplitz
 import const_stat
@@ -23,6 +25,26 @@ def extendAxis(origin, length):
 
     return targetX
 
+def LSMethodSet(type):
+    '''
+    this function should be re-writtten again in order to decouple.
+    '''
+    if type is const_stat.NOCONST_NOTREND_DFTEST:
+        pass
+    elif type is const_stat.CONST_NOTREND_DFTEST:
+        pass
+    elif type is const_stat.CONST_TREND_DFTEST:
+        pass
+    elif type is const_stat.NOCONST_NOTREND_ADFTEST:
+        pass
+    elif type is const_stat.CONST_NOTREND_ADFTEST:
+        pass
+    elif type is const_stat.CONST_TREND_ADFTEST:
+        pass
+    else:
+        print("please input the right type")
+    return type
+
 def LSMethod(xArray, yArray):
     '''
     xArray: this is the X array to be calculated
@@ -30,11 +52,9 @@ def LSMethod(xArray, yArray):
     :return: parameter of least sqare method(最小二乘法估计参数)
     note: support X*Y
     '''
-    if type(xArray) is not np.ndarray or type(yArray) is not np.ndarray:
+    if not isinstance(xArray, np.ndarray) and not isinstance(yArray, np.ndarray):
         print("please input the right parameter!")
         return False
-    yArray = np.array(yArray)
-    xArray = np.array(xArray)
 
     xDim = np.shape(xArray)
     yDim = np.shape(yArray)
@@ -43,9 +63,12 @@ def LSMethod(xArray, yArray):
         print("please make sure of the column of X is equal to row of Y")
         return False
 
+    '''
+    the following three line of code should be removed from this function in order to decouple.
+    should bring this three line into the outer function
+    '''
     row = xArray.size
     xArray = np.reshape(xArray,(row, 1))
-
     xArray = np.insert(xArray, 0, 1, axis=1)
 
     xArrayTranspose = xArray.transpose()
@@ -287,7 +310,10 @@ class StatFunction(object):
             print("please input the numpy data type first!")
         else:
             iData = data
-        
+        iLen = len(iData)
+        iX = iData[:-1]
+        iY = iData[1:]
+
         pass
 
     def getADFTest(self, data):
