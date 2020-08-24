@@ -102,7 +102,7 @@ class StatFunction(object):
 
         dataLen = len(self.getCurData())
         std = np.std(self.getCurData())
-        alpha = 0.025
+        alpha = 0.05
         if dataLen >= len(const_stat.TN):
             index = len(const_stat.TN)-1
         else:
@@ -200,6 +200,7 @@ class StatFunction(object):
         currently, sqrt is the sigma
         '''
         isqrt = np.sqrt(len(self.getCurData()))
+        print("length of current data:%s" % len(self.getCurData()))
         coef = 2
         if confidence == 0.95:
             coef = 2
@@ -267,3 +268,36 @@ class StatFunction(object):
 
         return tmpValue,X2Vale
 
+    def getDFTest(self, data):
+        '''
+        get the DT Test result
+        Test the following three model respectively
+        suppose:
+        y = alpha + beta * x + gamma * t+ epsilon, epsilon ~ normal(0,1)
+
+        a) test the following model only
+        y = beta * x + epsilon
+        b) test the model:
+        y = alpha + beta * x + epsilon
+        c) test the model:
+        y = alpha + beta * x + gamma * t + epsilon
+        '''
+        if not isinstance(data, np.ndarray):
+            iData = np.array(data)
+            print("please input the numpy data type first!")
+        else:
+            iData = data
+        
+        pass
+
+    def getADFTest(self, data):
+        '''
+        get the result of ADF Test
+        '''
+        pass
+
+    def getPPTest(self, data):
+        '''
+        get the result of PP Test
+        '''
+        pass
