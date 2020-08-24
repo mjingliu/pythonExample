@@ -80,8 +80,8 @@ try:
     aListDate.reverse()
     aListClose.reverse()
 
-    #if len(aListClose) >400:
-     #   aListClose = aListClose[:400]
+    if len(aListClose) >200:
+        aListClose = aListClose[:200]
 
     dataProc = dp.StockAnalysis(aListClose, aListDate)
     aDividendTimes = dataProc.calDividendTimes()
@@ -89,11 +89,11 @@ try:
     print(aDividentDates)
     print(aDividendTimes)
 
-    iArr = dataProc.getLgYieldsArr()
+    iArr = dataProc.getLgYieldsArr(log=False)
     print("length of  iArr:%s" % len(iArr))
 
     statObj = util.StatFunction(iArr)
-    dataType = const.DATATYPE['RDMMS']
+    dataType = const.DATATYPE['RD']
     statObj.setDataType(dataType = dataType)
     iArrMean = statObj.getMean()
     iArrVar = statObj.getVar()
@@ -103,6 +103,7 @@ try:
     iACFDiag = statObj.getDiagnosticWhiteNoise(iACF)
     iPACF = statObj.getPACF(30)
     iPACFDiag = statObj.getDiagACF()
+
     iBox = statObj.getDiagnosticLjungBox(20)
     iMeanDiag = statObj.getMeanDiagnostic()
 
@@ -112,7 +113,7 @@ try:
     plt.axhline(iPACFDiag[1], c="red")
     plt.axhline(iMeanDiag, c = "blue")
     plt.axhline(-iMeanDiag, c = "blue")
-    plt.axhline(iArrMean, c = "green")
+    #plt.axhline(iArrMean, c = "green")
     y = iPACF
     plt.scatter(range(len(y)),y, c='red')
     y1 = iACF
@@ -121,7 +122,7 @@ try:
 
     #plt.plot(aListDate,aListClose)
     plt.rcParams['font.sans-serif'] = ['SimHei'] #设置中文字体
-    plt.title("采样：{}".format("8"))
+    plt.title("采样：{}".format("red: PACF, blue: ACF"))
     plt.show()
 
     #fra = Fractal(iArr[-20:])
