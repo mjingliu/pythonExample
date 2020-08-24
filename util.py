@@ -25,9 +25,10 @@ def extendAxis(origin, length):
 
     return targetX
 
-def LSMethodSet(type):
+def LSMethodConstructArray(rawArray, pOrder, type):
     '''
-    this function should be re-writtten again in order to decouple.
+    input the original array,
+    output the constructed XArray and YArray
     '''
     if type is const_stat.NOCONST_NOTREND_DFTEST:
         pass
@@ -77,6 +78,12 @@ def LSMethod(xArray, yArray):
     xTmp = np.array(xArrayTmpInv.dot(xArrayTranspose))
     paraList = xTmp.dot(yArray)
     return paraList
+
+def GetCoeffSTD(xArray, yArray,coeffiency):
+    '''
+
+    '''
+    pass
 
 class StatFunction(object):
     def __init__(self, data):
