@@ -75,11 +75,7 @@ def LSMethod(xArray, yArray):
     xArrayTmp = xArrayTranspose.dot(xArray)
     xArrayTmpInv = np.linalg.inv(xArrayTmp)
     xTmp = np.array(xArrayTmpInv.dot(xArrayTranspose))
-    print("xTmp shape: {}".format(np.shape(xTmp)))
-    print("yArray shape: {}".format(np.shape(yArray)))
-    #paraList = xTmp.dot(yArray)
-    paraList = np.dot(xTmp,yArray)
-    print("paraList shape: {}".format(np.shape(paraList)))
+    paraList = xTmp.dot(yArray)
     return paraList
 
 class StatFunction(object):
