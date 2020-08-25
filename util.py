@@ -117,6 +117,14 @@ def LSMethodConstructArray(rawArray, pOrder=0, type=0):
 
     return iXArray,iYArray
 
+def GetCoeffSTD(xArray, yArray,coeffiency):
+    '''
+    input: xArray, yArray and the coeffiency array
+    output: coefficiency standard deviation array
+    '''
+    
+    pass
+
 def LSMethod(xArray, yArray):
     '''
     xArray: this is the X array to be calculated
@@ -149,12 +157,6 @@ def LSMethod(xArray, yArray):
     xTmp = np.array(xArrayTmpInv.dot(xArrayTranspose))
     paraList = xTmp.dot(yArray)
     return paraList
-
-def GetCoeffSTD(xArray, yArray,coeffiency):
-    '''
-
-    '''
-    pass
 
 class StatFunction(object):
     def __init__(self, data):
