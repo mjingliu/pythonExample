@@ -65,7 +65,7 @@ stockCode = "601155.SH"
 #stockCode = "601398.SH" # this is ICBC
 #stockCode = "600519.SH" # this is Maotai
 dataType = const.DATATYPE['RD']
-sample = 60
+sample = 100
 iPQorder = 20
 
 try:

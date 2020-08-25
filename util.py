@@ -30,33 +30,31 @@ def LSMethod(xArray, yArray):
     :return: parameter of least sqare method(最小二乘法估计参数)
     note: support X*Y
     '''
-    if type(xArray) is not np.ndarray or type(yArray) is not np.ndarray:
+    if not isinstance(xArray, np.ndarray) and not isinstance(yArray, np.ndarray):
         print("please input the right parameter!")
         return False
-    yArray = np.array(yArray)
-    xArray = np.array(xArray)
 
     xDim = np.shape(xArray)
     yDim = np.shape(yArray)
 
     if xDim[0] != yDim[0]: # make sue column == row
-        print("please make sure of the column of X is equal to row of Y")
+        print("please make sure of the identical row of xArray and yArray!")
+        print("row of xArray:{}, row of yArray:{}".format(xDim[0],yDim[0]))
         return False
 
-    row = xArray.size
+    '''
+    construct the XArray from N*1 to N*2
+    '''
+    row = xDim[0]
     xArray = np.reshape(xArray,(row, 1))
-
     xArray = np.insert(xArray, 0, 1, axis=1)
 
     xArrayTranspose = xArray.transpose()
     xArrayTmp = xArrayTranspose.dot(xArray)
     xArrayTmpInv = np.linalg.inv(xArrayTmp)
     xTmp = np.array(xArrayTmpInv.dot(xArrayTranspose))
-    print("xTmp shape: {}".format(np.shape(xTmp)))
-    print("yArray shape: {}".format(np.shape(yArray)))
     #paraList = xTmp.dot(yArray)
     paraList = np.dot(xTmp,yArray)
-    print("paraList shape: {}".format(np.shape(paraList)))
     return paraList
 
 class StatFunction(object):
