@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
+from builtins import isinstance, print
+
 import numpy as np
 from scipy.linalg import toeplitz
 import const_stat
@@ -23,6 +25,27 @@ def extendAxis(origin, length):
 
     return targetX
 
+def LSMethodConstructArray(rawArray, pOrder, type):
+    '''
+    input the original array,
+    output the constructed XArray and YArray
+    '''
+    if type is const_stat.NOCONST_NOTREND_DFTEST:
+        pass
+    elif type is const_stat.CONST_NOTREND_DFTEST:
+        pass
+    elif type is const_stat.CONST_TREND_DFTEST:
+        pass
+    elif type is const_stat.NOCONST_NOTREND_ADFTEST:
+        pass
+    elif type is const_stat.CONST_NOTREND_ADFTEST:
+        pass
+    elif type is const_stat.CONST_TREND_ADFTEST:
+        pass
+    else:
+        print("please input the right type")
+    return type
+
 def LSMethod(xArray, yArray):
     '''
     xArray: this is the X array to be calculated
@@ -41,11 +64,11 @@ def LSMethod(xArray, yArray):
         print("please make sure of the identical row of xArray and yArray!")
         print("row of xArray:{}, row of yArray:{}".format(xDim[0],yDim[0]))
         return False
-
     '''
-    construct the XArray from N*1 to N*2
+    the following three line of code should be removed from this function in order to decouple.
+    should bring this three line into the outer function
     '''
-    row = xDim[0]
+    row = xArray.size
     xArray = np.reshape(xArray,(row, 1))
     xArray = np.insert(xArray, 0, 1, axis=1)
 
@@ -53,9 +76,16 @@ def LSMethod(xArray, yArray):
     xArrayTmp = xArrayTranspose.dot(xArray)
     xArrayTmpInv = np.linalg.inv(xArrayTmp)
     xTmp = np.array(xArrayTmpInv.dot(xArrayTranspose))
-    #paraList = xTmp.dot(yArray)
-    paraList = np.dot(xTmp,yArray)
+
+    paraList = xTmp.dot(yArray)
+    
     return paraList
+
+def GetCoeffSTD(xArray, yArray,coeffiency):
+    '''
+
+    '''
+    pass
 
 class StatFunction(object):
     def __init__(self, data):
@@ -285,7 +315,10 @@ class StatFunction(object):
             print("please input the numpy data type first!")
         else:
             iData = data
-        
+        iLen = len(iData)
+        iX = iData[:-1]
+        iY = iData[1:]
+
         pass
 
     def getADFTest(self, data):
