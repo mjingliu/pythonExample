@@ -25,26 +25,105 @@ def extendAxis(origin, length):
 
     return targetX
 
-def LSMethodConstructArray(rawArray, pOrder, type):
+def LSMethodConstructArray(rawArray, pOrder=0, type=0):
     '''
     input the original array,
     output the constructed XArray and YArray
     '''
+    if not isinstance(rawArray, np.ndarray):
+        iArray = np.array(rawArray)
+    else:
+        iArray = rawArray
+
+    p = pOrder
+
     if type is const_stat.NOCONST_NOTREND_DFTEST:
-        pass
+        iXArraytmp = iArray[:-1].T
+        iYArray = iArray[1:].T
+        iXArray = iXArraytmp
+
     elif type is const_stat.CONST_NOTREND_DFTEST:
-        pass
+        iXArraytmp = iArray[:-1].T
+        iYArray = iArray[1:].T
+        iOne = np.ones((iYArray.size,1)).T
+        iXArray = np.hstack((iOne,iXArraytmp))
+
     elif type is const_stat.CONST_TREND_DFTEST:
-        pass
+        iXArraytmp = iArray[:-1].T
+        iYArray = iArray[1:].T
+        iOne = np.ones((iYArray.size, 1)).T
+
+        iTime = []
+        for i in range(iArray.size-1):
+            iTime.append(i+2)
+        iTrendTime = np.array(iTime)
+        iTmpArr = np.hstack((iOne,iTrendTime))
+        iXArray = np.hstack((iTmpArr,iXArraytmp))
+
     elif type is const_stat.NOCONST_NOTREND_ADFTEST:
-        pass
+        iXArraytmp = iArray[:-1]
+        iYArray = iArray[p:].T
+        iArr = iXArraytmp[1:] - iXArraytmp[:-1]
+        iTmpArr = iXArraytmp[p-1:].T
+        iCtr = True
+        for i in range(np.size(iYArray)):
+            if iCtr is True:
+                iTmpX = iArr[i:p-1+i]
+                iCtr = False
+            else:
+                iTmpX = np.vstack((iTmpX,iArr[i:p-1+i]))
+        iXArray = np.hstack((iTmpX,iTmpArr))
+
     elif type is const_stat.CONST_NOTREND_ADFTEST:
-        pass
+        iXArraytmp = iArray[:-1]
+        iYArray = iArray[p:].T
+        iArr = iXArraytmp[1:] - iXArraytmp[:-1]
+        iTmpArr = iXArraytmp[p-1:].T
+        iCtr = True
+        for i in range(np.size(iYArray)):
+            if iCtr is True:
+                iTmpX = iArr[i:p-1+i]
+                iCtr = False
+            else:
+                iTmpX = np.vstack((iTmpX,iArr[i:p-1+i]))
+        iOnes = np.ones((iYArray.size,1))
+        iTmpX = np.hstack((iTmpX,iOnes))
+        iXArray = np.hstack((iTmpX,iTmpArr))
+
     elif type is const_stat.CONST_TREND_ADFTEST:
-        pass
+        iXArraytmp = iArray[:-1]
+        iYArray = iArray[p:].T
+        iArr = iXArraytmp[1:] - iXArraytmp[:-1]
+        iTmpArr = iXArraytmp[p-1:].T
+        iCtr = True
+        for i in range(np.size(iYArray)):
+            if iCtr is True:
+                iTmpX = iArr[i:p-1+i]
+                iCtr = False
+            else:
+                iTmpX = np.vstack((iTmpX,iArr[i:p-1+i]))
+        iTime = []
+        for j in range(np.size(iYArray)):
+            iTime.append(p+1+j)
+        iTrend = np.array(iTime)
+        iOnes = np.ones((iYArray.size,1))
+        iTmpX = np.hstack((iTmpX,iOnes))
+        iTmpX = np.hstack((iTmpX, iTrend.T))
+        iXArray = np.hstack((iTmpX,iTmpArr))
     else:
         print("please input the right type")
-    return type
+        iXArray = []
+        iYArray = []
+
+    return iXArray,iYArray
+
+def GetCoeffSTD(xArray, yArray,coeffiency):
+    '''
+    input: xArray, yArray and the coeffiency array
+    output: coefficiency standard deviation array
+    '''
+    
+    pass
 
 def LSMethod(xArray, yArray):
     '''
@@ -60,9 +139,8 @@ def LSMethod(xArray, yArray):
     xDim = np.shape(xArray)
     yDim = np.shape(yArray)
 
-    if xDim[0] != yDim[0]: # make sue column == row
-        print("please make sure of the identical row of xArray and yArray!")
-        print("row of xArray:{}, row of yArray:{}".format(xDim[0],yDim[0]))
+    if xDim[0] != yDim[0]: # make sure x-row == y-column
+        print("please make sure of the column of X is equal to row of Y")
         return False
     '''
     the following three line of code should be removed from this function in order to decouple.
@@ -80,12 +158,6 @@ def LSMethod(xArray, yArray):
     paraList = xTmp.dot(yArray)
     
     return paraList
-
-def GetCoeffSTD(xArray, yArray,coeffiency):
-    '''
-
-    '''
-    pass
 
 class StatFunction(object):
     def __init__(self, data):
