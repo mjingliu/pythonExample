@@ -117,12 +117,43 @@ def LSMethodConstructArray(rawArray, pOrder=0, type=0):
 
     return iXArray,iYArray
 
-def GetCoeffSTD(xArray, yArray,coeffiency):
+def GetCoeffSTD(xArray, yArray,coeffiency, p=1, type=0):
     '''
     input: xArray, yArray and the coeffiency array
     output: coefficiency standard deviation array
     '''
-    
+
+    if not isinstance(xArray, np.ndarray) or not isinstance(yArray, np.ndarray) or not isinstance(coeffiency,np.ndarray):
+        xArr = np.array(xArray)
+        yArr = np.array(yArray)
+        coeArr = np.array(coeffiency)
+
+    else:
+        xArr = xArray
+        yArr = yArray
+        coeArr = coeffiency
+
+    xShape = np.shape(xArray)
+
+    if type is const_stat.NOCONST_NOTREND_DFTEST or type is const_stat.NOCONST_NOTREND_ADFTEST:
+        rank = xShape[0]-p
+    elif type is const_stat.CONST_NOTREND_DFTEST or type is const_stat.CONST_NOTREND_ADFTEST:
+        rank = xShape[0]-p-1
+    elif type is const_stat.CONST_TREND_DFTEST or type is const_stat.CONST_TREND_ADFTEST:
+        rank = xShape[0] - p - 2
+
+    yArrEsm = xArr.dot(coeArr)
+    yEpsilon = yArr-yArrEsm
+    std = (yEpsilon.T.dot(yEpsilon))/rank
+
+    iOnes = np.ones((1,len(coeArr)))
+    itmp = xArr.transpose().dot(xArr)
+    itmpInv = np.linalg.inv(itmp)
+    iCoefficiencySTD = std*(iOnes.dot(itmpInv).dot(iOnes.T))
+
+    return np.sqrt(iCoefficiencySTD)
+
+def PreparePPTesttau(xArray, yArray, coefficency, q=0,type=0):
     pass
 
 def LSMethod(xArray, yArray):
@@ -145,10 +176,11 @@ def LSMethod(xArray, yArray):
     '''
     the following three line of code should be removed from this function in order to decouple.
     should bring this three line into the outer function
-    '''
+    
     row = xArray.size
     xArray = np.reshape(xArray,(row, 1))
     xArray = np.insert(xArray, 0, 1, axis=1)
+    '''
 
     xArrayTranspose = xArray.transpose()
     xArrayTmp = xArrayTranspose.dot(xArray)
