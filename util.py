@@ -25,7 +25,7 @@ def extendAxis(origin, length):
 
     return targetX
 
-def LSMethodConstructArray(rawArray, pOrder=0, type=0):
+def LSMethodConstructArray(rawArray, pOrder=1, type=0):
     '''
     input the original array,
     output the constructed XArray and YArray
