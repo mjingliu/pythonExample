@@ -25,7 +25,7 @@ def extendAxis(origin, length):
 
     return targetX
 
-def LSMethodConstructArray(rawArray, pOrder=1, type=0):
+def LSMethodConstructArray(rawArray, pOrder=0, type=0):
     '''
     input the original array,
     output the constructed XArray and YArray
@@ -153,7 +153,7 @@ def GetCoeffSTD(xArray, yArray,coeffiency, p=1, type=0):
 
     return np.sqrt(iCoefficiencySTD)
 
-def PPTesttau(xArray, yArray, coefficency, t, sigma, q=1, type=0):
+def PPTesttau(xArray, yArray, coefficency, sigma, q=1, type=0):
     '''
     xArray: input the estimator
     '''
@@ -161,7 +161,7 @@ def PPTesttau(xArray, yArray, coefficency, t, sigma, q=1, type=0):
         xArray = np.array(xArray)
         yArray = np.array(yArray)
         coefficency = np.array(coefficency)
-
+    t = (coefficency[-1] - 1) /sigma
     iResidual = np.array(yArray - xArray.dot(coefficency))
     iGamma = []
     iQ = []
@@ -219,15 +219,6 @@ def LSMethod(xArray, yArray):
     if xDim[0] != yDim[0]: # make sure x-row == y-column
         print("please make sure of the column of X is equal to row of Y")
         return False
-    '''
-    the following three line of code should be removed from this function in order to decouple.
-    should bring this three line into the outer function
-    
-    row = xArray.size
-    xArray = np.reshape(xArray,(row, 1))
-    xArray = np.insert(xArray, 0, 1, axis=1)
-    '''
-
     xArrayTranspose = xArray.transpose()
     xArrayTmp = xArrayTranspose.dot(xArray)
     xArrayTmpInv = np.linalg.inv(xArrayTmp)
@@ -446,7 +437,7 @@ class StatFunction(object):
 
         return tmpValue,X2Vale
 
-    def getDFTest(self, data):
+    def getDFTest(self, data, type=const_stat.NOCONST_NOTREND_DFTEST):
         '''
         get the DT Test result
         Test the following three model respectively
@@ -465,20 +456,78 @@ class StatFunction(object):
             print("please input the numpy data type first!")
         else:
             iData = data
-        iLen = len(iData)
-        iX = iData[:-1]
-        iY = iData[1:]
 
-        pass
+        if type is const_stat.NOCONST_NOTREND_DFTEST:
+            iXArr,iYArr = LSMethodConstructArray(iData,type=const_stat.NOCONST_NOTREND_DFTEST)
+            iCoef = LSMethod(iXArr,iYArr)
+            iSTD = GetCoeffSTD(iXArr,iYArr,iCoef,type=const_stat.NOCONST_NOTREND_DFTEST)
+        elif type is const_stat.CONST_NOTREND_DFTEST:
+            iXArr,iYArr = LSMethodConstructArray(iData,type=const_stat.CONST_NOTREND_DFTEST)
+            iCoef = LSMethod(iXArr,iYArr)
+            iSTD = GetCoeffSTD(iXArr,iYArr,iCoef,type=const_stat.CONST_NOTREND_DFTEST)
+        elif type is const_stat.CONST_TREND_DFTEST:
+            iXArr,iYArr = LSMethodConstructArray(iData,type=const_stat.CONST_TREND_DFTEST)
+            iCoef = LSMethod(iXArr,iYArr)
+            iSTD = GetCoeffSTD(iXArr,iYArr,iCoef,type=const_stat.CONST_TREND_DFTEST)
+        else:
+            print("can not calculate the DF test correctly!")
+            return
 
-    def getADFTest(self, data):
+        tValue = (iCoef[-1] - 1)/iSTD[-1]
+        return tValue
+
+    def getADFTest(self, data, p, type=const_stat.NOCONST_NOTREND_ADFTEST):
         '''
         get the result of ADF Test
         '''
-        pass
+        if not isinstance(data, np.ndarray):
+            iData = np.array(data)
+        else:
+            iData = data
+        if type is const_stat.NOCONST_NOTREND_ADFTEST:
+            iXArr, iYArr = LSMethodConstructArray(iData,p,type=const_stat.NOCONST_NOTREND_ADFTEST)
+            iCoef = LSMethod(iXArr,iYArr)
+            iSTD = GetCoeffSTD(iXArr,iYArr,iCoef,type=const_stat.NOCONST_NOTREND_ADFTEST)
+        elif type is const_stat.CONST_NOTREND_ADFTEST:
+            iXArr, iYArr = LSMethodConstructArray(iData,p,type=const_stat.CONST_NOTREND_ADFTEST)
+            iCoef = LSMethod(iXArr,iYArr)
+            iSTD = GetCoeffSTD(iXArr,iYArr,iCoef,type=const_stat.CONST_NOTREND_ADFTEST)
+        elif type is const_stat.CONST_TREND_ADFTEST:
+            iXArr, iYArr = LSMethodConstructArray(iData,p,type=const_stat.CONST_TREND_ADFTEST)
+            iCoef = LSMethod(iXArr,iYArr)
+            iSTD = GetCoeffSTD(iXArr,iYArr,iCoef,type=const_stat.CONST_TREND_ADFTEST)
+        else:
+            print("cannot calculate the ADF test correctly！")
+            return
 
-    def getPPTest(self, data):
+        tValue = (iCoef[-1] - 1)/iSTD[-1]
+        return tValue
+
+    def getPPTest(self, data, q, type=const_stat.NOCONST_NOTREND_DFTEST):
         '''
         get the result of PP Test
         '''
-        pass
+        if not isinstance(data, np.ndarray):
+            iData = np.array(data)
+        else:
+            iData = data
+            
+        if type is const_stat.NOCONST_NOTREND_DFTEST:
+            iXArr, iYArr = LSMethodConstructArray(iData,type=const_stat.NOCONST_NOTREND_DFTEST)
+            iCoef = LSMethod(iXArr,iYArr)
+            iSTD = GetCoeffSTD(iXArr,iYArr,iCoef,type=const_stat.NOCONST_NOTREND_DFTEST)
+            tauValue = PPTesttau(iXArr,iYArr,iCoef,iSTD[-1],q=q,type=const_stat.NOCONST_NOTREND_DFTEST)
+        elif type is const_stat.CONST_NOTREND_DFTEST:
+            iXArr, iYArr = LSMethodConstructArray(iData,type=const_stat.CONST_NOTREND_DFTEST)
+            iCoef = LSMethod(iXArr,iYArr)
+            iSTD = GetCoeffSTD(iXArr,iYArr,iCoef,type=const_stat.CONST_NOTREND_DFTEST)
+            tauValue = PPTesttau(iXArr,iYArr,iCoef,iSTD[-1],q=q,type=const_stat.CONST_NOTREND_DFTEST)
+        elif type is const_stat.CONST_TREND_DFTEST:
+            iXArr, iYArr = LSMethodConstructArray(iData,type=const_stat.CONST_TREND_DFTEST)
+            iCoef = LSMethod(iXArr,iYArr)
+            iSTD = GetCoeffSTD(iXArr,iYArr,iCoef,type=const_stat.CONST_TREND_DFTEST)
+            tauValue = PPTesttau(iXArr,iYArr,iCoef,iSTD[-1],q=q,type=const_stat.CONST_TREND_DFTEST)
+        else:
+            print("can not calculate PP test correctly!")
+            return
+        return tauValue
