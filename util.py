@@ -153,8 +153,54 @@ def GetCoeffSTD(xArray, yArray,coeffiency, p=1, type=0):
 
     return np.sqrt(iCoefficiencySTD)
 
-def PreparePPTesttau(xArray, yArray, coefficency, q=0,type=0):
-    pass
+def PPTesttau(xArray, yArray, coefficency, t, sigma, q=1, type=0):
+    '''
+    xArray: input the estimator
+    '''
+    if not isinstance(xArray, np.ndarray) or not isinstance(yArray, np.ndarray) or not isinstance(coefficency, np.ndarray):
+        xArray = np.array(xArray)
+        yArray = np.array(yArray)
+        coefficency = np.array(coefficency)
+
+    iResidual = np.array(yArray - xArray.dot(coefficency))
+    iGamma = []
+    iQ = []
+    iGamma.append(np.dot(iResidual.T, iResidual))
+    for i in range(1, q + 1):
+        iGamma.append(np.dot(iResidual[:-q].T, iResidual[q:]))
+        iQ.append(i)
+
+    iGamma = np.array(iGamma)
+    iLength = np.shape(iResidual)[0]
+    iGamma0 = iGamma[0]/iLength
+
+    if type is const_stat.NOCONST_NOTREND_DFTEST:
+        iVar = iLength - 1
+    elif type is const_stat.CONST_NOTREND_DFTEST:
+        iVar = iLength - 2
+    elif type is const_stat.CONST_TREND_DFTEST:
+        iVar = iLength -3
+    else:
+        iVar = iLength - 1
+        print("please make sure that input the right type to be used!")
+
+    iMSE = iGamma[0]/iVar
+
+    if q == 0:
+        tau = t
+    elif q>0:
+        jQ = np.array(iQ)
+        jQ = 1 - jQ/(q+1)
+        itmp = jQ.dot(iGamma[1:])
+        ilamda2 = iGamma0 + itmp*2
+        ilamda = np.sqrt(ilamda2)
+        iGamma0SQRT = np.sqrt(iGamma0)
+        tau = t*iGamma0SQRT/ilamda + (itmp*iLength*sigma)/(ilamda*iMSE)
+    else:
+        print("wrong parameter of q:{}".format(q))
+        tau = 0xFFFF
+
+    return tau
 
 def LSMethod(xArray, yArray):
     '''
