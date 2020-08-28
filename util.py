@@ -465,10 +465,7 @@ class StatFunction(object):
             print("please input the numpy data type first!")
         else:
             iData = data
-        iLen = len(iData)
-        iX = iData[:-1]
-        iY = iData[1:]
-
+        con
         pass
 
     def getADFTest(self, data):
