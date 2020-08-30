@@ -12,6 +12,7 @@ import math
 import StockDB as db
 import const
 import dataProcess as dp
+import TSAPlot as TPlt
 from scipy.linalg import toeplitz
 
 
@@ -55,7 +56,7 @@ f. 计算n个采样序列的S值，S = sqrt((detX0 * detX0 + detX1*detX1 + detX2
 '''
 #password：R~!@34qwe
 
-myDB = db.stockDB(user="mingjliu", password="R~!@34qwe")
+myDB = db.stockDB(user="mingjliu", password="qwe`1234")
 tblName = const.tblName
 dbName = const.dbName
 coeffiency = const.coeffiency
@@ -105,6 +106,10 @@ try:
     iACFDiag = statObj.getDiagnosticWhiteNoise(iACF)
     iPACF = statObj.getPACF(iPQorder)
     iPACFDiag = statObj.getDiagACF()
+    iPlt = TPlt.TPlot(range(len(iPACF)),iPACF,stockCode,sample = 100)
+    iPlt.plotLine()
+    iPlt.plotBar()
+    iPlt.plotScatter()
 
     iBox = statObj.getDiagnosticLjungBox(20)
     iMeanDiag = statObj.getMeanDiagnostic()
@@ -116,18 +121,6 @@ try:
     plt.axhline(iMeanDiag, c = "blue")
     plt.axhline(-iMeanDiag, c = "blue")
     #plt.axhline(iArrMean, c = "green")
-    y = iPACF
-    plt.scatter(range(len(y)),y, c='red')
-    y1 = iACF
-    plt.bar(range(len(y1)),y1)
-    #plt.plot(iArr)
-
-    #plt.plot(aListDate,aListClose)
-    plt.rcParams['font.sans-serif'] = ['SimHei'] #设置中文字体
-
-    plt.title("code:{},sample:{},pq:{},{}".format(stockCode,sample,iPQorder,"red:PACF,blue:ACF"))
-
-    plt.show()
 
     #fra = Fractal(iArr[-20:])
     fra = Fractal(iArr)
@@ -198,18 +191,6 @@ try:
     ArrayY = fra.getFraPeriodValueofWin()
     plt.scatter(ArrayX, ArrayY)
     plt.plot(ArrayX, ArrayY)
-    '''
-    '''
-    #plt.scatter(iHXFinal, iHArrFinal)
-    plt.scatter(dimArrayX, dimArrayY)
-    dimArrayYtmp = para[0] + np.float(para[1]) * dimArrayXtmp
-    plt.plot(dimArrayXtmp,dimArrayYtmp)
-    #plt.plot(iArr)
-
-    #plt.plot(aListDate,aListClose)
-    plt.rcParams['font.sans-serif'] = ['SimHei'] #设置中文字体
-    plt.title("采样：{}".format("8"))
-    plt.show()
     '''
 except Exception as e:
     print("Exception: %s" % e)
