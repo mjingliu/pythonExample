@@ -85,6 +85,17 @@ try:
     aList.reverse()
     aListDate.reverse()
     aListClose.reverse()
+    tmpArr = aListClose
+    iPlt = TPlt.TPlot(aListDate,tmpArr,stockCode,sample = 100)
+    iPlt.plotLine()
+
+    tmpArr = np.array(tmpArr)
+    iPlt = TPlt.TPlot(aListDate,np.log(tmpArr),stockCode,"ln",sample = 100)
+    iPlt.plotLine()
+
+    tmpArr = tmpArr[1:] - tmpArr[:-1]
+    iPlt = TPlt.TPlot(aListDate[1:],np.log(tmpArr),stockCode,"ln ratio",sample = 100)
+    iPlt.plotLine()
 
     dataProc = dp.StockAnalysis(aListClose, aListDate)
     aDividendTimes = dataProc.calDividendTimes()
@@ -106,10 +117,6 @@ try:
     iACFDiag = statObj.getDiagnosticWhiteNoise(iACF)
     iPACF = statObj.getPACF(iPQorder)
     iPACFDiag = statObj.getDiagACF()
-    iPlt = TPlt.TPlot(range(len(iPACF)),iPACF,stockCode,sample = 100)
-    iPlt.plotLine()
-    iPlt.plotBar()
-    iPlt.plotScatter()
 
     iBox = statObj.getDiagnosticLjungBox(20)
     iMeanDiag = statObj.getMeanDiagnostic()
