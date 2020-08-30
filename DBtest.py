@@ -66,7 +66,7 @@ stockCode = "601155.SH"
 #stockCode = "601398.SH" # this is ICBC
 #stockCode = "600519.SH" # this is Maotai
 dataType = const.DATATYPE['RD']
-sample = 100
+sample = 300
 iPQorder = 20
 
 try:
@@ -85,29 +85,28 @@ try:
     aList.reverse()
     aListDate.reverse()
     aListClose.reverse()
-    tmpArr = aListClose
-    iPlt = TPlt.TPlot(aListDate,tmpArr,stockCode,sample = 100)
+
+
+    tmpArr = np.array(aListClose)
+    tmpArrMean = tmpArr-np.mean(tmpArr)
+    iPlt = TPlt.TPlot(aListDate,tmpArrMean,stockCode,sample = 100)
     iPlt.plotLine()
 
-    tmpArr = np.array(tmpArr)
-    tmpArr = np.log(tmpArr)
-    iPlt = TPlt.TPlot(aListDate,tmpArr,stockCode,"ln",sample = 100)
+    tmpArrLn = np.log(tmpArr)
+    tmpArrLnMean = tmpArrLn - np.mean(tmpArrLn)
+    iPlt = TPlt.TPlot(aListDate,tmpArrLnMean,stockCode,"Ln",sample = 100)
     iPlt.plotLine()
 
-    tmpArr = tmpArr[1:] - tmpArr[:-1]
-    iPlt = TPlt.TPlot(aListDate[1:],tmpArr,stockCode,"ln ratio",sample = 100)
-    iPlt.plotBar()
+    tmpArrLnRatio = tmpArrLn[1:] - tmpArrLn[:-1]
+    tmpArrLnRatioMean = tmpArrLnRatio - 0 #np.mean(tmpArrLnRatio)
+    iPlt = TPlt.TPlot(aListDate[1:],tmpArrLnRatioMean,stockCode,"Ln ratio",sample = 100)
     iPlt.plotLine()
 
     dataProc = dp.StockAnalysis(aListClose, aListDate)
-    aDividendTimes = dataProc.calDividendTimes()
-    aDividentDates = dataProc.getDividendDate()
-    print(aDividentDates)
-    print(aDividendTimes)
-
-    iArr = dataProc.getLgYieldsArr(log=True)
+    iArr = dataProc.getEffectiveData()
     print("length of  iArr:%s" % len(iArr))
-
+    iArr = np.array(iArr)
+    iArr = np.log(iArr)
     statObj = util.StatFunction(iArr[-sample:])
 
     statObj.setDataType(dataType = dataType)
@@ -115,6 +114,9 @@ try:
     iArrVar = statObj.getVar()
     iArrSkewness = statObj.getSkewness()
     iArrKurt = statObj.getKurt()
+    iTest = statObj.getDFTest(iArr)
+    print(iTest)
+    '''
     iACF = statObj.getACF(iPQorder)
     iACFDiag = statObj.getDiagnosticWhiteNoise(iACF)
     iPACF = statObj.getPACF(iPQorder)
@@ -125,12 +127,13 @@ try:
 
     print("mean: {} Var: {} Skewness: {} Kurt: {}".format(iArrMean,iArrVar,iArrSkewness,iArrKurt))
     print(iBox)
+    
     plt.axhline(iPACFDiag[0], c="red")
     plt.axhline(iPACFDiag[1], c="red")
     plt.axhline(iMeanDiag, c = "blue")
     plt.axhline(-iMeanDiag, c = "blue")
     #plt.axhline(iArrMean, c = "green")
-
+    '''
     #fra = Fractal(iArr[-20:])
     fra = Fractal(iArr)
     print(len(iArr))
