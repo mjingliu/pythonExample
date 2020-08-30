@@ -18,7 +18,7 @@ from scipy.linalg import toeplitz
 
 #import pywt as wvlt
 import statsmodels.tsa.ar_model as AR
-from arch import arch_model
+
 
 '''
 1. 假设每一个行业都是以一年为周期，也就是说一年为通用周期
@@ -90,11 +90,13 @@ try:
     iPlt.plotLine()
 
     tmpArr = np.array(tmpArr)
-    iPlt = TPlt.TPlot(aListDate,np.log(tmpArr),stockCode,"ln",sample = 100)
+    tmpArr = np.log(tmpArr)
+    iPlt = TPlt.TPlot(aListDate,tmpArr,stockCode,"ln",sample = 100)
     iPlt.plotLine()
 
     tmpArr = tmpArr[1:] - tmpArr[:-1]
-    iPlt = TPlt.TPlot(aListDate[1:],np.log(tmpArr),stockCode,"ln ratio",sample = 100)
+    iPlt = TPlt.TPlot(aListDate[1:],tmpArr,stockCode,"ln ratio",sample = 100)
+    iPlt.plotBar()
     iPlt.plotLine()
 
     dataProc = dp.StockAnalysis(aListClose, aListDate)
