@@ -17,7 +17,7 @@ from scipy.linalg import toeplitz
 
 
 #import pywt as wvlt
-import statsmodels.tsa.ar_model as AR
+#import statsmodels.tsa.ar_model as AR
 
 
 '''
@@ -56,7 +56,7 @@ f. 计算n个采样序列的S值，S = sqrt((detX0 * detX0 + detX1*detX1 + detX2
 '''
 #password：R~!@34qwe
 
-myDB = db.stockDB(user="mingjliu", password="qwe`1234")
+myDB = db.stockDB(user="mingjliu", password="R~!@34qwe")
 tblName = const.tblName
 dbName = const.dbName
 coeffiency = const.coeffiency
@@ -90,23 +90,23 @@ try:
     tmpArr = np.array(aListClose)
     tmpArrMean = tmpArr-np.mean(tmpArr)
     iPlt = TPlt.TPlot(aListDate,tmpArrMean,stockCode,sample = 100)
-    iPlt.plotLine()
+    #iPlt.plotLine()
 
     tmpArrLn = np.log(tmpArr)
     tmpArrLnMean = tmpArrLn - np.mean(tmpArrLn)
     iPlt = TPlt.TPlot(aListDate,tmpArrLnMean,stockCode,"Ln",sample = 100)
-    iPlt.plotLine()
+    #iPlt.plotLine()
 
     tmpArrLnRatio = tmpArrLn[1:] - tmpArrLn[:-1]
     tmpArrLnRatioMean = tmpArrLnRatio - 0 #np.mean(tmpArrLnRatio)
     iPlt = TPlt.TPlot(aListDate[1:],tmpArrLnRatioMean,stockCode,"Ln ratio",sample = 100)
-    iPlt.plotLine()
+    #iPlt.plotLine()
 
     dataProc = dp.StockAnalysis(aListClose, aListDate)
     iArr = dataProc.getEffectiveData()
     print("length of  iArr:%s" % len(iArr))
     iArr = np.array(iArr)
-    iArr = np.log(iArr)
+    #iArr = np.log(iArr)
     statObj = util.StatFunction(iArr[-sample:])
 
     statObj.setDataType(dataType = dataType)
@@ -114,7 +114,7 @@ try:
     iArrVar = statObj.getVar()
     iArrSkewness = statObj.getSkewness()
     iArrKurt = statObj.getKurt()
-    iTest = statObj.getDFTest(iArr)
+    iTest = statObj.getDFTest(tmpArrMean)
     print(iTest)
     '''
     iACF = statObj.getACF(iPQorder)

@@ -17,6 +17,7 @@ class TPlot(object):
 
     def __basicSetting__(self) :
         plt.rcParams['font.sans-serif'] = ['SimHei']  # 设置中文字体
+        plt.rcParams['axes.unicode_minus'] = False # 显示负数的符号
         argsLen = len(self.args)
         if argsLen >= 1 :
             str = []

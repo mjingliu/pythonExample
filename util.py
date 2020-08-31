@@ -146,12 +146,15 @@ def GetCoeffSTD(xArray, yArray,coeffiency, p=1, type=0):
     yEpsilon = yArr-yArrEsm
     std = (yEpsilon.T.dot(yEpsilon))/rank
 
-    iOnes = np.ones((1,len(coeArr)))
     itmp = xArr.transpose().dot(xArr)
-    itmpInv = np.linalg.inv(itmp)
-    iCoefficiencySTD = std*(iOnes.dot(itmpInv).dot(iOnes.T))
+    if coeArr.size == 1:
+        iCoefficiencySTD = np.array(std/itmp)
+    else:
+        iEye = np.eye(coeArr.size, k=0)
+        itmpInv = np.linalg.inv(itmp)
+        iCoefficiencySTD = std*np.diagonal(iEye.dot(itmpInv).dot(iEye.T))
 
-    return np.sqrt(iCoefficiencySTD)
+    return np.array(np.sqrt(iCoefficiencySTD))
 
 def PPTesttau(xArray, yArray, coefficency, sigma, q=1, type=0):
     '''
@@ -219,14 +222,19 @@ def LSMethod(xArray, yArray):
     if xDim[0] != yDim[0]: # make sure x-row == y-column
         print("please make sure of the column of X is equal to row of Y")
         return False
+
     xArrayTranspose = xArray.transpose()
     xArrayTmp = xArrayTranspose.dot(xArray)
-    xArrayTmpInv = np.linalg.inv(xArrayTmp)
-    xTmp = np.array(xArrayTmpInv.dot(xArrayTranspose))
+    xTmp = xArrayTranspose.dot(yArray)
 
-    paraList = xTmp.dot(yArray)
-    
-    return paraList
+    if len(xDim) == 1:
+        # there is only one row/column to be used
+        paraList = xTmp/xArrayTmp
+    else:
+        xArrayTmpInv = np.linalg.inv(xArrayTmp)
+        paraList = xArrayTmpInv.dot(xTmp)
+
+    return np.array(paraList)
 
 class StatFunction(object):
     def __init__(self, data):
@@ -473,7 +481,11 @@ class StatFunction(object):
             print("can not calculate the DF test correctly!")
             return
 
-        tValue = (iCoef[-1] - 1)/iSTD[-1]
+        if iCoef.size == 1:
+            tValue = (iCoef - 1) / iSTD
+        else:
+            tValue = (iCoef[-1] - 1)/iSTD[-1]
+
         return tValue
 
     def getADFTest(self, data, p, type=const_stat.NOCONST_NOTREND_ADFTEST):
