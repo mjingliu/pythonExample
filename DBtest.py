@@ -5,7 +5,6 @@ from typing import Any
 import pymysql
 import os,sys
 import numpy as np
-import matplotlib.pyplot as plt
 import util
 from fractal import Fractal
 import math
@@ -13,8 +12,7 @@ import StockDB as db
 import const
 import dataProcess as dp
 import TSAPlot as TPlt
-from scipy.linalg import toeplitz
-
+import statsmodels.tsa.ar_model
 
 #import pywt as wvlt
 #import statsmodels.tsa.ar_model as AR
@@ -86,27 +84,26 @@ try:
     aListDate.reverse()
     aListClose.reverse()
 
-
-    tmpArr = np.array(aListClose)
-    tmpArrMean = tmpArr-np.mean(tmpArr)
-    iPlt = TPlt.TPlot(aListDate,tmpArrMean,stockCode,sample = 100)
-    #iPlt.plotLine()
-
-    tmpArrLn = np.log(tmpArr)
-    tmpArrLnMean = tmpArrLn - np.mean(tmpArrLn)
-    iPlt = TPlt.TPlot(aListDate,tmpArrLnMean,stockCode,"Ln",sample = 100)
-    #iPlt.plotLine()
-
-    tmpArrLnRatio = tmpArrLn[1:] - tmpArrLn[:-1]
-    tmpArrLnRatioMean = tmpArrLnRatio - 0 #np.mean(tmpArrLnRatio)
-    iPlt = TPlt.TPlot(aListDate[1:],tmpArrLnRatioMean,stockCode,"Ln ratio",sample = 100)
-    #iPlt.plotLine()
-
     dataProc = dp.StockAnalysis(aListClose, aListDate)
     iArr = dataProc.getEffectiveData()
     print("length of  iArr:%s" % len(iArr))
     iArr = np.array(iArr)
     #iArr = np.log(iArr)
+    tmpArr = iArr
+    tmpArrMean = tmpArr-np.mean(tmpArr)
+    iPlt = TPlt.TPlot(iArr,tmpArrMean,stockCode,sample = 100)
+    #iPlt.plotLine()
+
+    tmpArrLn = np.log(tmpArr)
+    tmpArrLnMean = tmpArrLn - np.mean(tmpArrLn)
+    iPlt = TPlt.TPlot(iArr,tmpArrLnMean,stockCode,"Ln",sample = 100)
+    #iPlt.plotLine()
+
+    tmpArrLnRatio = tmpArrLn[1:] - tmpArrLn[:-1]
+    tmpArrLnRatioMean = tmpArrLnRatio - np.mean(tmpArrLnRatio)
+    iPlt = TPlt.TPlot(iArr[1:],tmpArrLnRatioMean,stockCode,"Ln ratio",sample = 100)
+    #iPlt.plotLine()
+
     statObj = util.StatFunction(iArr[-sample:])
 
     statObj.setDataType(dataType = dataType)
@@ -114,8 +111,14 @@ try:
     iArrVar = statObj.getVar()
     iArrSkewness = statObj.getSkewness()
     iArrKurt = statObj.getKurt()
-    iTest = statObj.getDFTest(tmpArrMean)
-    print(iTest)
+
+    iTestRaw = statObj.getDFTest(tmpArr)
+    iTestRawMean = statObj.getDFTest(tmpArrMean)
+    iTestLogRaw = statObj.getDFTest(tmpArrLn)
+    iTestLogRawMean = statObj.getDFTest(tmpArrLnMean)
+    iTestLogRRaw = statObj.getDFTest(tmpArrLnRatio)
+    iTestLogRRawMean = statObj.getDFTest(tmpArrLnRatioMean)
+    print("Raw:{}, RawMean:{}, Log:{}, LogMean:{}, LogRatio:{}, LogRatioMean:{}".format(iTestRaw,iTestRawMean,iTestLogRaw,iTestLogRawMean,iTestLogRRaw,iTestLogRRawMean))
     '''
     iACF = statObj.getACF(iPQorder)
     iACFDiag = statObj.getDiagnosticWhiteNoise(iACF)
