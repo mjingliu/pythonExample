@@ -50,11 +50,7 @@ NOCONST_NOTREND_ADFTEST = 4
 CONST_NOTREND_ADFTEST = 5
 CONST_TREND_ADFTEST = 6
 
-tau_test = {
-    "nc": tau_nc,
-    "c": tau_c,
-    "ct": tau_ct
-}
+
 # first column is the number of number, second column ~ fifth column is the critical value of 10%,5%,2.5%,1%
 tau_nc = [
     [25,-1.60,-1.95,-2.26,-2.66],
@@ -78,3 +74,8 @@ tau_ct = [
     [500,-3.13,-3.42,-3.68,-3.98],
     [1000,-3.12,-3.41,-3.66,-3.96]
 ]
+tau_test = {
+    "nc": tau_nc,
+    "c": tau_c,
+    "ct": tau_ct
+}
