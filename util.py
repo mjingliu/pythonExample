@@ -346,8 +346,17 @@ class StatFunction(object):
 
         return iRk[1:]/iRk[0]
 
-    def getACF(self, order, bias=True):
+    def __calcDefaultOrder__(self):
         dataArr = self.getCurData()
+        return np.ceil(12.*np.power(len(dataArr)/100.,1/4.))
+
+    def getACF(self, order=0, bias=True):
+        if order == 0:
+            order = self.__calcDefaultOrder__()
+        else:
+            order = order
+        dataArr = self.getCurData()
+
         return self.__calcACF__(dataArr, order, bias)
 
     def __YuleWalker__(self, data, order, bias):
@@ -363,9 +372,15 @@ class StatFunction(object):
 
         return np.linalg.solve(np.array(iRArray), np.array(iRk)[1:])
 
-    def getPACF(self, order, bias=True):
+    def getPACF(self, order=0, bias=True):
         iPACF = []
         dataArr = self.getCurData()
+
+        if order == 0:
+            order = self.__calcDefaultOrder__()
+        else:
+            order = order
+
         for i in range(1, order+1):
             iArr = self.__YuleWalker__(dataArr, i, bias)
             iPACF.append(iArr[-1])
@@ -405,7 +420,7 @@ class StatFunction(object):
 
         return iDiagnostic
 
-    def getDiagnosticLjungBox(self, order, confidence=0.05, fitPara = 0):
+    def getDiagnosticLjungBox(self, order=0, confidence=0.05, fitPara = 0):
         '''
         condition:
         if the model is ARMA(p,q), then the "N" of X2 should be m-(p+q)
@@ -415,6 +430,12 @@ class StatFunction(object):
         general, order = ln(T), T = length of array
         '''
         tmpConf = [0.995,0.99,0.975,0.95,0.9,0.75,0.5,0.25,0.1,0.05,0.025,0.01,0.005]
+
+        if order == 0:
+            order = self.__calcDefaultOrder__()
+        else:
+            order = order
+
         iloc = 0
         iControl = True
 
@@ -512,7 +533,11 @@ class StatFunction(object):
             print("cannot calculate the ADF test correctly！")
             return
 
-        tValue = (iCoef[-1] - 1)/iSTD[-1]
+        if iCoef.size == 1:
+            tValue = (iCoef - 1) / iSTD
+        else:
+            tValue = (iCoef[-1] - 1)/iSTD[-1]
+            
         return tValue
 
     def getPPTest(self, data, q, type=const_stat.NOCONST_NOTREND_DFTEST):
