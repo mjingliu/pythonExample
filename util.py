@@ -568,3 +568,22 @@ class StatFunction(object):
             print("can not calculate PP test correctly!")
             return
         return tauValue
+
+    def getAICValue(self):
+        pass
+
+    def getSICvalue(self):
+        pass
+
+    def getJBTest(self):
+        pass
+
+    def getLMTest(self):
+        pass
+
+    def getMSPETest(self):
+        pass
+
+    def getMAPETest(self):
+        pass
+

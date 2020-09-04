@@ -13,12 +13,15 @@ import const
 import dataProcess as dp
 import TSAPlot as TPlt
 import statsmodels.tsa.ar_model
-import scipy.stats.distributions as dstr
+
+from scipy.stats import chi2
+from scipy.special import gdtr
+
 
 #import pywt as wvlt
 #import statsmodels.tsa.ar_model as AR
 
-
+chi2.cdf()
 '''
 1. 假设每一个行业都是以一年为周期，也就是说一年为通用周期
 2. 某些行业可能是以季节为周期
@@ -55,7 +58,7 @@ f. 计算n个采样序列的S值，S = sqrt((detX0 * detX0 + detX1*detX1 + detX2
 '''
 #password：R~!@34qwe
 
-myDB = db.stockDB(user="mingjliu", password="R~!@34qwe")
+myDB = db.stockDB(user="mingjliu", password="qwe`1234")
 tblName = const.tblName
 dbName = const.dbName
 coeffiency = const.coeffiency
@@ -97,18 +100,18 @@ try:
     #iArr = np.log(iArr)
     tmpArr = iArr
     tmpArrMean = tmpArr-np.mean(tmpArr)
-    iPlt = TPlt.TPlot(iArr,tmpArrMean,stockCode,sample = 100)
-    #iPlt.plotLine()
+    iPlt = TPlt.TPlot(range(len(iArr)),tmpArrMean,stockCode,sample = 100)
+    iPlt.plotLine()
 
     tmpArrLn = np.log(tmpArr)
     tmpArrLnMean = tmpArrLn - np.mean(tmpArrLn)
-    iPlt = TPlt.TPlot(iArr,tmpArrLnMean,stockCode,"Ln",sample = 100)
-    #iPlt.plotLine()
+    iPlt = TPlt.TPlot(range(len(iArr)),tmpArrLnMean,stockCode,"Ln",sample = 100)
+    iPlt.plotLine()
 
     tmpArrLnRatio = tmpArrLn[1:] - tmpArrLn[:-1]
     tmpArrLnRatioMean = tmpArrLnRatio - np.mean(tmpArrLnRatio)
-    iPlt = TPlt.TPlot(iArr[1:],tmpArrLnRatioMean,stockCode,"Ln ratio",sample = 100)
-    #iPlt.plotLine()
+    iPlt = TPlt.TPlot(range(len(iArr[1:])),tmpArrLnRatioMean,stockCode,"Ln ratio",sample = 100)
+    iPlt.plotLine()
 
     statObj = util.StatFunction(iArr[-sample:])
 

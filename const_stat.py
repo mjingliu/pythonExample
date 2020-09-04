@@ -77,10 +77,17 @@ tau_ct = [
     [500,-3.13,-3.42,-3.68,-3.98],
     [1000,-3.12,-3.41,-3.66,-3.96]
 ]
+<<<<<<< HEAD
 tau_ct = np.asarray(tau_ct)
 
+=======
+>>>>>>> 74c7fd4f8a03e50d2856fca2237cf14c53fcc762
 tau_test = {
     "nc": tau_nc,
     "c": tau_c,
     "ct": tau_ct
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 74c7fd4f8a03e50d2856fca2237cf14c53fcc762
