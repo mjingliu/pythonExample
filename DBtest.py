@@ -13,6 +13,7 @@ import const
 import dataProcess as dp
 import TSAPlot as TPlt
 import statsmodels.tsa.ar_model
+import scipy.stats.distributions as dstr
 
 #import pywt as wvlt
 #import statsmodels.tsa.ar_model as AR
@@ -66,6 +67,11 @@ stockCode = "601155.SH"
 dataType = const.DATATYPE['RD']
 sample = 300
 iPQorder = 20
+
+alpha = math.sqrt(4)
+
+alpha += 5
+print("directory:%s" % dir(math))
 
 try:
     tmpList = list(myDB.selectData(tblName, dbName, stockCode))
