@@ -299,7 +299,7 @@ class StatFunction(object):
         self.currType = dataType
 
     def getCurData(self):
-        return self.currData
+        return np.asarray(self.currData)
 
     def getMean(self):
         iData = self.getCurData()
@@ -382,12 +382,15 @@ class StatFunction(object):
         dataArr = self.getCurData()
         return np.ceil(12.*np.power(len(dataArr)/100.,1/4.))
 
-    def getACF(self, order=0, bias=True):
+    def getACF(self, data=None, order=0, bias=True):
         if order == 0:
             order = self.__calcDefaultOrder__()
         else:
             order = order
-        dataArr = self.getCurData()
+        if data is None:
+            dataArr = self.getCurData()
+        else:
+            dataArr = np.asarray(data)
 
         return self.__calcACF__(dataArr, order, bias)
 
@@ -404,15 +407,19 @@ class StatFunction(object):
 
         return np.linalg.solve(np.array(iRArray), np.array(iRk)[1:])
 
-    def getPACF(self, order=0, bias=True):
-        iPACF = []
-        dataArr = self.getCurData()
+    def getPACF(self, data=None, order=0, bias=True):
+        if data is None:
+            dataArr = self.getCurData()
+        else:
+            dataArr = data
 
         if order == 0:
             order = self.__calcDefaultOrder__()
         else:
             order = order
 
+        iPACF = []
+        
         for i in range(1, order+1):
             iArr = self.__YuleWalker__(dataArr, i, bias)
             iPACF.append(iArr[-1])
