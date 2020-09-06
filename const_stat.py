@@ -1,5 +1,6 @@
 #!/usr/bin/env python 
 # -*- coding:utf-8 -*-
+import numpy as np
 '''
 add the X2 distribution constant
 P: 0.995	0.99	0.975	0.95	0.9	0.75	0.5	0.25	0.1	0.05	0.025	0.01	0.005
@@ -50,7 +51,6 @@ NOCONST_NOTREND_ADFTEST = 4
 CONST_NOTREND_ADFTEST = 5
 CONST_TREND_ADFTEST = 6
 
-
 # first column is the number of number, second column ~ fifth column is the critical value of 10%,5%,2.5%,1%
 tau_nc = [
     [25,-1.60,-1.95,-2.26,-2.66],
@@ -58,6 +58,7 @@ tau_nc = [
     [100,-1.61,-1.95,-2.24,-2.60],
     [250,-1.62,-1.95,-2.23,-2.58]
 ]
+tau_nc = np.asarray(tau_nc)
 tau_c = [
     [25,-2.63,-3.00,-3.33,-3.75],
     [50,-2.60,-2.93,-3.22,-3.58],
@@ -66,6 +67,8 @@ tau_c = [
     [500,-2.57,-2.87,-3.13,-3.44],
     [1000,-2.57,-2.86,-3.12,-3.43]
 ]
+tau_c = np.asarray(tau_c)
+
 tau_ct = [
     [25,-3.24,-3.60,-3.95,-4.38],
     [50,-3.18,-3.50,-3.80,-4.15],
@@ -74,8 +77,11 @@ tau_ct = [
     [500,-3.13,-3.42,-3.68,-3.98],
     [1000,-3.12,-3.41,-3.66,-3.96]
 ]
+tau_ct = np.asarray(tau_ct)
+
 tau_test = {
     "nc": tau_nc,
     "c": tau_c,
     "ct": tau_ct
 }
+
