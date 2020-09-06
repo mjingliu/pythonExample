@@ -419,7 +419,7 @@ class StatFunction(object):
             order = order
 
         iPACF = []
-        
+
         for i in range(1, order+1):
             iArr = self.__YuleWalker__(dataArr, i, bias)
             iPACF.append(iArr[-1])
