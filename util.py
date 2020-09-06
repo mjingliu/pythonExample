@@ -575,8 +575,29 @@ class StatFunction(object):
     def getSICvalue(self):
         pass
 
-    def getJBTest(self):
-        pass
+    def getJBTest(self,significance = 0.05):
+        '''
+        1. get var
+        2. get skews
+        4. get kurt
+        5. contrust SK test variable
+        6. check the chi2 distribution, DF=2, supposed the 5% significance
+        '''
+        iData = np.asarray(self.getCurData())
+        iSkewt = self.getSkewness()
+        iKurt = self.getKurt()
+        iLen = np.size(iData)
+        iSK = (iLen/24) * (4*(iSkewt**2) + (iKurt-3)**2)
+        iChiArr = np.asarray(const_stat.X2Value)
+        iXRow = np.shape(iChiArr)[0]
+
+        for i in range(iXRow):
+            if significance == iChiArr[i][0]:
+                tValue = iChiArr[i][2]
+                return iSK, tValue
+
+        print("Please enter the correct significance value!")
+        return iSK, None
 
     def getLMTest(self):
         pass
