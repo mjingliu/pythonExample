@@ -230,11 +230,28 @@ def LSMethod(xArray, yArray):
     if len(xDim) == 1:
         # there is only one row/column to be used
         paraList = xTmp/xArrayTmp
+        yRegression = xArray*paraList
     else:
         xArrayTmpInv = np.linalg.inv(xArrayTmp)
-        paraList = xArrayTmpInv.dot(xTmp)
+        paraList = np.array(xArrayTmpInv.dot(xTmp))
+        yRegression = xArray.dot(paraList)
+    iTmp = yArray-yRegression
+    iSSE = iTmp.T.dot(iTmp)
+    iTmp = yArray - np.mean(yArray)
+    iSST = iTmp.T.dot(iTmp)
+    iTmp = yRegression - np.mean(yArray)
+    iSSR = iTmp.T.dot(iTmp)
 
-    return np.array(paraList)
+    return paraList, yRegression, iSSE, iSSR, iSST
+
+class LeastSqureMethod(object):
+    def __init__(self):
+        pass
+    def LSMethod(self):
+        pass
+    def coefSTD(self):
+        pass
+
 
 class StatFunction(object):
     def __init__(self, data):
@@ -246,6 +263,10 @@ class StatFunction(object):
         self.var = np.var(self.data)
         self.dataRemoveMean = self.data - self.mean
         self.std = np.std(self.data)
+        self.SSE = None
+        self.SST = None
+        self.SSR = None
+        self.regression = None
 
     def setDataType(self, dataType = 0):
         if dataType == const.DATATYPE['RD'] :
@@ -488,15 +509,15 @@ class StatFunction(object):
 
         if type is const_stat.NOCONST_NOTREND_DFTEST:
             iXArr,iYArr = LSMethodConstructArray(iData,type=const_stat.NOCONST_NOTREND_DFTEST)
-            iCoef = LSMethod(iXArr,iYArr)
+            iCoef,self.regression, self.SSE,self.SSR,self.SST= LSMethod(iXArr,iYArr)
             iSTD = GetCoeffSTD(iXArr,iYArr,iCoef,type=const_stat.NOCONST_NOTREND_DFTEST)
         elif type is const_stat.CONST_NOTREND_DFTEST:
             iXArr,iYArr = LSMethodConstructArray(iData,type=const_stat.CONST_NOTREND_DFTEST)
-            iCoef = LSMethod(iXArr,iYArr)
+            iCoef,self.regression, self.SSE,self.SSR,self.SST = LSMethod(iXArr,iYArr)
             iSTD = GetCoeffSTD(iXArr,iYArr,iCoef,type=const_stat.CONST_NOTREND_DFTEST)
         elif type is const_stat.CONST_TREND_DFTEST:
             iXArr,iYArr = LSMethodConstructArray(iData,type=const_stat.CONST_TREND_DFTEST)
-            iCoef = LSMethod(iXArr,iYArr)
+            iCoef,self.regression, self.SSE,self.SSR,self.SST = LSMethod(iXArr,iYArr)
             iSTD = GetCoeffSTD(iXArr,iYArr,iCoef,type=const_stat.CONST_TREND_DFTEST)
         else:
             print("can not calculate the DF test correctly!")
@@ -519,15 +540,15 @@ class StatFunction(object):
             iData = data
         if type is const_stat.NOCONST_NOTREND_ADFTEST:
             iXArr, iYArr = LSMethodConstructArray(iData,p,type=const_stat.NOCONST_NOTREND_ADFTEST)
-            iCoef = LSMethod(iXArr,iYArr)
+            iCoef,self.regression, self.SSE,self.SSR,self.SST = LSMethod(iXArr,iYArr)
             iSTD = GetCoeffSTD(iXArr,iYArr,iCoef,type=const_stat.NOCONST_NOTREND_ADFTEST)
         elif type is const_stat.CONST_NOTREND_ADFTEST:
             iXArr, iYArr = LSMethodConstructArray(iData,p,type=const_stat.CONST_NOTREND_ADFTEST)
-            iCoef = LSMethod(iXArr,iYArr)
+            iCoef,self.regression, self.SSE,self.SSR,self.SST = LSMethod(iXArr,iYArr)
             iSTD = GetCoeffSTD(iXArr,iYArr,iCoef,type=const_stat.CONST_NOTREND_ADFTEST)
         elif type is const_stat.CONST_TREND_ADFTEST:
             iXArr, iYArr = LSMethodConstructArray(iData,p,type=const_stat.CONST_TREND_ADFTEST)
-            iCoef = LSMethod(iXArr,iYArr)
+            iCoef,self.regression, self.SSE,self.SSR,self.SST = LSMethod(iXArr,iYArr)
             iSTD = GetCoeffSTD(iXArr,iYArr,iCoef,type=const_stat.CONST_TREND_ADFTEST)
         else:
             print("cannot calculate the ADF test correctly！")
@@ -551,17 +572,17 @@ class StatFunction(object):
             
         if type is const_stat.NOCONST_NOTREND_DFTEST:
             iXArr, iYArr = LSMethodConstructArray(iData,type=const_stat.NOCONST_NOTREND_DFTEST)
-            iCoef = LSMethod(iXArr,iYArr)
+            iCoef,self.regression, self.SSE,self.SSR,self.SST = LSMethod(iXArr,iYArr)
             iSTD = GetCoeffSTD(iXArr,iYArr,iCoef,type=const_stat.NOCONST_NOTREND_DFTEST)
             tauValue = PPTesttau(iXArr,iYArr,iCoef,iSTD[-1],q=q,type=const_stat.NOCONST_NOTREND_DFTEST)
         elif type is const_stat.CONST_NOTREND_DFTEST:
             iXArr, iYArr = LSMethodConstructArray(iData,type=const_stat.CONST_NOTREND_DFTEST)
-            iCoef = LSMethod(iXArr,iYArr)
+            iCoef,self.regression, self.SSE,self.SSR,self.SST = LSMethod(iXArr,iYArr)
             iSTD = GetCoeffSTD(iXArr,iYArr,iCoef,type=const_stat.CONST_NOTREND_DFTEST)
             tauValue = PPTesttau(iXArr,iYArr,iCoef,iSTD[-1],q=q,type=const_stat.CONST_NOTREND_DFTEST)
         elif type is const_stat.CONST_TREND_DFTEST:
             iXArr, iYArr = LSMethodConstructArray(iData,type=const_stat.CONST_TREND_DFTEST)
-            iCoef = LSMethod(iXArr,iYArr)
+            iCoef,self.regression, self.SSE,self.SSR,self.SST = LSMethod(iXArr,iYArr)
             iSTD = GetCoeffSTD(iXArr,iYArr,iCoef,type=const_stat.CONST_TREND_DFTEST)
             tauValue = PPTesttau(iXArr,iYArr,iCoef,iSTD[-1],q=q,type=const_stat.CONST_TREND_DFTEST)
         else:
@@ -569,11 +590,18 @@ class StatFunction(object):
             return
         return tauValue
 
-    def getAICValue(self):
-        pass
+    def getAICValue(self, order, nobs):
+        if self.SSR is None:
+            print("AIC: Please get the SSR first")
+            return
 
-    def getSICvalue(self):
-        pass
+        return nobs*np.log(self.SSR/nobs) + 2*order
+
+    def getSICvalue(self, order, nobs):
+        if self.SSR is None:
+            print("SIC: Please get the SSR first")
+
+        return nobs*np.log(self.SSR) + (order-nobs)*np.log(nobs)
 
     def getJBTest(self,significance = 0.05):
         '''

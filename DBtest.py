@@ -21,7 +21,6 @@ from scipy.special import gdtr
 #import pywt as wvlt
 #import statsmodels.tsa.ar_model as AR
 
-chi2.cdf()
 '''
 1. 假设每一个行业都是以一年为周期，也就是说一年为通用周期
 2. 某些行业可能是以季节为周期
@@ -64,17 +63,12 @@ dbName = const.dbName
 coeffiency = const.coeffiency
 
 stockCode = "601155.SH"
-#stockCode = "002415.SZ" # this is Hik
-#stockCode = "601398.SH" # this is ICBC
-#stockCode = "600519.SH" # this is Maotai
+stockCode = "002415.SZ" # this is Hik
+stockCode = "601398.SH" # this is ICBC
+stockCode = "600519.SH" # this is Maotai
 dataType = const.DATATYPE['RD']
 sample = 300
 iPQorder = 20
-
-alpha = math.sqrt(4)
-
-alpha += 5
-print("directory:%s" % dir(math))
 
 try:
     tmpList = list(myDB.selectData(tblName, dbName, stockCode))
@@ -206,7 +200,7 @@ try:
     dimArrayXtmp = np.array(dimArrayX)
     dimArrayYtmp = np.array(dimArrayY)
     print("come here???")
-    para = util.LSMethod(dimArrayXtmp, dimArrayYtmp)
+    para,regression,SSE,SSR,SST = util.LSMethod(dimArrayXtmp, dimArrayYtmp)
     print("stop???")
     print(para)
     '''
