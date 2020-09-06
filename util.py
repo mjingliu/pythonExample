@@ -82,24 +82,28 @@ def LSMethodConstructArray(rawArray, pOrder=0, type=0):
         iXArraytmp = iArray[:-1]
         iYArray = iArray[p+1:].T
         iArr = iXArraytmp[1:] - iXArraytmp[:-1]
-        iTmpArr = iXArraytmp[p:].T
+        iTmpArr = np.asarray(iXArraytmp[p:])
+        iTmpArr = iTmpArr.reshape((iTmpArr.size,1))
+
         iCtr = True
         for i in range(np.size(iYArray)):
             if iCtr is True:
                 iTmpX = iArr[i:p+i]
                 iCtr = False
             else:
-                iTmpX = np.hstack((iTmpX,iArr[i:p+i]))
+                iTmpX = np.vstack((iTmpX,iArr[i:p+i]))
 
-        iOnes = np.ones(iYArray.size).T
-        iTmpX = np.vstack((iTmpX,iOnes))
-        iXArray = np.vstack((iTmpX,iTmpArr)).T
+        iOnes = np.ones((iYArray.size,1))
+        iTmpX = np.hstack((iTmpX,iOnes))
+        iXArray = np.hstack((iTmpX,iTmpArr))
 
     elif type is const_stat.CONST_TREND_ADFTEST:
         iXArraytmp = iArray[:-1]
         iYArray = iArray[p+1:].T
         iArr = iXArraytmp[1:] - iXArraytmp[:-1]
-        iTmpArr = iXArraytmp[p:].T
+        iTmpArr = np.asarray(iXArraytmp[p:])
+        iTmpArr = iTmpArr.reshape((iTmpArr.size,1))
+
         iCtr = True
         for i in range(np.size(iYArray)):
             if iCtr is True:
@@ -110,11 +114,13 @@ def LSMethodConstructArray(rawArray, pOrder=0, type=0):
         iTime = []
         for j in range(np.size(iYArray)):
             iTime.append(p+1+j)
-        iTrend = np.array(iTime)
-        iOnes = np.ones(iYArray.size).T
-        iTmpX = np.vstack((iTmpX,iOnes))
-        iTmpX = np.vstack((iTmpX, iTrend.T))
-        iXArray = np.vstack((iTmpX,iTmpArr)).T
+        iTrend = np.asarray(iTime)
+        iTrend = iTrend.reshape((iTrend.size,1))
+
+        iOnes = np.ones((iYArray.size,1))
+        iTmpX = np.hstack((iTmpX,iOnes))
+        iTmpX = np.hstack((iTmpX, iTrend))
+        iXArray = np.hstack((iTmpX,iTmpArr))
     else:
         print("please input the right type")
         iXArray = []

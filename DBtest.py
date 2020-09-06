@@ -12,6 +12,7 @@ import StockDB as db
 import const
 import dataProcess as dp
 import TSAPlot as TPlt
+import const_stat
 import statsmodels.tsa.ar_model
 
 from scipy.stats import chi2
@@ -115,6 +116,8 @@ try:
     iArrSkewness = statObj.getSkewness()
     iArrKurt = statObj.getKurt()
     tmpP = 1
+    iType = const_stat.CONST_NOTREND_ADFTEST
+
     iTestRaw,iPValue1 = statObj.getADFTest(tmpArr,tmpP)
     iTestRawMean, iPValue2 = statObj.getADFTest(tmpArrMean,tmpP)
     iTestLogRaw, iPValue3 = statObj.getADFTest(tmpArrLn,tmpP)
@@ -133,6 +136,14 @@ try:
     print("Raw:{}, RawMean:{}, Log:{}, LogMean:{}, LogRatio:{}, LogRatioMean:{}".format(iTestRaw,iTestRawMean,iTestLogRaw,iTestLogRawMean,iTestLogRRaw,iTestLogRRawMean))
     print("Raw:{}, RawMean:{}, Log:{}, LogMean:{}, LogRatio:{}, LogRatioMean:{}".format(iPValue1, iPValue2,iPValue3, iPValue4,iPValue5, iPValue6))
 
+    iTestRaw,iPValue1 = statObj.getADFTest(tmpArr,tmpP,type=iType)
+    iTestRawMean, iPValue2 = statObj.getADFTest(tmpArrMean,tmpP,type=iType)
+    iTestLogRaw, iPValue3 = statObj.getADFTest(tmpArrLn,tmpP,type=iType)
+    iTestLogRawMean,iPValue4 = statObj.getADFTest(tmpArrLnMean,tmpP,type=iType)
+    iTestLogRRaw,iPValue5 = statObj.getADFTest(tmpArrLnRatio,tmpP,type=iType)
+    iTestLogRRawMean, iPValue6 = statObj.getADFTest(tmpArrLnRatioMean,tmpP,type=iType)
+    print("Raw:{}, RawMean:{}, Log:{}, LogMean:{}, LogRatio:{}, LogRatioMean:{}".format(iTestRaw,iTestRawMean,iTestLogRaw,iTestLogRawMean,iTestLogRRaw,iTestLogRRawMean))
+    print("Raw:{}, RawMean:{}, Log:{}, LogMean:{}, LogRatio:{}, LogRatioMean:{}".format(iPValue1, iPValue2,iPValue3, iPValue4,iPValue5, iPValue6))
 
     iTestRaw,iPValue1 = statObj.getDFTest(tmpArr, type=1)
     iTestRawMean, iPValue2 = statObj.getDFTest(tmpArrMean, type=1)
@@ -140,6 +151,17 @@ try:
     iTestLogRawMean,iPValue4 = statObj.getDFTest(tmpArrLnMean, type=1)
     iTestLogRRaw,iPValue5 = statObj.getDFTest(tmpArrLnRatio, type=1)
     iTestLogRRawMean, iPValue6 = statObj.getDFTest(tmpArrLnRatioMean, type=1)
+    print("Raw:{}, RawMean:{}, Log:{}, LogMean:{}, LogRatio:{}, LogRatioMean:{}".format(iTestRaw,iTestRawMean,iTestLogRaw,iTestLogRawMean,iTestLogRRaw,iTestLogRRawMean))
+    print("Raw:{}, RawMean:{}, Log:{}, LogMean:{}, LogRatio:{}, LogRatioMean:{}".format(iPValue1, iPValue2,iPValue3, iPValue4,iPValue5, iPValue6))
+
+    iType = const_stat.CONST_TREND_ADFTEST
+    tmpP = 3
+    iTestRaw,iPValue1 = statObj.getADFTest(tmpArr,tmpP,type=iType)
+    iTestRawMean, iPValue2 = statObj.getADFTest(tmpArrMean,tmpP,type=iType)
+    iTestLogRaw, iPValue3 = statObj.getADFTest(tmpArrLn,tmpP,type=iType)
+    iTestLogRawMean,iPValue4 = statObj.getADFTest(tmpArrLnMean,tmpP,type=iType)
+    iTestLogRRaw,iPValue5 = statObj.getADFTest(tmpArrLnRatio,tmpP,type=iType)
+    iTestLogRRawMean, iPValue6 = statObj.getADFTest(tmpArrLnRatioMean,tmpP,type=iType)
     print("Raw:{}, RawMean:{}, Log:{}, LogMean:{}, LogRatio:{}, LogRatioMean:{}".format(iTestRaw,iTestRawMean,iTestLogRaw,iTestLogRawMean,iTestLogRRaw,iTestLogRRawMean))
     print("Raw:{}, RawMean:{}, Log:{}, LogMean:{}, LogRatio:{}, LogRatioMean:{}".format(iPValue1, iPValue2,iPValue3, iPValue4,iPValue5, iPValue6))
 
