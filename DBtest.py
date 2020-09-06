@@ -63,9 +63,9 @@ dbName = const.dbName
 coeffiency = const.coeffiency
 
 stockCode = "601155.SH"
-stockCode = "002415.SZ" # this is Hik
-stockCode = "601398.SH" # this is ICBC
-stockCode = "600519.SH" # this is Maotai
+#stockCode = "002415.SZ" # this is Hik
+#stockCode = "601398.SH" # this is ICBC
+#stockCode = "600519.SH" # this is Maotai
 dataType = const.DATATYPE['RD']
 sample = 300
 iPQorder = 20
@@ -114,14 +114,45 @@ try:
     iArrVar = statObj.getVar()
     iArrSkewness = statObj.getSkewness()
     iArrKurt = statObj.getKurt()
-
-    iTestRaw = statObj.getDFTest(tmpArr)
-    iTestRawMean = statObj.getDFTest(tmpArrMean)
-    iTestLogRaw = statObj.getDFTest(tmpArrLn)
-    iTestLogRawMean = statObj.getDFTest(tmpArrLnMean)
-    iTestLogRRaw = statObj.getDFTest(tmpArrLnRatio)
-    iTestLogRRawMean = statObj.getDFTest(tmpArrLnRatioMean)
+    tmpP = 1
+    iTestRaw,iPValue1 = statObj.getADFTest(tmpArr,tmpP)
+    iTestRawMean, iPValue2 = statObj.getADFTest(tmpArrMean,tmpP)
+    iTestLogRaw, iPValue3 = statObj.getADFTest(tmpArrLn,tmpP)
+    iTestLogRawMean,iPValue4 = statObj.getADFTest(tmpArrLnMean,tmpP)
+    iTestLogRRaw,iPValue5 = statObj.getADFTest(tmpArrLnRatio,tmpP)
+    iTestLogRRawMean, iPValue6 = statObj.getADFTest(tmpArrLnRatioMean,tmpP)
     print("Raw:{}, RawMean:{}, Log:{}, LogMean:{}, LogRatio:{}, LogRatioMean:{}".format(iTestRaw,iTestRawMean,iTestLogRaw,iTestLogRawMean,iTestLogRRaw,iTestLogRRawMean))
+    print("Raw:{}, RawMean:{}, Log:{}, LogMean:{}, LogRatio:{}, LogRatioMean:{}".format(iPValue1, iPValue2,iPValue3, iPValue4,iPValue5, iPValue6))
+
+    iTestRaw,iPValue1 = statObj.getDFTest(tmpArr)
+    iTestRawMean, iPValue2 = statObj.getDFTest(tmpArrMean)
+    iTestLogRaw, iPValue3 = statObj.getDFTest(tmpArrLn)
+    iTestLogRawMean,iPValue4 = statObj.getDFTest(tmpArrLnMean)
+    iTestLogRRaw,iPValue5 = statObj.getDFTest(tmpArrLnRatio)
+    iTestLogRRawMean, iPValue6 = statObj.getDFTest(tmpArrLnRatioMean)
+    print("Raw:{}, RawMean:{}, Log:{}, LogMean:{}, LogRatio:{}, LogRatioMean:{}".format(iTestRaw,iTestRawMean,iTestLogRaw,iTestLogRawMean,iTestLogRRaw,iTestLogRRawMean))
+    print("Raw:{}, RawMean:{}, Log:{}, LogMean:{}, LogRatio:{}, LogRatioMean:{}".format(iPValue1, iPValue2,iPValue3, iPValue4,iPValue5, iPValue6))
+
+
+    iTestRaw,iPValue1 = statObj.getDFTest(tmpArr, type=1)
+    iTestRawMean, iPValue2 = statObj.getDFTest(tmpArrMean, type=1)
+    iTestLogRaw, iPValue3 = statObj.getDFTest(tmpArrLn, type=1)
+    iTestLogRawMean,iPValue4 = statObj.getDFTest(tmpArrLnMean, type=1)
+    iTestLogRRaw,iPValue5 = statObj.getDFTest(tmpArrLnRatio, type=1)
+    iTestLogRRawMean, iPValue6 = statObj.getDFTest(tmpArrLnRatioMean, type=1)
+    print("Raw:{}, RawMean:{}, Log:{}, LogMean:{}, LogRatio:{}, LogRatioMean:{}".format(iTestRaw,iTestRawMean,iTestLogRaw,iTestLogRawMean,iTestLogRRaw,iTestLogRRawMean))
+    print("Raw:{}, RawMean:{}, Log:{}, LogMean:{}, LogRatio:{}, LogRatioMean:{}".format(iPValue1, iPValue2,iPValue3, iPValue4,iPValue5, iPValue6))
+
+    iTestRaw,iPValue1 = statObj.getDFTest(tmpArr, type=2)
+    iTestRawMean, iPValue2 = statObj.getDFTest(tmpArrMean, type=2)
+    iTestLogRaw, iPValue3 = statObj.getDFTest(tmpArrLn, type=2)
+    iTestLogRawMean,iPValue4 = statObj.getDFTest(tmpArrLnMean, type=2)
+    iTestLogRRaw,iPValue5 = statObj.getDFTest(tmpArrLnRatio, type=2)
+    iTestLogRRawMean, iPValue6 = statObj.getDFTest(tmpArrLnRatioMean, type=2)
+    print("Raw:{}, RawMean:{}, Log:{}, LogMean:{}, LogRatio:{}, LogRatioMean:{}".format(iTestRaw,iTestRawMean,iTestLogRaw,iTestLogRawMean,iTestLogRRaw,iTestLogRRawMean))
+    print("Raw:{}, RawMean:{}, Log:{}, LogMean:{}, LogRatio:{}, LogRatioMean:{}".format(iPValue1, iPValue2,iPValue3, iPValue4,iPValue5, iPValue6))
+
+
     '''
     iACF = statObj.getACF(iPQorder)
     iACFDiag = statObj.getDiagnosticWhiteNoise(iACF)

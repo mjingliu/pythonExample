@@ -29,6 +29,7 @@ def LSMethodConstructArray(rawArray, pOrder=0, type=0):
     '''
     input the original array,
     output the constructed XArray and YArray
+    the last data is Yn, must remove it from the X-series
     '''
     if not isinstance(rawArray, np.ndarray):
         iArray = np.array(rawArray)
@@ -45,71 +46,75 @@ def LSMethodConstructArray(rawArray, pOrder=0, type=0):
     elif type is const_stat.CONST_NOTREND_DFTEST:
         iXArraytmp = iArray[:-1].T
         iYArray = iArray[1:].T
-        iOne = np.ones((iYArray.size,1)).T
-        iXArray = np.hstack((iOne,iXArraytmp))
+        iOne = np.ones(iYArray.size).T
+        iXArray = np.vstack((iOne,iXArraytmp)).T
 
     elif type is const_stat.CONST_TREND_DFTEST:
         iXArraytmp = iArray[:-1].T
         iYArray = iArray[1:].T
-        iOne = np.ones((iYArray.size, 1)).T
+        iOne = np.ones(iYArray.size).T
 
         iTime = []
         for i in range(iArray.size-1):
             iTime.append(i+2)
         iTrendTime = np.array(iTime)
-        iTmpArr = np.hstack((iOne,iTrendTime))
-        iXArray = np.hstack((iTmpArr,iXArraytmp))
+        iTmpArr = np.vstack((iOne,iTrendTime))
+        iXArray = np.vstack((iTmpArr,iXArraytmp)).T
 
     elif type is const_stat.NOCONST_NOTREND_ADFTEST:
         iXArraytmp = iArray[:-1]
-        iYArray = iArray[p:].T
+        iYArray = iArray[p+1:].T
         iArr = iXArraytmp[1:] - iXArraytmp[:-1]
-        iTmpArr = iXArraytmp[p-1:].T
+        iTmpArr = np.asarray(iXArraytmp[p:])
+        iTmpArr = iTmpArr.reshape((iTmpArr.size,1))
+
         iCtr = True
         for i in range(np.size(iYArray)):
             if iCtr is True:
-                iTmpX = iArr[i:p-1+i]
+                iTmpX = iArr[i:p+i]
                 iCtr = False
             else:
-                iTmpX = np.vstack((iTmpX,iArr[i:p-1+i]))
+                iTmpX = np.vstack((iTmpX,iArr[i:p+i]))
+
         iXArray = np.hstack((iTmpX,iTmpArr))
 
     elif type is const_stat.CONST_NOTREND_ADFTEST:
         iXArraytmp = iArray[:-1]
-        iYArray = iArray[p:].T
+        iYArray = iArray[p+1:].T
         iArr = iXArraytmp[1:] - iXArraytmp[:-1]
-        iTmpArr = iXArraytmp[p-1:].T
+        iTmpArr = iXArraytmp[p:].T
         iCtr = True
         for i in range(np.size(iYArray)):
             if iCtr is True:
-                iTmpX = iArr[i:p-1+i]
+                iTmpX = iArr[i:p+i]
                 iCtr = False
             else:
-                iTmpX = np.vstack((iTmpX,iArr[i:p-1+i]))
-        iOnes = np.ones((iYArray.size,1))
-        iTmpX = np.hstack((iTmpX,iOnes))
-        iXArray = np.hstack((iTmpX,iTmpArr))
+                iTmpX = np.hstack((iTmpX,iArr[i:p+i]))
+
+        iOnes = np.ones(iYArray.size).T
+        iTmpX = np.vstack((iTmpX,iOnes))
+        iXArray = np.vstack((iTmpX,iTmpArr)).T
 
     elif type is const_stat.CONST_TREND_ADFTEST:
         iXArraytmp = iArray[:-1]
-        iYArray = iArray[p:].T
+        iYArray = iArray[p+1:].T
         iArr = iXArraytmp[1:] - iXArraytmp[:-1]
-        iTmpArr = iXArraytmp[p-1:].T
+        iTmpArr = iXArraytmp[p:].T
         iCtr = True
         for i in range(np.size(iYArray)):
             if iCtr is True:
-                iTmpX = iArr[i:p-1+i]
+                iTmpX = iArr[i:p+i]
                 iCtr = False
             else:
-                iTmpX = np.vstack((iTmpX,iArr[i:p-1+i]))
+                iTmpX = np.vstack((iTmpX,iArr[i:p+i]))
         iTime = []
         for j in range(np.size(iYArray)):
             iTime.append(p+1+j)
         iTrend = np.array(iTime)
-        iOnes = np.ones((iYArray.size,1))
-        iTmpX = np.hstack((iTmpX,iOnes))
-        iTmpX = np.hstack((iTmpX, iTrend.T))
-        iXArray = np.hstack((iTmpX,iTmpArr))
+        iOnes = np.ones(iYArray.size).T
+        iTmpX = np.vstack((iTmpX,iOnes))
+        iTmpX = np.vstack((iTmpX, iTrend.T))
+        iXArray = np.vstack((iTmpX,iTmpArr)).T
     else:
         print("please input the right type")
         iXArray = []
@@ -511,14 +516,17 @@ class StatFunction(object):
             iXArr,iYArr = LSMethodConstructArray(iData,type=const_stat.NOCONST_NOTREND_DFTEST)
             iCoef,self.regression, self.SSE,self.SSR,self.SST= LSMethod(iXArr,iYArr)
             iSTD = GetCoeffSTD(iXArr,iYArr,iCoef,type=const_stat.NOCONST_NOTREND_DFTEST)
+            iStr = 'nc'
         elif type is const_stat.CONST_NOTREND_DFTEST:
             iXArr,iYArr = LSMethodConstructArray(iData,type=const_stat.CONST_NOTREND_DFTEST)
             iCoef,self.regression, self.SSE,self.SSR,self.SST = LSMethod(iXArr,iYArr)
             iSTD = GetCoeffSTD(iXArr,iYArr,iCoef,type=const_stat.CONST_NOTREND_DFTEST)
+            iStr = 'c'
         elif type is const_stat.CONST_TREND_DFTEST:
             iXArr,iYArr = LSMethodConstructArray(iData,type=const_stat.CONST_TREND_DFTEST)
             iCoef,self.regression, self.SSE,self.SSR,self.SST = LSMethod(iXArr,iYArr)
             iSTD = GetCoeffSTD(iXArr,iYArr,iCoef,type=const_stat.CONST_TREND_DFTEST)
+            iStr = 'ct'
         else:
             print("can not calculate the DF test correctly!")
             return
@@ -528,28 +536,51 @@ class StatFunction(object):
         else:
             tValue = (iCoef[-1] - 1)/iSTD[-1]
 
-        return tValue
+        pValue = 0
+        iSample = np.shape(iYArr)[0]
+        pArr = const_stat.tau_test[iStr]
+        iSampleTmp = [25,50,100,250,500]
+        iFound = False
+        for i in range(len(iSampleTmp)):
+            if iSample <= iSampleTmp[i]:
+                pValue = pArr[i][2]
+                iFound = True
+                break
+        if not iFound:
+            pValue = pArr[len(iSampleTmp)-1][2]
+
+        return tValue, pValue
 
     def getADFTest(self, data, p, type=const_stat.NOCONST_NOTREND_ADFTEST):
         '''
         get the result of ADF Test
+        when p == 1, that means the ADF test become DF test.
         '''
+
+        if p < 1:
+            print("please input the value of p is more than 1!")
+            return
+
         if not isinstance(data, np.ndarray):
             iData = np.array(data)
         else:
             iData = data
+
         if type is const_stat.NOCONST_NOTREND_ADFTEST:
             iXArr, iYArr = LSMethodConstructArray(iData,p,type=const_stat.NOCONST_NOTREND_ADFTEST)
             iCoef,self.regression, self.SSE,self.SSR,self.SST = LSMethod(iXArr,iYArr)
             iSTD = GetCoeffSTD(iXArr,iYArr,iCoef,type=const_stat.NOCONST_NOTREND_ADFTEST)
+            iStr = 'nc'
         elif type is const_stat.CONST_NOTREND_ADFTEST:
             iXArr, iYArr = LSMethodConstructArray(iData,p,type=const_stat.CONST_NOTREND_ADFTEST)
             iCoef,self.regression, self.SSE,self.SSR,self.SST = LSMethod(iXArr,iYArr)
             iSTD = GetCoeffSTD(iXArr,iYArr,iCoef,type=const_stat.CONST_NOTREND_ADFTEST)
+            iStr = 'c'
         elif type is const_stat.CONST_TREND_ADFTEST:
             iXArr, iYArr = LSMethodConstructArray(iData,p,type=const_stat.CONST_TREND_ADFTEST)
             iCoef,self.regression, self.SSE,self.SSR,self.SST = LSMethod(iXArr,iYArr)
             iSTD = GetCoeffSTD(iXArr,iYArr,iCoef,type=const_stat.CONST_TREND_ADFTEST)
+            iStr = 'ct'
         else:
             print("cannot calculate the ADF test correctly！")
             return
@@ -558,8 +589,21 @@ class StatFunction(object):
             tValue = (iCoef - 1) / iSTD
         else:
             tValue = (iCoef[-1] - 1)/iSTD[-1]
-            
-        return tValue
+
+        pValue = 0
+        iSample = np.shape(iYArr)[0]
+        pArr = const_stat.tau_test[iStr]
+        iSampleTmp = [25,50,100,250,500]
+        iFound = False
+        for i in range(len(iSampleTmp)):
+            if iSample <= iSampleTmp[i]:
+                pValue = pArr[i][2]
+                iFound = True
+                break
+        if not iFound:
+            pValue = pArr[len(iSampleTmp)-1][2]
+
+        return tValue,pValue
 
     def getPPTest(self, data, q, type=const_stat.NOCONST_NOTREND_DFTEST):
         '''
@@ -575,20 +619,37 @@ class StatFunction(object):
             iCoef,self.regression, self.SSE,self.SSR,self.SST = LSMethod(iXArr,iYArr)
             iSTD = GetCoeffSTD(iXArr,iYArr,iCoef,type=const_stat.NOCONST_NOTREND_DFTEST)
             tauValue = PPTesttau(iXArr,iYArr,iCoef,iSTD[-1],q=q,type=const_stat.NOCONST_NOTREND_DFTEST)
+            iStr = 'nc'
         elif type is const_stat.CONST_NOTREND_DFTEST:
             iXArr, iYArr = LSMethodConstructArray(iData,type=const_stat.CONST_NOTREND_DFTEST)
             iCoef,self.regression, self.SSE,self.SSR,self.SST = LSMethod(iXArr,iYArr)
             iSTD = GetCoeffSTD(iXArr,iYArr,iCoef,type=const_stat.CONST_NOTREND_DFTEST)
             tauValue = PPTesttau(iXArr,iYArr,iCoef,iSTD[-1],q=q,type=const_stat.CONST_NOTREND_DFTEST)
+            iStr = 'c'
         elif type is const_stat.CONST_TREND_DFTEST:
             iXArr, iYArr = LSMethodConstructArray(iData,type=const_stat.CONST_TREND_DFTEST)
             iCoef,self.regression, self.SSE,self.SSR,self.SST = LSMethod(iXArr,iYArr)
             iSTD = GetCoeffSTD(iXArr,iYArr,iCoef,type=const_stat.CONST_TREND_DFTEST)
             tauValue = PPTesttau(iXArr,iYArr,iCoef,iSTD[-1],q=q,type=const_stat.CONST_TREND_DFTEST)
+            iStr = 'ct'
         else:
             print("can not calculate PP test correctly!")
             return
-        return tauValue
+
+        pValue = 0
+        iSample = np.shape(iYArr)[0]
+        pArr = const_stat.tau_test[iStr]
+        iSampleTmp = [25,50,100,250,500]
+        iFound = False
+        for i in range(len(iSampleTmp)):
+            if iSample <= iSampleTmp[i]:
+                pValue = pArr[i][2]
+                iFound = True
+                break
+        if not iFound:
+            pValue = pArr[len(iSampleTmp)-1][2]
+
+        return tauValue, pValue
 
     def getAICValue(self, order, nobs):
         if self.SSR is None:
