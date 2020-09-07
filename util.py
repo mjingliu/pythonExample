@@ -390,7 +390,7 @@ class StatFunction(object):
         if data is None:
             dataArr = self.getCurData()
         else:
-            dataArr = np.asarray(data)
+            dataArr = np.array(data)
 
         return self.__calcACF__(dataArr, order, bias)
 
