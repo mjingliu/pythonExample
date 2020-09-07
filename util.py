@@ -246,6 +246,7 @@ def LSMethod(xArray, yArray):
         xArrayTmpInv = np.linalg.inv(xArrayTmp)
         paraList = np.array(xArrayTmpInv.dot(xTmp))
         yRegression = xArray.dot(paraList)
+
     iTmp = yArray-yRegression
     iSSE = iTmp.T.dot(iTmp)
     iTmp = yArray - np.mean(yArray)
@@ -300,6 +301,9 @@ class StatFunction(object):
 
     def getCurData(self):
         return np.asarray(self.currData)
+
+    def setCurData(self, data):
+        self.currData = np.asarray(data)
 
     def getMean(self):
         iData = self.getCurData()
@@ -382,15 +386,13 @@ class StatFunction(object):
         dataArr = self.getCurData()
         return np.ceil(12.*np.power(len(dataArr)/100.,1/4.))
 
-    def getACF(self, data=None, order=0, bias=True):
+    def getACF(self, order=0, bias=True):
         if order == 0:
             order = self.__calcDefaultOrder__()
         else:
             order = order
-        if data is None:
-            dataArr = self.getCurData()
-        else:
-            dataArr = np.array(data)
+        order = int(order)
+        dataArr = self.getCurData()
 
         return self.__calcACF__(dataArr, order, bias)
 
@@ -407,16 +409,14 @@ class StatFunction(object):
 
         return np.linalg.solve(np.array(iRArray), np.array(iRk)[1:])
 
-    def getPACF(self, data=None, order=0, bias=True):
-        if data is None:
-            dataArr = self.getCurData()
-        else:
-            dataArr = data
+    def getPACF(self, order=0, bias=True):
+        dataArr = self.getCurData()
 
         if order == 0:
             order = self.__calcDefaultOrder__()
         else:
             order = order
+        order = int(order)
 
         iPACF = []
 
@@ -425,10 +425,13 @@ class StatFunction(object):
             iPACF.append(iArr[-1])
         return iPACF
 
-    def getDiagACF(self, confidence=0.95):
+    def getCoefficiencyTest(self, confidence=0.95):
         '''
+        this functionality is used for ACF/PACF coefficiency Test
         if the confidence is 0.95, then the coefficiency should be 2, that is 2*sigma,
         currently, sqrt is the sigma
+        when abs(coef) < 2/sqrt(T), then accept the ACF/PACF coefficiency, otherwise refuse it.
+        abs(Ak)<2/Sqrt(T), T is the oberservation number.
         '''
         isqrt = np.sqrt(len(self.getCurData()))
         print("length of current data:%s" % len(self.getCurData()))
@@ -462,7 +465,7 @@ class StatFunction(object):
     def getDiagnosticLjungBox(self, order=0, confidence=0.05, fitPara = 0):
         '''
         condition:
-        if the model is ARMA(p,q), then the "N" of X2 should be m-(p+q)
+        if the model is ARMA(p,q), then the degree(N) of X2 should be m-(p+q)
         order: the input N
         confidence: the probability of X2 should be met
         fitPara: number of p+q
