@@ -14,22 +14,24 @@ class TPlot(object):
         self.ydata = ydata
         self.args = args
         self.kwargs = kwargs
+        self.str = []
 
     def __basicSetting__(self) :
         plt.rcParams['font.sans-serif'] = ['SimHei']  # 设置中文字体
         plt.rcParams['axes.unicode_minus'] = False # 显示负数的符号
         argsLen = len(self.args)
         if argsLen >= 1 :
-            str = []
             for i in range(argsLen) :
-                str.append(self.args[i])
-            plt.title("{}".format(str))
+                self.str.append(self.args[i])
+            plt.title("{}".format(self.str[0]))
         else :
             print("no args input")
 
     def plotBar(self) :
         self.__basicSetting__()
         plt.bar(self.xdata, self.ydata)
+        plt.axhline(self.str[1], c="red")
+        plt.axhline(self.str[2], c="red")
         plt.show()
 
     def plotLine(self) :

@@ -58,7 +58,7 @@ f. 计算n个采样序列的S值，S = sqrt((detX0 * detX0 + detX1*detX1 + detX2
 '''
 #password：R~!@34qwe
 
-myDB = db.stockDB(user="mingjliu", password="qwe`1234")
+myDB = db.stockDB(user="mingjliu", password="R~!@34qwe")
 tblName = const.tblName
 dbName = const.dbName
 coeffiency = const.coeffiency
@@ -94,9 +94,6 @@ try:
     iArr = np.array(iArr)
     #iArr = np.log(iArr)
     tmpArr = iArr
-    tmpArrMean = tmpArr-np.mean(tmpArr)
-    iPlt = TPlt.TPlot(range(len(iArr)),tmpArrMean,stockCode,sample = 100)
-    iPlt.plotLine()
 
     tmpArrLn = np.log(tmpArr)
     tmpArrLnRatio = tmpArrLn[1:] - tmpArrLn[:-1]
@@ -106,25 +103,29 @@ try:
 
     statObj = util.StatFunction(iArr[-sample:])
 
-    statObj.setDataType(dataType = dataType)
+    tmpArrLnRatioMean = np.asarray(tmpArrLnRatioMean)
+    tmpArrLnRatioMean = tmpArrLnRatioMean*tmpArrLnRatioMean
+    #statObj.setCurData(tmpArrLnRatio)
+    statObj.setCurData(tmpArrLnRatioMean)
     iArrMean = statObj.getMean()
     iArrVar = statObj.getVar()
     iArrSkewness = statObj.getSkewness()
     iArrKurt = statObj.getKurt()
+    print("Mean:{},var:{}, Skew:{}, Kurt:{}".format(iArrMean, iArrVar, iArrSkewness, iArrKurt))
     tmpP = 1
     iType = const_stat.CONST_NOTREND_ADFTEST
 
-    iTestLogRRaw,iPValue5 = statObj.getADFTest(tmpArrLnRatio,tmpP)
-    iTestLogRRawMean, iPValue6 = statObj.getADFTest(tmpArrLnRatioMean,tmpP)
-    print("LogRatio:{}, LogRatioMean:{}".format(iTestLogRRaw,iTestLogRRawMean))
-    print("LogRatio:{}, LogRatioMean:{}".format(iPValue5, iPValue6))
-    iACF = statObj.getACF(data=tmpArrLnRatio)
-    iPACF = statObj.getPACF(data=tmpArrLnRatio)
-    print(iACF)
-    print(iPACF)
-    iPlt = TPlt.TPlot(range(len(iACF)),iACF,stockCode,sample = 100)
-    #iPlt = TPlt.TPlot(range(len(iPACF)),iPACF,stockCode,sample = 100)
-    iPlt.plotLine()
+    iTestLogRRawMean, iPValue6 = statObj.getADFTest(tmpArrLnRatio,tmpP)
+    print("LogRatioMean:{}， Tau:{}".format(iTestLogRRawMean, iPValue6))
+
+    iACF = statObj.getACF(order=40)
+    iPACF = statObj.getPACF(order=40)
+    iThrPlus, iThrMinus = statObj.getCoefficiencyTest()
+
+    iPlt = TPlt.TPlot(range(len(iACF)),iACF,stockCode, iThrPlus,iThrMinus)
+    iPlt.plotBar()
+    iPlt = TPlt.TPlot(range(len(iPACF)),iPACF,stockCode,iThrPlus,iThrMinus)
+    iPlt.plotBar()
     '''
     iACF = statObj.getACF(iPQorder)
     iACFDiag = statObj.getDiagnosticWhiteNoise(iACF)
