@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-from builtins import isinstance, print
+from builtins import isinstance, print, object, len, range, int
 
 import numpy as np
 from scipy.linalg import toeplitz
@@ -255,15 +255,6 @@ def LSMethod(xArray, yArray):
     iSSR = iTmp.T.dot(iTmp)
 
     return paraList, yRegression, iSSE, iSSR, iSST
-
-class LeastSqureMethod(object):
-    def __init__(self):
-        pass
-    def LSMethod(self):
-        pass
-    def coefSTD(self):
-        pass
-
 
 class StatFunction(object):
     def __init__(self, data):

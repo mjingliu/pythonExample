@@ -17,10 +17,11 @@ import numpy as np
 class LSEstimation(object):
     '''
     This class is for least square estimation operation,
-    Y = A*X
+    Y = A*W*X
     input:
     X:
     Y:
+    W: weight for A
     output:
     A: Y/X
     SSE: sum of (Yi - Yi(estimator))
@@ -28,43 +29,94 @@ class LSEstimation(object):
     SSR: sum of (Yi(estimator) -Yi(Mean)）
     coefVar: var of each of A's coefficiency
     '''
-    def __init__(self, X, Y):
-        if not isinstance(X, np.ndarray) or not isinstance(Y, np.ndarray):
+    def __init__(self, X, Y, W):
+        if not isinstance(X, np.ndarray) or not isinstance(Y, np.ndarray) or not isinstance(W,np.ndarray):
             self.X = np.asarray(X)
             self.Y = np.asarray(Y)
+            self.W = np.asarray(W)
         else:
             self.X = X
             self.Y = Y
-
-        self.A = [Y.shape[0]]
-        self.AVar = [Y.shape[0]]
+            self.W = W
+        iLen = Y.shape[0]
+        self.A = np.ndarray((iLen,1))
+        self.AVar = np.ndarray((iLen,1))
+        self.AStd = np.ndarray((iLen,1))
         self.SSE = None
         self.SST = None
         self.SSR = None
 
-    def __calEstimationA__(self):
-        pass
+        self.__calEstimationVariable__()
 
-    def __calEstimationAVar__(self):
-        pass
+    def __calEstimationVariable__(self):
+        xDim = self.X.shape
+        yDim = self.Y.shape
+        if xDim[0] != yDim[0]:
+            print("please make use of the dimension of X and Y is same!")
+            return False
 
-    def getEstimator(self):
-        pass
+        iX = self.X
+        iY = self.Y
+        iXT = iX.transpose()
+        iXTmp = iXT.dot(iX)
+        iYTmp = iXT.dot(iY)
+
+        if xDim[0] == 1:
+            self.A = iYTmp/iXTmp
+            yReg = iX*self.A
+        else:
+            iXInv = np.linalg.inv(iXTmp)
+            self.A = np.array(iXInv.dot(iYTmp))
+            yReg = iX.dot(self.A)
+
+        iErrTmp = iY - np.mean(iY)
+        self.SST = iErrTmp.T.dot(iErrTmp)
+        iErrTmp = yReg - np.mean(iY)
+        self.SSR = iErrTmp.T.dot(iErrTmp)
+        iErrTmp = iY - yReg
+        self.SSE = iErrTmp.T.dot(iErrTmp)
+
+        iVar = iErrTmp.T.dot(iErrTmp)/yDim[0]
+        if yDim[0] == 1:
+            self.AVar = np.array(iVar/iXTmp)
+        else:
+            iEye = np.eye(yDim[0], k=0)
+            iXInv = np.linalg.inv(iXTmp)
+            self.AVar = iVar*np.diagonal(iEye.dot(iXInv).dot(iEye.T))
+
+        self.AStd = np.sqrt(self.AVar)
 
     def getEstimatorVar(self):
-        pass
+
+        return self.AVar
+
+    def getEstimatorSTD(self):
+
+        return self.AStd
+
+    def getEstimator(self):
+
+        return self.A
+
+    def getEstimatorVar(self):
+
+        return self.AVar
 
     def getXYValue(self):
-        pass
+
+        return self.X, self.Y, self.W
 
     def getSSE(self):
-        pass
+
+        return self.SSE
 
     def getSSR(self):
-        pass
 
-    def getSSt(self):
-        pass
+        return self.SSR
+
+    def getSST(self):
+
+        return self.SST
 
 class DEstimation(object):
     '''
@@ -102,19 +154,19 @@ class DEstimation(object):
         pass
 
     def getEstimator(self) :
-        pass
+        return self.A
 
     def getEstimatorVar(self) :
-        pass
+        return self.AVar
 
     def getXYValue(self) :
-        pass
+        return self.X, self.Y
 
     def getSSE(self) :
-        pass
+        return self.SSE
 
     def getSSR(self) :
-        pass
+        return self.SSR
 
-    def getSSt(self) :
-        pass
+    def getSST(self) :
+        return self.SST
