@@ -172,7 +172,7 @@ class DEstimation(object):
         return self.SST
 
 class MLEstimation(object):
-    
+
     def __init__(self):
         pass
 
