@@ -46,11 +46,19 @@ class StatisticsTest(object):
 class StatisticsModel(object):
     '''
     consider GARCH/ARCH model
+    functinality:
+    1. confirm the coefficiency
+    2. fit
+    3. prediction
     '''
     def __init__(self):
         pass
 
 class DataConstruct(object):
+    '''
+    construct all kinds of array
+    return the assembled array
+    '''
     def __init__(self):
         pass
 
