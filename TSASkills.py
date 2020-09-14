@@ -1,29 +1,42 @@
 #!/usr/bin/env python 
 # -*- coding:utf-8 -*-
 from builtins import object
-
+import infrastructure as inf
 
 class StatisticsTest(object):
     def __init__(self):
         pass
 
-    def __DFTest__(self):
-        pass
+    def __DFTest__(self, data, kind):
+        '''
+        input:
+        data: the data which need to be tested
+        kind: string type, which kind of type should be used to test, currently the following three kinds: nc, c, ct
+        return:
+        tvalue:
+        pvalue:
+        '''
+        return
 
-    def getDFTestResult(self):
-        pass
+    def getDFTestResult(self, data, kind):
 
-    def __ADFTest__(self):
-        pass
+        return self.__DFTest__(data, kind)
 
-    def getADFTestResult(self):
-        pass
+    def __ADFTest__(self, data, kind):
 
-    def __PPTest__(self):
-        pass
+        return
 
-    def getPPTestResult(self):
-        pass
+    def getADFTestResult(self, data, kind):
+
+        return self.__ADFTest__(data, kind)
+
+    def __PPTest__(self, data, kind):
+
+        return
+
+    def getPPTestResult(self, data, kind):
+
+        return self.__PPTest__(data, kind)
 
     def __LBTest__(self):
         pass
@@ -37,11 +50,13 @@ class StatisticsTest(object):
     def getLMTestResult(self):
         pass
 
-    def __JBTest__(self):
-        pass
+    def __JBTest__(self, data, confidence):
 
-    def getJBTestResult(self):
-        pass
+        return
+
+    def getJBTestResult(self, data, confidence=0.95):
+
+        return self.__JBTest__(data, confidence)
 
 class StatisticsModel(object):
     '''
