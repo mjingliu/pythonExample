@@ -43,3 +43,15 @@ class StatisticsTest(object):
     def getJBTestResult(self):
         pass
 
+class StatisticsModel(object):
+    '''
+    consider GARCH/ARCH model
+    '''
+    def __init__(self):
+        pass
+
+class DataConstruct(object):
+    def __init__(self):
+        pass
+
+
