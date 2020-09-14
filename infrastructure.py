@@ -11,7 +11,7 @@ Actually, there exist three alg. LS, Distance estimation, Maxim Likelihood estim
 In this file, do not implement MLE alg since when using MLE, must know the distribution density function in first.
 unfortunately, do not know the DDF in advance.
 '''
-from builtins import object, isinstance
+from builtins import object, isinstance, len
 import numpy as np
 
 class LSEstimation(object):
@@ -61,7 +61,7 @@ class LSEstimation(object):
         iXTmp = iXT.dot(iX)
         iYTmp = iXT.dot(iY)
 
-        if xDim[0] == 1:
+        if len(iX) == len(iY): # when this thing take place, that's to say, only one parameter need to be estimated.
             self.A = iYTmp/iXTmp
             yReg = iX*self.A
         else:
@@ -77,7 +77,7 @@ class LSEstimation(object):
         self.SSE = iErrTmp.T.dot(iErrTmp)
 
         iVar = iErrTmp.T.dot(iErrTmp)/yDim[0]
-        if yDim[0] == 1:
+        if len(iX) == len(iY):
             self.AVar = np.array(iVar/iXTmp)
         else:
             iEye = np.eye(yDim[0], k=0)
@@ -146,6 +146,35 @@ class DEstimation(object):
         self.SSE = None
         self.SST = None
         self.SSR = None
+
+    def __calEstimationA__(self) :
+        pass
+
+    def __calEstimationAVar__(self) :
+        pass
+
+    def getEstimator(self) :
+        return self.A
+
+    def getEstimatorVar(self) :
+        return self.AVar
+
+    def getXYValue(self) :
+        return self.X, self.Y
+
+    def getSSE(self) :
+        return self.SSE
+
+    def getSSR(self) :
+        return self.SSR
+
+    def getSST(self) :
+        return self.SST
+
+class MLEstimation(object):
+    
+    def __init__(self):
+        pass
 
     def __calEstimationA__(self) :
         pass
