@@ -1,7 +1,8 @@
 #!/usr/bin/env python 
 # -*- coding:utf-8 -*-
-from builtins import object, len, range, print
+from builtins import object, len, range, print, int
 import numpy as np
+from scipy.linalg import toeplitz
 import infrastructure as inf
 
 class StatisticsTSTest(object):
@@ -158,7 +159,57 @@ class StatisticsModel(StatisticsBasic):
     def getACF(self, order=None, bias=True):
         if order is None:
             order = self.getOrder()
+
+        order = int(order)
+
         return self.__calcACF__(order, bias)
+
+    def __YuleWalker__(self, order, bias):
+        iRouk = np.asarray(self.iRouk[:order])
+        iSize = self.getSize()
+
+        if bias is not True:
+            for i in range(0, len(iRouk)):
+                iRouk[i] = iRouk[i] * iSize/(iSize-i)
+
+        iGammaP = np.asarray(toeplitz(iRouk[:-1]))
+
+        return np.linalg.solve(iGammaP, iRouk[1:])
+
+    def getPACF(self, order=None, bias=True):
+        if order is None:
+            order = self.getOrder()
+
+        order = int(order)
+
+        iPACF = []
+
+        for i in range(1, order+1):
+            iAlpha = self.__YuleWalker__(i, bias)
+            iPACF.append(iAlpha[-1])
+
+        return iPACF
+    
+    def __ACFPACFCoefTest__(self, confidence):
+        '''
+        this functionality is used for ACF/PACF coefficiency Test
+        if the confidence is 0.95, then the coefficiency should be 2, that is 2*sigma,
+        currently, sqrt is the sigma
+        when abs(coef) < 2/sqrt(T), then accept the ACF/PACF coefficiency, otherwise refuse it.
+        abs(Ak)<2/Sqrt(T), T is the oberservation number.
+        '''
+
+        iSqrt = np.sqrt(self.getSize())
+
+        if confidence == 0.99:
+            coef = 3
+        else:
+            coef = 2
+
+        return coef/iSqrt, -coef/iSqrt
+
+    def getACFPACFCoefTest(self, confidence = 0.95):
+        return self.__ACFPACFCoefTest__(confidence)
 
 class DataConstruct(object):
     '''
