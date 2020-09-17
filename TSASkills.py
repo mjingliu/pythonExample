@@ -3,6 +3,7 @@
 from builtins import object, len, range, print, int
 import numpy as np
 from scipy.linalg import toeplitz
+import const_stat
 import infrastructure as inf
 
 class StatisticsTSTest(object):
@@ -122,6 +123,33 @@ class StatisticsModel(StatisticsBasic):
         self.iRouk = []
         self.__calcRouk__()
 
+    def __checkSignificance__(self, confidence):
+        if confidence >= 1 and confidence < 0:
+            print("enter the wrong confidence value!")
+            return None
+
+        iSigTmp = 1 - confidence
+        iSignificance = [0.25,0.1,0.05,0.025,0.01,0.005]
+        iSize = len(iSignificance)
+        iLoc = iSize
+        if iSigTmp >= iSignificance[0]:
+            iLoc = 0
+        elif iSigTmp < iSignificance[iSize-1]:
+            iLoc = iSize -1
+        else:
+            for i in range(0, iSize-1):
+                if iSigTmp < iSignificance[i] and iSigTmp >= iSignificance[i+1]:
+                    iLoc = i+1
+                    break
+
+        return iSignificance[iLoc]
+
+    def getConfidence(self, confidence):
+        return 1. - self.__checkSignificance__(confidence)
+
+    def getSignifance(self, confidence):
+        return self.__checkSignificance__(confidence)
+
     def __calcDefaultOrder__(self):
         iData = self.getData()
         return np.ceil(12.*np.power(len(iData)/100., 1/4.))
@@ -209,7 +237,46 @@ class StatisticsModel(StatisticsBasic):
         return coef/iSqrt, -coef/iSqrt
 
     def getACFPACFCoefTest(self, confidence = 0.95):
+        confidence = self.getConfidence(confidence)
         return self.__ACFPACFCoefTest__(confidence)
+
+    def __meanZeroTest__(self, significance):
+        '''
+        input:
+            Test the duration when mean is zero within the provided confidence
+        output:
+        the confidence area
+        Xbar/(sigma/sqrt(n)) ~ t(n-1) distribution
+
+        when the actual Xbar calulated from the sample is between the duration calculated by t distribution,
+        then, the H0: mean is zero is right, otherwise, H1: mean is not zero is right
+        '''
+
+        sampleLen = self.getSize()
+        iVar = self.getVar()
+
+        if sampleLen >= len(const_stat.TN):
+            iLen = len(const_stat.TN) - 2
+        else:
+            iLen = sampleLen - 1
+
+        iTau = 0
+
+        for i in range(0, const_stat.TROW):
+            if const_stat.TValue[i][0] == significance:
+                iTau = const_stat.TValue[i][iLen]
+                break
+
+        iTValue = (iVar/sampleLen)**0.5*iTau
+
+        return -iTValue, iTValue
+
+    def getMeanZeroTest(self, confidence=0.95):
+        iSig = self.getSignifance(confidence)
+        return self.__meanZeroTest__(iSig), self.getMean()
+
+    def __LjungBoxTest__(self):
+        pass
 
 class DataConstruct(object):
     '''
