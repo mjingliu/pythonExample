@@ -189,7 +189,7 @@ class StatisticsModel(StatisticsBasic):
             iPACF.append(iAlpha[-1])
 
         return iPACF
-    
+
     def __ACFPACFCoefTest__(self, confidence):
         '''
         this functionality is used for ACF/PACF coefficiency Test
