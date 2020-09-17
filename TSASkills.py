@@ -8,7 +8,8 @@ import infrastructure as inf
 
 class StatisticsTSTest(object):
     def __init__(self):
-        pass
+        self.iLBGamma = None
+        self.iLBCtr = False
 
     def __DFTest__(self, data, kind):
         '''
@@ -41,12 +42,77 @@ class StatisticsTSTest(object):
 
         return self.__PPTest__(data, kind)
 
-    def __LBTest__(self):
-        pass
+    def __LBTestTValue__(self, data, order):
+        '''
+        1. get the T value
+        2. get the p value
+        '''
+        if self.iLBCtr is False:
+            self.__calcGamma__(data)
 
-    def getLBTestResult(self):
+        iData = np.asarray(data)
+        iSize = iData.size
+        iArr = self.iLBGamma[:order]
+        iTmp = []
+        for i in range(0, order):
+            iTmp.append(iArr[i]*iSize*(iSize+2)/(iSize-i-1))
+        iTmp = np.asarray(iTmp)
+        iTValue = np.dot(iTmp[:],iTmp[:])
 
-        return self.__LBTest__()
+        return iTValue
+
+    def __LBTestPValue__(self, freedom, significance):
+        iSigList = np.asarray(const_stat.X2ROW)
+        iLen = iSigList.size
+        iloc = 9 # location 9 is 0.05 significance
+
+        if iSigList[0]<= significance:
+            iloc = 0
+        elif iSigList[iLen-1] >= significance:
+            iloc = iLen -1
+        else:
+            for i in range(0, iLen-1):
+                if iSigList[i] >significance and iSigList[i+1] <= significance:
+                    iloc = i+1
+                    break
+
+        return const_stat.X2Value[iloc][freedom]
+
+    def __calcGamma__(self, data):
+        iData = np.asarray(data)
+
+        iSize = iData.size
+        '''
+        calculate the Gamma_k
+        '''
+        iGamma = []
+        iGamma.append(np.dot(iData[:], iData[:]))
+        for i in range(1, iSize):
+            iGamma.append(np.dot(iData[:-i],iData[i:]))
+        self.iLBGamma = np.array(iGamma[1:]/iGamma[0])
+
+    def getLBTestResult(self, data, order=0, numofpara=0, significance=0.05):
+        '''
+        condition:
+        if the model is ARMA(p,q), then the degree(N) of X2 should be m-(p+q)
+        order: the input N
+        significance: the probability of X2 should be met
+        fitPara: number of p+q
+        default value of alg of order is 12.*np.power(len(data)/100., 1/4.)
+        or, order = ln(T), T = length of array
+        in current implementation, use the first one.
+        '''
+
+        if self.iLBCtr is False:
+            self.__calcGamma__(data)
+            self.iLBCtr = True
+        if order <= 0:
+            order = np.ceil(12.*np.power(len(data)/100., 1/4.))
+        if order <= numofpara:
+            print("please check the order and num of para passed!")
+            return None,None,None
+
+        return self.__LBTestTValue__(data, order), self.__LBTestPValue__(order-numofpara, significance), order
 
     def __LMTest__(self):
         pass
@@ -167,6 +233,8 @@ class StatisticsModel(StatisticsBasic):
         for i in range(1, len(iData)):
             iRouk.append(np.dot(iData[:-i], iData[i:]))
 
+        self.iRouk = iRouk
+
     def getRouk(self, order):
         return self.iRouk[:order+1]
 
@@ -274,9 +342,6 @@ class StatisticsModel(StatisticsBasic):
     def getMeanZeroTest(self, confidence=0.95):
         iSig = self.getSignifance(confidence)
         return self.__meanZeroTest__(iSig), self.getMean()
-
-    def __LjungBoxTest__(self):
-        pass
 
 class DataConstruct(object):
     '''
