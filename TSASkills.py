@@ -376,9 +376,9 @@ class DataConstruct(object):
         pass
 
 class StatModelSelection(object):
-    def __init__(self, data):
-        self.SSR = self.__SSRCalc__(data)
-        self.obs = len(data)
+    def __init__(self):
+        self.SSR = None
+        self.obs = None
 
     def __SSRCalc__(self, data):
         iLen = len(data)
@@ -391,17 +391,21 @@ class StatModelSelection(object):
 
         return iSSR
 
-    def __SIC__(self, kPara):
-        return self.obs*np.log(self.SSR/self.obs) + kPara*np.log(self.obs)
+    def __SIC__(self, data, kPara):
+        iSSR = self.__SSRCalc__(data)
+        iObs = len(data)
+        return iObs*np.log(iSSR/iObs) + kPara*np.log(iObs)
 
-    def getSIC(self):
-        return self.__SIC__()
+    def getSIC(self, data, k):
+        return self.__SIC__(data, k)
 
-    def __AIC__(self, kPara):
-        return self.obs*np.log(self.SSR/self.obs) +2*kPara
+    def __AIC__(self, data, kPara):
+        iSSR = self.__SSRCalc__(data)
+        iObs = len(data)
+        return iObs*np.log(iSSR/iObs) +2*kPara
 
-    def getAIC(self):
-        return self.__AIC__()
+    def getAIC(self, data, k):
+        return self.__AIC__(data, k)
 
 
 
