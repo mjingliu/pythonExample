@@ -63,6 +63,12 @@ class StatisticsTSTest(object):
 
         return self.__JBTest__(data, confidence)
 
+    def __LjungBoxTest__(self):
+        pass
+
+    def getLjungBoxTest(self):
+        return self.__LjungBoxTest__()
+
 class StatisticsBasic(object):
     def __init__(self, data):
         self.iData = np.asarray(data)
@@ -147,8 +153,8 @@ class StatisticsModel(StatisticsBasic):
     def getConfidence(self, confidence):
         return 1. - self.__checkSignificance__(confidence)
 
-    def getSignifance(self, confidence):
-        return self.__checkSignificance__(confidence)
+    def getSignifance(self, significance):
+        return self.__checkSignificance__(significance)
 
     def __calcDefaultOrder__(self):
         iData = self.getData()
@@ -274,9 +280,6 @@ class StatisticsModel(StatisticsBasic):
     def getMeanZeroTest(self, confidence=0.95):
         iSig = self.getSignifance(confidence)
         return self.__meanZeroTest__(iSig), self.getMean()
-
-    def __LjungBoxTest__(self):
-        pass
 
 class DataConstruct(object):
     '''
