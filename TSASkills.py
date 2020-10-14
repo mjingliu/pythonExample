@@ -436,7 +436,41 @@ class DataConstruct(object):
     construct all kinds of array
     return the assembled array
     '''
-    def __init__(self):
+    def __init__(self, data):
+
+        self.data = np.asarray(data)
+
+    def __dataLen__(self):
+        return len(self.data)
+
+    def ConstructPOrderArray(self, pOrder):
+        '''
+        Y = a*x + b
+        '''
+        iLen = self.__dataLen__()
+
+        pOrder = int(pOrder)
+
+        iY = np.asarray(self.data[:-pOrder])
+        iX = []
+        iCtr = True
+        for i in range(1, iLen-pOrder):
+            iArr = np.asarray(self.data[i: pOrder + i])
+            if iCtr is True:
+                iCtr = False
+                iX = iArr
+            else:
+                iX = np.vstack(iX, iArr)
+
+        iOnes = np.ones((iY.size, 1)) # this is the "b" in estimation array
+        iX = np.hstack(iX, iOnes)
+
+        return iY, iX
+
+    def ConstructQOrderArray(self, qOrder):
+        pass
+
+    def ConstructPQOrderArray(self, pOrder, qOrder):
         pass
 
 class StatModelSelection(object):

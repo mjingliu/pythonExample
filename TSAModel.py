@@ -1,6 +1,6 @@
 #!/usr/bin/env python 
 # -*- coding:utf-8 -*-
-from builtins import object
+from builtins import object, len
 
 import TSASkills as tss
 import infrastructure as infra
@@ -11,6 +11,7 @@ class ARModel(object):
         输入的数据应该是通过平稳性检测过的数据
         '''
         self.basicStat = tss.StatisticsModel(data)
+        self.constructData = tss.DataConstruct(data)
 
     def Regression(self):
         # 回归
@@ -23,17 +24,21 @@ class ARModel(object):
         MA(Q), 主要是看ACF的结尾
         '''
         iOrderLimit = self.basicStat.getOrder()
-        iACF = self.basicStat.getACF(iOrderLimit)
+        #iACF = self.basicStat.getACF(iOrderLimit)
         iPACF = self.basicStat.getPACF(iOrderLimit)
 
         iThreshold = self.basicStat.getACFPACFCoefTest()
 
-        iACFIndex = self.__getOrderIdx__(iACF, iThreshold)
+        #iACFIndex = self.__getOrderIdx__(iACF, iThreshold)
         iPACFIndex = self.__getOrderIdx__(iPACF, iThreshold)
 
         iLen = len(iPACFIndex)
         iOrder = iPACFIndex[iLen - 1]
-        
+
+        iY, iX = self.constructData.ConstructPOrderArray(iOrder)
+        iLSE = infra.LSEstimation(iX, iY, 0)
+        return iLSE.getEstimator()
+
     def __getOrderIdx__(self, data, threshold):
         iArr = []
         for i in range(len(data)):
