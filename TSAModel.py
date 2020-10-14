@@ -35,8 +35,9 @@ class ARModel(object):
         iACFIndex = self.__getOrderIdx__(iACF, iThreshold)
         iPACFIndex = self.__getOrderIdx__(iPACF, iThreshold)
 
+        iLen = len(iPACFIndex)
+        iOrder = iPACFIndex[iLen - 1]
         
-
     def __getOrderIdx__(self, data, threshold):
         iArr = []
         for i in range(len(data)):
