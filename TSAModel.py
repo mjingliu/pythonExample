@@ -20,8 +20,8 @@ class ARModel(object):
         2. 根据准则，确认阶数
         3. 构造数据，进行最小二乘估计，获取系数以及对应的系数方差
         notes:
-        AR(P), 主要是看PACF的结尾
-        MA(Q), 主要是看ACF的结尾
+        AR(P), 主要是看PACF的截尾
+        MA(Q), 主要是看ACF的截尾
         '''
         iOrderLimit = self.basicStat.getOrder()
         #iACF = self.basicStat.getACF(iOrderLimit)
@@ -34,10 +34,9 @@ class ARModel(object):
 
         iLen = len(iPACFIndex)
         iOrder = iPACFIndex[iLen - 1]
+        iCoef = self.Estimation(iOrder)
 
-        iY, iX = self.constructData.ConstructPOrderArray(iOrder)
-        iLSE = infra.LSEstimation(iX, iY, 0)
-        return iLSE.getEstimator()
+        return
 
     def __getOrderIdx__(self, data, threshold):
         iArr = []
@@ -54,9 +53,11 @@ class ARModel(object):
         # 误差
         pass
 
-    def Estimation(self):
+    def Estimation(self, order):
         # 估计，获取到对应的参数以及参数对应的方差
-        pass
+        iY, iX = self.constructData.ConstructPOrderArray(order)
+        iLSE = infra.LSEstimation(iX, iY, 0)
+        return iLSE.getEstimator()
 
     def Prediction(self):
         # 预测
