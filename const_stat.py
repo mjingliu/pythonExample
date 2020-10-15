@@ -89,3 +89,10 @@ tau_test = {
     "ct": tau_ct
 }
 
+ORDER_TYPE_AIC = 0
+ORDER_TYPE_SIC = 1
+ORDER_TYPE_ACF_PACF = 2
+
+
+
+
