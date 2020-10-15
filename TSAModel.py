@@ -5,6 +5,7 @@ from builtins import object, len
 import TSASkills as tss
 import infrastructure as infra
 import const_stat as cs
+import numpy as np
 
 class ARModel(object):
     def __init__(self, data):
@@ -13,6 +14,10 @@ class ARModel(object):
         '''
         self.basicStat = tss.StatisticsModel(data)
         self.constructData = tss.DataConstruct(data)
+        self.order = None
+        self.iY = None
+        self.iX = None
+        self.iCoef = None
 
     def Regression(self):
         # 回归
@@ -29,7 +34,9 @@ class ARModel(object):
         通常选择的是68.3%为门限
         '''
         iOrder = self.__getPOrder__()
-        iCoef, iSSR = self.Estimation(iOrder)
+        self.order = iOrder
+        self.iY, self.iX = self.Estimation(iOrder, LSE=False)
+        self.iCoef, iSSR = self.Estimation(iOrder)
 
         return
 
@@ -79,17 +86,26 @@ class ARModel(object):
 
     def ARTest(self):
         # AR检测
-        pass
+        iError = self.Errors()
+        tValue, pValue = tss.StatisticsTSTest.getLBTestResult(iError, numofpara=self.order)
+        return tValue, pValue
 
     def Errors(self):
-        # 误差
-        pass
+        # 计算误差矩阵
+        iY = np.asarray(self.iY)
+        iX = np.asarray(self.iX)
+        iCoef = np.asarray(self.iCoef)
+        iError = iY - iX.dot(iCoef)
+        return iError
 
-    def Estimation(self, order):
+    def Estimation(self, order, LSE=True):
         # 估计，获取到对应的参数以及参数对应的方差
-        iY, iX = self.constructData.ConstructPOrderArray(order)
-        iLSE = infra.LSEstimation(iX, iY, 0)
-        return iLSE.getEstimator(), iLSE.getSSR()
+        if LSE is True:
+            iY, iX = self.constructData.ConstructPOrderArray(order)
+            iLSE = infra.LSEstimation(iX, iY, 0)
+            return iLSE.getEstimator(), iLSE.getSSR()
+        else:
+            return self.constructData.ConstructPOrderArray(order)
 
     def Prediction(self):
         # 预测
