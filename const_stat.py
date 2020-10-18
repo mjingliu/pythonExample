@@ -92,7 +92,11 @@ tau_test = {
 ORDER_TYPE_AIC = 0
 ORDER_TYPE_SIC = 1
 ORDER_TYPE_ACF_PACF = 2
-
+order_type = {
+    "aic": ORDER_TYPE_AIC,
+    "sic": ORDER_TYPE_SIC,
+    "acf": ORDER_TYPE_ACF_PACF
+}
 
 
 

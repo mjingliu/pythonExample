@@ -14,10 +14,10 @@ class ARModel(object):
         '''
         self.basicStat = tss.StatisticsModel(data)
         self.constructData = tss.DataConstruct(data)
-        self.order = None
-        self.iY = None
-        self.iX = None
-        self.iCoef = None
+        self.order = {}
+        self.iY = {}
+        self.iX = {}
+        self.iCoef = {}
 
     def Regression(self):
         # 回归
@@ -33,14 +33,52 @@ class ARModel(object):
         如果通过PACF确认MA阶数的话，方法类似于ACF的拖尾方法
         通常选择的是68.3%为门限
 
-        ACF/PACF -> LB/LM -> AIC/SIC ->coef confirmation -> in-band prediction -> out-band prediction
+        ACF/PACF ->AIC/SIC -> LB/LM ->coef confirmation -> in-band prediction -> out-band prediction
+        如果LB/LM检测还有自相关性，说明模型不合理而不是系数不对，需要重新假定模型。
         '''
-        iOrder = self.__getPOrder__()
-        self.order = iOrder
-        self.iY, self.iX = self.Estimation(iOrder, LSE=False)
-        self.iCoef, iSSR = self.Estimation(iOrder)
+        iOrder, iOrderList = self.__getPOrder__()
+
+        iY, iX = self.Estimation(iOrder, LSE=False)
+        iCoef, iSSR = self.Estimation(iOrder)
+        self.order['acf'] = iOrder
+        self.iY['acf'] = iY
+        self.iX['acf'] = iX
+        self.iCoef['acf'] = iCoef
+
+
+        iOrder, iOrderList = self.__getPOrder__(type = cs.ORDER_TYPE_AIC)
+        iY, iX = self.Estimation(iOrder, LSE=False)
+        iCoef, iSSR = self.Estimation(iOrder)
+        self.order['aic'] = iOrder
+        self.iY['aic'] = iY
+        self.iX['aic'] = iX
+        self.iCoef['aic'] = iCoef
+
+        iOrder, iOrderList = self.__getPOrder__(type = cs.ORDER_TYPE_SIC)
+        iY, iX = self.Estimation(iOrder, LSE=False)
+        iCoef, iSSR = self.Estimation(iOrder)
+        self.order['sic'] = iOrder
+        self.iY['sic'] = iY
+        self.iX['sic'] = iX
+        self.iCoef['sic'] = iCoef
+
+        '''
+        # ACF/PACF，AIC,SIC三种不同的方法计算得到三种系数，如果方法具有一致性，则三种方法得到的系数个数应该是一致的。
+        # 如果不一致的话，需要确定哪个方法最合适。
+        # 在不一致的情况下，进行LB/LM检测，如果有残差还存在自相关性，则该系数不合适。
+          如果残差不存在自相关性，则系数少者为最终选项
+        '''
 
         return
+
+    def __minOrder__(self):
+
+        iLen = len(self.order)
+
+        pass
+    
+    def __maxOrder__(self):
+        pass
 
     def __getOrderIdx__(self, data, threshold):
         iArr = []
@@ -97,7 +135,7 @@ class ARModel(object):
         若LB检测中，残差有自相关性，说明模型还需要进一步分析，也就是说，当前的模型不能描述所有的信息
         当前模型的残差中还有自相关信息没有被描述，需要重新选择分析选择模型
         '''
-        
+
         iError = self.Errors()
         tValue, pValue = tss.StatisticsTSTest.getLBTestResult(iError, numofpara=self.order)
         return tValue, pValue
@@ -111,13 +149,13 @@ class ARModel(object):
         return iError
 
     def Estimation(self, order, LSE=True):
+        iY, iX = self.constructData.ConstructPOrderArray(order)
         # 估计，获取到对应的参数以及参数对应的方差
         if LSE is True:
-            iY, iX = self.constructData.ConstructPOrderArray(order)
             iLSE = infra.LSEstimation(iX, iY, 0)
             return iLSE.getEstimator(), iLSE.getSSR()
-        else:
-            return self.constructData.ConstructPOrderArray(order)
+        # 返回计算LSE的构造数据
+        return iY, iX
 
     def Prediction(self):
         # 预测
