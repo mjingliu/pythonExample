@@ -178,6 +178,12 @@ class StatisticsTSTest(StatisticsBasic):
         default value of alg of order is 12.*np.power(len(data)/100., 1/4.)
         or, order = ln(T), T = length of array
         in current implementation, use the first one.
+
+
+        input:
+        data: 残差的原始数据序列
+        order：先验值，需要检测的残差序列的自相关系数个数
+        numofpara: 通过对原始序列估计得到的参数系数个数(p+q的和)
         '''
 
         if self.iLBCtr is False:

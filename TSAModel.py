@@ -32,6 +32,8 @@ class ARModel(object):
         如果通过ACF确认AR阶数的话，由于是拖尾，所以，需要从高到底来选择对应的系数，知道剩余系数占据比例大于68.3%(1 sigma)或者95%(2 sigma)
         如果通过PACF确认MA阶数的话，方法类似于ACF的拖尾方法
         通常选择的是68.3%为门限
+
+        ACF/PACF -> LB/LM -> AIC/SIC ->coef confirmation -> in-band prediction -> out-band prediction
         '''
         iOrder = self.__getPOrder__()
         self.order = iOrder
@@ -85,7 +87,17 @@ class ARModel(object):
             return iIdx+1, iSIC
 
     def ARTest(self):
-        # AR检测
+        # AR检测，具体检测什么东西呢？暂时未知
+        pass
+
+    def ErrorTest(self):
+        '''
+        残差检测，1.残差的自相似性检测，LB检测；2. 残差的正态性检测，JB检测
+        若LB检测中，没有自相关性，则说明模型是正确的，
+        若LB检测中，残差有自相关性，说明模型还需要进一步分析，也就是说，当前的模型不能描述所有的信息
+        当前模型的残差中还有自相关信息没有被描述，需要重新选择分析选择模型
+        '''
+        
         iError = self.Errors()
         tValue, pValue = tss.StatisticsTSTest.getLBTestResult(iError, numofpara=self.order)
         return tValue, pValue
