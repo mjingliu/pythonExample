@@ -36,31 +36,14 @@ class ARModel(object):
         ACF/PACF ->AIC/SIC -> LB/LM ->coef confirmation -> in-band prediction -> out-band prediction
         如果LB/LM检测还有自相关性，说明模型不合理而不是系数不对，需要重新假定模型。
         '''
-        iOrder, iOrderList = self.__getPOrder__()
-
-        iY, iX = self.Estimation(iOrder, LSE=False)
-        iCoef, iSSR = self.Estimation(iOrder)
-        self.order['acf'] = iOrder
-        self.iY['acf'] = iY
-        self.iX['acf'] = iX
-        self.iCoef['acf'] = iCoef
-
-
-        iOrder, iOrderList = self.__getPOrder__(type = cs.ORDER_TYPE_AIC)
-        iY, iX = self.Estimation(iOrder, LSE=False)
-        iCoef, iSSR = self.Estimation(iOrder)
-        self.order['aic'] = iOrder
-        self.iY['aic'] = iY
-        self.iX['aic'] = iX
-        self.iCoef['aic'] = iCoef
-
-        iOrder, iOrderList = self.__getPOrder__(type = cs.ORDER_TYPE_SIC)
-        iY, iX = self.Estimation(iOrder, LSE=False)
-        iCoef, iSSR = self.Estimation(iOrder)
-        self.order['sic'] = iOrder
-        self.iY['sic'] = iY
-        self.iX['sic'] = iX
-        self.iCoef['sic'] = iCoef
+        for key in cs.order_type:
+            iOrder, iOrderList = self.__getPOrder__(type=cs.order_type[key])
+            iY, iX = self.Estimation(iOrder, LSE=False)
+            iCoef, iSSR = self.Estimation(iOrder)
+            self.order[key] = iOrder
+            self.iY[key] = iY
+            self.iX[key] = iX
+            self.iCoef[key] = iCoef
 
         '''
         # ACF/PACF，AIC,SIC三种不同的方法计算得到三种系数，如果方法具有一致性，则三种方法得到的系数个数应该是一致的。
@@ -76,7 +59,7 @@ class ARModel(object):
         iLen = len(self.order)
 
         pass
-    
+
     def __maxOrder__(self):
         pass
 
