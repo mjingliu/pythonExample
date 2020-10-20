@@ -72,9 +72,9 @@ class LSEstimation(object):
         iErrTmp = iY - np.mean(iY)
         self.SST = iErrTmp.T.dot(iErrTmp)
         iErrTmp = yReg - np.mean(iY)
-        self.SSR = iErrTmp.T.dot(iErrTmp)
-        iErrTmp = iY - yReg
         self.SSE = iErrTmp.T.dot(iErrTmp)
+        iErrTmp = iY - yReg
+        self.SSR = iErrTmp.T.dot(iErrTmp)
 
         iVar = iErrTmp.T.dot(iErrTmp)/yDim[0]
         if len(iX) == len(iY):
