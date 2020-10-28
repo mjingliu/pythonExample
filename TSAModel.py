@@ -36,6 +36,7 @@ class ARModel(object):
         ACF/PACF ->AIC/SIC -> LB/LM ->coef confirmation -> in-band prediction -> out-band prediction
         如果LB/LM检测还有自相关性，说明模型不合理而不是系数不对，需要重新假定模型。
         '''
+        # 计算出 大致的阶数
         for key in cs.order_type:
             iOrder, iOrderList = self.__getPOrder__(type=cs.order_type[key])
             iY, iX = self.Estimation(iOrder, LSE=False)
@@ -45,6 +46,8 @@ class ARModel(object):
             self.iX[key] = iX
             self.iCoef[key] = iCoef
 
+        # 对阶数对应的回归方程进行检验，
+        
         '''
         # ACF/PACF，AIC,SIC三种不同的方法计算得到三种系数，如果方法具有一致性，则三种方法得到的系数个数应该是一致的。
         # 如果不一致的话，需要确定哪个方法最合适。
@@ -111,7 +114,7 @@ class ARModel(object):
         # AR检测，具体检测什么东西呢？暂时未知
         pass
 
-    def ErrorTest(self):
+    def ErrorTest(self, iY, iX, iCoef):
         '''
         残差检测，1.残差的自相似性检测，LB检测；2. 残差的正态性检测，JB检测
         若LB检测中，没有自相关性，则说明模型是正确的，
@@ -119,15 +122,17 @@ class ARModel(object):
         当前模型的残差中还有自相关信息没有被描述，需要重新选择分析选择模型
         '''
 
-        iError = self.Errors()
+        iError = self.Errors(iY, iX, iCoef) # 该函数的适用错误，理由如下：在self.Errors函数中，使用了iY和iX，但是iY和iX是二维数组
+                                # 故，调用该函数之前，应该输入对应的X和Y，用以计算对应的误差
+
         tValue, pValue = tss.StatisticsTSTest.getLBTestResult(iError, numofpara=self.order)
         return tValue, pValue
 
-    def Errors(self):
+    def Errors(self,iY, iX, iCoef):
         # 计算误差矩阵
-        iY = np.asarray(self.iY)
-        iX = np.asarray(self.iX)
-        iCoef = np.asarray(self.iCoef)
+        iY = np.asarray(iY)
+        iX = np.asarray(iX)
+        iCoef = np.asarray(iCoef)
         iError = iY - iX.dot(iCoef)
         return iError
 
